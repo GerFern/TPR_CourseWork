@@ -5,10 +5,16 @@ VisualStudioVersion = 16.0.28407.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPR_ExampleView", "TPR_ExampleView\TPR_ExampleView.csproj", "{B43ACE31-2FC3-4D80-8AA4-56D840704327}"
 	ProjectSection(ProjectDependencies) = postProject
+		{CF3CCD2E-C24F-460E-904A-677BE24F3842} = {CF3CCD2E-C24F-460E-904A-677BE24F3842}
 		{61858E9E-5FE8-4805-B778-CBE06D65A31F} = {61858E9E-5FE8-4805-B778-CBE06D65A31F}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary", "TestLibrary\TestLibrary.csproj", "{61858E9E-5FE8-4805-B778-CBE06D65A31F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CF3CCD2E-C24F-460E-904A-677BE24F3842} = {CF3CCD2E-C24F-460E-904A-677BE24F3842}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseLibrary", "BaseLibrary\BaseLibrary.csproj", "{CF3CCD2E-C24F-460E-904A-677BE24F3842}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +30,10 @@ Global
 		{61858E9E-5FE8-4805-B778-CBE06D65A31F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61858E9E-5FE8-4805-B778-CBE06D65A31F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61858E9E-5FE8-4805-B778-CBE06D65A31F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF3CCD2E-C24F-460E-904A-677BE24F3842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF3CCD2E-C24F-460E-904A-677BE24F3842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF3CCD2E-C24F-460E-904A-677BE24F3842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF3CCD2E-C24F-460E-904A-677BE24F3842}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

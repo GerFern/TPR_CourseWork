@@ -26,7 +26,7 @@ namespace TPR_ExampleView
         {
             MenuMethod.imageBox = imageBox1;
             MenuMethod.textBox = textBox1;
-            //DLL_Init.AssemblyInSolution = "TestLibrary";
+            DLL_Init.AssemblyInSolution = "TestLibrary";
             DLL_Init.Init(menuStrip1);
         }
 

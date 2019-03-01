@@ -64,5 +64,12 @@ namespace TestLibrary
                 Image = img.SmoothGaussian(kernelSize)
             };
         }
+
+        [ImgMethod("Отладка")]
+        [CustomForm(typeof(Debug))]
+        public static OutputImage Debag(IImage image)
+        {
+            return new OutputImage { Image = image };
+        }
     }
 }
