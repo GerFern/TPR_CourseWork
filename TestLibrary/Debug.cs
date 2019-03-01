@@ -84,6 +84,7 @@ namespace TestLibrary
             Button BCancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, Parent = flp };
             tlp.Controls.Add(flp, 0, tlp.RowCount - 1);
             tlp.SetColumnSpan(flp, 2);
+            tlp.Dock = DockStyle.Fill;
             Form form = new Form();
             form.Tag = this;
             tlp.Parent = form;
@@ -93,7 +94,29 @@ namespace TestLibrary
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            
+            if (DialogResult == DialogResult.OK)
+            {
+                for (int i = 0; i < vs.Length; i++)
+                {
+                    if (controls[i].Enabled)
+                    {
+                        var t = TypeDescriptor.GetConverter(parameters[i].ParameterType);
+                        vs[i] = t.ConvertFromString(controls[i].Text);
+                    }
+                }
+                dynamic result = method.Invoke(imageBox1.Image, vs);
+                Type typeResult = result.GetType();
+                if (result is IImage)
+                {
+                    if (MessageBox.Show("Заменить изображение?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        imageBox1.Image = result;
+                    }
+                }
+                else MessageBox.Show(result.ToString());
+                imageBox1.Update();
+            }
+
         }
 
         private void Debug_FormClosing(object sender, FormClosingEventArgs e)
