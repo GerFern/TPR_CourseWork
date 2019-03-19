@@ -33,6 +33,8 @@
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.открытьИзображениеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.сохранитьИзображениеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.восстановитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.библиотекиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.открытьПапкуСБиблиотекамиToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -52,8 +54,10 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.восстановитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.выбратьПапкуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -71,6 +75,11 @@
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+            this.splitContainer3.Panel1.SuspendLayout();
+            this.splitContainer3.Panel2.SuspendLayout();
+            this.splitContainer3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -91,7 +100,8 @@
             this.открытьИзображениеToolStripMenuItem,
             this.сохранитьИзображениеToolStripMenuItem,
             this.toolStripSeparator2,
-            this.восстановитьToolStripMenuItem});
+            this.восстановитьToolStripMenuItem,
+            this.выбратьПапкуToolStripMenuItem});
             this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
             this.файлToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.файлToolStripMenuItem.Text = "Файл";
@@ -111,6 +121,20 @@
             this.сохранитьИзображениеToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
             this.сохранитьИзображениеToolStripMenuItem.Text = "Сохранить изображение";
             this.сохранитьИзображениеToolStripMenuItem.Click += new System.EventHandler(this.сохранитьИзображениеToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(252, 6);
+            // 
+            // восстановитьToolStripMenuItem
+            // 
+            this.восстановитьToolStripMenuItem.Enabled = false;
+            this.восстановитьToolStripMenuItem.Name = "восстановитьToolStripMenuItem";
+            this.восстановитьToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F3)));
+            this.восстановитьToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.восстановитьToolStripMenuItem.Text = "Восстановить";
+            this.восстановитьToolStripMenuItem.Click += new System.EventHandler(this.восстановитьToolStripMenuItem_Click);
             // 
             // библиотекиToolStripMenuItem
             // 
@@ -143,7 +167,7 @@
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 24);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -153,7 +177,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(619, 355);
+            this.splitContainer1.Size = new System.Drawing.Size(619, 270);
             this.splitContainer1.SplitterDistance = 356;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -163,7 +187,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(356, 355);
+            this.groupBox3.Size = new System.Drawing.Size(356, 270);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Изображение";
@@ -173,7 +197,7 @@
             this.imageBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imageBox1.Location = new System.Drawing.Point(3, 16);
             this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(350, 336);
+            this.imageBox1.Size = new System.Drawing.Size(350, 251);
             this.imageBox1.TabIndex = 2;
             this.imageBox1.TabStop = false;
             // 
@@ -192,8 +216,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.groupBox2);
-            this.splitContainer2.Size = new System.Drawing.Size(259, 355);
-            this.splitContainer2.SplitterDistance = 168;
+            this.splitContainer2.Size = new System.Drawing.Size(259, 270);
+            this.splitContainer2.SplitterDistance = 109;
             this.splitContainer2.TabIndex = 0;
             // 
             // groupBox1
@@ -202,7 +226,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(259, 168);
+            this.groupBox1.Size = new System.Drawing.Size(259, 109);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Окно вывода";
@@ -213,7 +237,7 @@
             this.textBox1.Location = new System.Drawing.Point(3, 16);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(253, 149);
+            this.textBox1.Size = new System.Drawing.Size(253, 90);
             this.textBox1.TabIndex = 0;
             // 
             // groupBox2
@@ -224,7 +248,7 @@
             this.groupBox2.Enabled = false;
             this.groupBox2.Location = new System.Drawing.Point(0, 0);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(259, 183);
+            this.groupBox2.Size = new System.Drawing.Size(259, 157);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "История";
@@ -236,7 +260,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 16);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(253, 134);
+            this.panel1.Size = new System.Drawing.Size(253, 108);
             this.panel1.TabIndex = 0;
             // 
             // panel2
@@ -274,7 +298,7 @@
             this.panel3.Controls.Add(this.button2);
             this.panel3.Controls.Add(this.button1);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel3.Location = new System.Drawing.Point(3, 150);
+            this.panel3.Location = new System.Drawing.Point(3, 124);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(253, 30);
             this.panel3.TabIndex = 1;
@@ -306,26 +330,60 @@
             this.button1.Text = "Отменить";
             this.button1.UseVisualStyleBackColor = true;
             // 
-            // toolStripSeparator2
+            // splitContainer3
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(206, 6);
+            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer3.Location = new System.Drawing.Point(0, 24);
+            this.splitContainer3.Name = "splitContainer3";
+            this.splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // восстановитьToolStripMenuItem
+            // splitContainer3.Panel1
             // 
-            this.восстановитьToolStripMenuItem.Enabled = false;
-            this.восстановитьToolStripMenuItem.Name = "восстановитьToolStripMenuItem";
-            this.восстановитьToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F3)));
-            this.восстановитьToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
-            this.восстановитьToolStripMenuItem.Text = "Восстановить";
-            this.восстановитьToolStripMenuItem.Click += new System.EventHandler(this.восстановитьToolStripMenuItem_Click);
+            this.splitContainer3.Panel1.Controls.Add(this.groupBox4);
+            // 
+            // splitContainer3.Panel2
+            // 
+            this.splitContainer3.Panel2.Controls.Add(this.splitContainer1);
+            this.splitContainer3.Size = new System.Drawing.Size(619, 355);
+            this.splitContainer3.SplitterDistance = 81;
+            this.splitContainer3.TabIndex = 2;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.tableLayoutPanel1);
+            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox4.Location = new System.Drawing.Point(0, 0);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(619, 81);
+            this.groupBox4.TabIndex = 0;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Галерея";
+            // 
+            // выбратьПапкуToolStripMenuItem
+            // 
+            this.выбратьПапкуToolStripMenuItem.Name = "выбратьПапкуToolStripMenuItem";
+            this.выбратьПапкуToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.выбратьПапкуToolStripMenuItem.Text = "Выбрать папку";
+            this.выбратьПапкуToolStripMenuItem.Click += new System.EventHandler(this.ВыбратьПапкуToolStripMenuItem_Click);
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 16);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(72, 62);
+            this.tableLayoutPanel1.TabIndex = 0;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(619, 379);
-            this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.splitContainer3);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
@@ -351,6 +409,11 @@
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel3.ResumeLayout(false);
+            this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            this.splitContainer3.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -383,6 +446,10 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem восстановитьToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem выбратьПапкуToolStripMenuItem;
+        private System.Windows.Forms.SplitContainer splitContainer3;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }
 

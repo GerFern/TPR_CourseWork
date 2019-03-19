@@ -15,7 +15,7 @@ namespace TPR_ExampleView
     public partial class Form1 : Form
     {
         IImage source = null;
-
+        string imagePath = null;
         public Form1()
         {
             InitializeComponent();
@@ -80,6 +80,15 @@ namespace TPR_ExampleView
         private void открытьПапкуСБиблиотекамиToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start(DLL_Init.path);
+        }
+
+        private void ВыбратьПапкуToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog FBD = new FolderBrowserDialog();
+            if(FBD.ShowDialog()==DialogResult.OK)
+            {
+                
+            }
         }
     }
 }
