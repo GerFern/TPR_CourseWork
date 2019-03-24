@@ -28,34 +28,53 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
+            this.treeView1 = new System.Windows.Forms.TreeView();
+            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
             this.SuspendLayout();
             // 
-            // tableLayoutPanel1
+            // flowLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(56, 168);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.flowLayoutPanel1.AutoScroll = true;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(227, 58);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(240, 110);
+            this.flowLayoutPanel1.TabIndex = 0;
+            this.flowLayoutPanel1.WrapContents = false;
+            // 
+            // fileSystemWatcher1
+            // 
+            this.fileSystemWatcher1.EnableRaisingEvents = true;
+            this.fileSystemWatcher1.SynchronizingObject = this;
+            this.fileSystemWatcher1.Changed += new System.IO.FileSystemEventHandler(this.FileSystemWatcher1_Changed);
+            this.fileSystemWatcher1.Renamed += new System.IO.RenamedEventHandler(this.FileSystemWatcher1_Renamed);
+            // 
+            // treeView1
+            // 
+            this.treeView1.Location = new System.Drawing.Point(0, 0);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(183, 168);
+            this.treeView1.TabIndex = 1;
             // 
             // UserControl1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.AutoScroll = true;
+            this.Controls.Add(this.treeView1);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "UserControl1";
             this.Size = new System.Drawing.Size(467, 168);
+            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.IO.FileSystemWatcher fileSystemWatcher1;
+        private System.Windows.Forms.TreeView treeView1;
     }
 }

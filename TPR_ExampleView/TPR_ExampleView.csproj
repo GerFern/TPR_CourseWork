@@ -57,8 +57,17 @@
     <Reference Include="Emgu.CV.World, Version=3.4.3.3016, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <HintPath>..\packages\EMGU.CV.3.4.3.3016\lib\net35\Emgu.CV.World.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.3.3, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft-WindowsAPICodePack-Core.1.1.3.3\lib\net452\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.3.3, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft-WindowsAPICodePack-Shell.1.1.3.3\lib\net452\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -68,6 +77,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
     <Reference Include="ZedGraph, Version=5.1.7.430, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
       <HintPath>..\packages\ZedGraph.5.1.7\lib\net35-Client\ZedGraph.dll</HintPath>
     </Reference>
@@ -125,6 +137,14 @@
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
       <Project>{cf3ccd2e-c24f-460e-904a-677be24f3842}</Project>
       <Name>BaseLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExplorerImage\ExplorerImage.csproj">
+      <Project>{bd244bb0-4a77-4a7f-8fc5-0bbf79e9a0cf}</Project>
+      <Name>ExplorerImage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ImageCollection\ImageCollection.csproj">
+      <Project>{c43cbba3-3098-474d-a8e5-d58bcd0d1591}</Project>
+      <Name>ImageCollection</Name>
     </ProjectReference>
     <ProjectReference Include="..\TestLibrary\TestLibrary.csproj">
       <Project>{61858e9e-5fe8-4805-b778-cbe06d65a31f}</Project>

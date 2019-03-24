@@ -1,17 +1,28 @@
-﻿using Microsoft.WindowsAPICodePack.Shell;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using Microsoft.WindowsAPICodePack.Shell;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace ImageCollection
+namespace ExplorerImage
 {
+    /// <summary>
+    /// Логика взаимодействия для UserControl1.xaml
+    /// </summary>
     public partial class UserControl1 : UserControl
     {
         public bool showAll;
@@ -39,8 +50,7 @@ namespace ImageCollection
         public enum ViewMode
         {
             Horizontal,
-            Vertical,
-            Tree
+            Vertical
         }
 
         private string pathRoot;
@@ -60,41 +70,40 @@ namespace ImageCollection
             get => view;
             set
             {
-                if (view != value)
+                //if (view != value)
+                //{
+                switch (view = value)
                 {
-                    switch (view = value)
-                    {
-                        case ViewMode.Horizontal:
-                            //flowLayoutPanel1.WrapContents = false;
-                            flowLayoutPanel1.Visible = true;
-                            treeView1.Visible = false;
-                            flowLayoutPanel1.FlowDirection = FlowDirection.LeftToRight;
-                            break;
-                        case ViewMode.Vertical:
-                            //flowLayoutPanel1.WrapContents = true;
-                            flowLayoutPanel1.Visible = true;
-                            treeView1.Visible = false;
-                            flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
-                            break;
-                        case ViewMode.Tree:
-                            flowLayoutPanel1.Visible = false;
-                            treeView1.Visible = true;
-                            break;
-                    }
+                    case ViewMode.Horizontal:
+                        //flowLayoutPanel1.WrapContents = false;
+                        panel.FlowDirection = FlowDirection.LeftToRight;
+                        panel.Orientation = Orientation.Horizontal;
 
+                        panel.ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                        panel.ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+
+                        break;
+                    case ViewMode.Vertical:
+                        //flowLayoutPanel1.WrapContents = true;
+                        panel.FlowDirection = FlowDirection.LeftToRight;
+                        panel.Orientation = Orientation.Vertical;
+                        panel.ScrollOwner.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                        panel.ScrollOwner.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                        break;
                 }
+
+                //}
             }
         }
 
         private int count;
-        private List<TableLayoutPanel> previews = new List<TableLayoutPanel>();
-        private Dictionary<string, Bitmap> bitmaps = new Dictionary<string, Bitmap>();
+        private List<Grid> previews = new List<Grid>();
+        private Dictionary<string, BitmapSource> bitmaps = new Dictionary<string, BitmapSource>();
         public int Count => count;
         public UserControl1()
         {
             InitializeComponent();
-            treeView1.Dock = flowLayoutPanel1.Dock = DockStyle.Fill;
-            treeView1.Hide();
+            panel.ScrollOwner = scrool;
             View = ViewMode.Horizontal;
         }
 
@@ -106,28 +115,30 @@ namespace ImageCollection
             }
 
             this.path = this.pathRoot = path;
-            PathChanged?.Invoke(this, new EventArgsWithFilePath(path, LoadPreview(path, showAll, showDir)));
-            fileSystemWatcher1.Path = PathRoot;
+            string name = LoadPreview(path, showAll, showDir);
+            PathChanged?.Invoke(this, new EventArgsWithFilePath(path, name));
         }
 
         private string LoadPreview(string path, bool showAll, bool showDir)
         {
-            this.SuspendLayout();
-            flowLayoutPanel1.SuspendLayout();
+            //this.SuspendLayout();
+            //flowLayoutPanel1.SuspendLayout();
+
+                panel.Children.Clear();
             foreach (var item in previews)
             {
-                item.SuspendLayout();
-                //item.Image.Dispose();
-                item.Dispose();
+                //item.SuspendLayout();
+                ////item.Image.Dispose();
+                //item.Dispose();
             }
-            flowLayoutPanel1.Controls.Clear();
+            //flowLayoutPanel1.Controls.Clear();
             previews.Clear();
             bitmaps.Clear();
 
             ShellContainer shellContainer = (ShellContainer)ShellObject.FromParsingName(path);
             if (/*path != pathRoot &&*/ shellContainer.Parent != null)
             {
-                previews.Add(CreatePictureBoxWithLabel("..", shellContainer.Parent.ParsingName, new Bitmap(64, 64), true));
+                previews.Add(CreatePictureBoxWithLabel("..", shellContainer.Parent.ParsingName, true));
             }
             try
             {
@@ -136,9 +147,9 @@ namespace ImageCollection
                     foreach (var item in shellContainer.OfType<ShellFolder>())
                     {
                         //ShellObject shellObject = ShellObject.FromParsingName(item);
-                        Bitmap b;
+                        BitmapSource b;
                         ShellThumbnail st = item.Thumbnail;
-                        b = st.LargeBitmap;
+                        b = st.MediumBitmapSource;
                         //try
                         //{
                         //    st.FormatOption = ShellThumbnailFormatOption.ThumbnailOnly;
@@ -151,7 +162,7 @@ namespace ImageCollection
                         //    b.MakeTransparent();
                         //}
                         bitmaps.Add(item.ParsingName, b);
-                        TableLayoutPanel panel = CreatePictureBoxWithLabel(item.Name, item.ParsingName, b, true);
+                        Grid panel = CreatePictureBoxWithLabel(item.Name, item.ParsingName, true, b);
 
                         previews.Add(panel);
                     }
@@ -170,9 +181,9 @@ namespace ImageCollection
                     //ShellObject shellObject = ShellObject.FromParsingName(item);
                     //shellFolder.
                     //ShellFile shellFile = ShellFile.FromFilePath(item);
-                    Bitmap b;
+                    BitmapSource b;
                     ShellThumbnail st = item.Thumbnail;
-                    b = st.LargeBitmap;
+                    b = st.MediumBitmapSource;
                     //try
                     //{
                     //    st.FormatOption = ShellThumbnailFormatOption.ThumbnailOnly;
@@ -186,14 +197,14 @@ namespace ImageCollection
                     //}
                     //b.MakeTransparent();
                     bitmaps.Add(item.ParsingName, b);
-                    TableLayoutPanel panel = CreatePictureBoxWithLabel(name, item.ParsingName, b, false);
+                    Grid panel = CreatePictureBoxWithLabel(name, item.ParsingName, false, b);
                     previews.Add(panel);
                     //previews.Add(new PictureBox { Size = new Size(64,64), Image = shellFile.Thumbnail.MediumIcon.ToBitmap(), SizeMode = PictureBoxSizeMode.Zoom });
 
                 }
-            
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 //previews.Clear();
@@ -205,10 +216,10 @@ namespace ImageCollection
             }
             foreach (var item in previews)
             {
-                flowLayoutPanel1.Controls.Add(item);
+                panel.Children.Add(item);
             }
-            this.ResumeLayout();
-            flowLayoutPanel1.ResumeLayout();
+            //this.ResumeLayout();
+            //flowLayoutPanel1.ResumeLayout();
             return shellContainer.Name;
         }
 
@@ -222,28 +233,29 @@ namespace ImageCollection
             PathChanged?.Invoke(this, new EventArgsWithFilePath(path, LoadPreview(path, showAll, showDir)));
             try
             {
-                fileSystemWatcher1.Changed -= FileSystemWatcher1_Changed;
-                fileSystemWatcher1.Path = path;
-                fileSystemWatcher1.Changed += FileSystemWatcher1_Changed;
+                //fileSystemWatcher1.Changed -= FileSystemWatcher1_Changed;
+                //fileSystemWatcher1.Path = path;
+                //fileSystemWatcher1.Changed += FileSystemWatcher1_Changed;
             }
-            catch{}
+            catch { }
         }
 
-        private TableLayoutPanel CreatePictureBoxWithLabel(string name, string path, Bitmap image, bool IsDir)
+        private Grid CreatePictureBoxWithLabel(string name, string path,  bool IsDir, BitmapSource image = null)
         {
             Microsoft.WindowsAPICodePack.Dialogs.Controls.CommonFileDialogButton c = new Microsoft.WindowsAPICodePack.Dialogs.Controls.CommonFileDialogButton();
-            TableLayoutPanel panel = new TableLayoutPanel { Size = new Size(90, 90), ColumnCount = 1, RowCount = 2 };
+            Grid panel = new Grid{ Height = 90, Width = 64 };
+            panel.RowDefinitions.Add(new RowDefinition { Height = new GridLength(64) });
+            panel.RowDefinitions.Add(new RowDefinition());
             //panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset;
-            PictureBox pictureBox = new PictureBox {/* Image = image, */SizeMode = PictureBoxSizeMode.Zoom };
-            pictureBox.Image = image;
             
-            Label label = new Label { Text = name, TextAlign = ContentAlignment.MiddleCenter };
-            panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 64));
-            //panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 26));
-            panel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90));
-            panel.Controls.Add(pictureBox, 0, 0);
-            panel.Controls.Add(label, 0, 1);
-            pictureBox.Dock = label.Dock = DockStyle.Fill;
+            TextBlock label = new TextBlock { Text = name, TextAlignment = TextAlignment.Center, TextWrapping = TextWrapping.Wrap };
+            //panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 64));
+            ////panel.RowStyles.Add(new RowStyle(SizeType.Absolute, 26));
+            //panel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90));
+            panel.Children.Add(label);
+            Grid.SetRow(label, 1);
+            //panel.Controls.Add(label, 0, 1);
+            //pictureBox.Dock = label.Dock = DockStyle.Fill;
 
 
             if (IsDir)
@@ -255,21 +267,49 @@ namespace ImageCollection
                 panel.Tag = new PanelClick(path, Panel_File_Click);
             }
 
-            panel.DoubleClick += Panel_DoubleClick;
-            pictureBox.DoubleClick += SubPanel_Click;
-            label.DoubleClick += SubPanel_Click;
+            panel.MouseLeftButtonDown += Panel_DoubleClick;
+            label.MouseLeftButtonDown += SubPanel_Click;
+            Image pictureBox = new Image {/* Image = image, */};
+            if (image != null)
+            {
+                pictureBox.Source = image;
+                
+            }
+            else
+            {
+                PixelFormat pf = PixelFormats.Bgra32;
+                int width = 200;
+                int height = 200;
+                int rawStride = (width * pf.BitsPerPixel + 7) / 8;
+                byte[] rawImage = new byte[rawStride * height];
 
+                // Initialize the image with data.
+                //Random value = new Random();
+                //value.NextBytes(rawImage);
+
+                // Create a BitmapSource.
+                BitmapSource bitmap = BitmapSource.Create(width, height,
+                    96, 96, pf, null,
+                    rawImage, rawStride);
+                
+                pictureBox.Source = bitmap;
+            }
+            panel.Children.Add(pictureBox);
+            Grid.SetRow(pictureBox, 0);
+            pictureBox.MouseLeftButtonDown += SubPanel_Click;
             return panel;
         }
 
-        private void Panel_DoubleClick(object sender, EventArgs e)
+        private void Panel_DoubleClick(object sender, MouseButtonEventArgs e)
         {
-            ((PanelClick)((Control)sender).Tag).Click();
+            if(e.ClickCount>=2)
+            ((PanelClick)((FrameworkElement)sender).Tag).Click();
         }
 
-        private void SubPanel_Click(object sender, EventArgs e)
+        private void SubPanel_Click(object sender, MouseButtonEventArgs e)
         {
-            ((PanelClick)((TableLayoutPanel)((Control)sender).Parent).Tag).Click();
+            //if (e.ClickCount == 2)
+            //    ((PanelClick)((Grid)((FrameworkElement)sender).Parent).Tag).Click();
             //var c = (TableLayoutPanel)((Control)sender).Parent;
             ////c.DoubleClick?.Invoke(c, e);
             ////c.Invoke(c.GetType().GetEvent("DoubleClick").);
