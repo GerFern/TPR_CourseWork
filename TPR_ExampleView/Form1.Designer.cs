@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.userControl1 = new ExplorerImage.UserControl1();
             this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -35,8 +36,11 @@
             this.сохранитьИзображениеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.восстановитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.выбратьПапкуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.скрытьГалереюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.отображатьПапкиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.отображатьФайоыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.библиотекиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.открытьПапкуСБиблиотекамиToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,6 +87,14 @@
             this.splitContainer3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
+            //
+            // userControl1
+            //
+            this.userControl1.showDir = true;
+            this.userControl1.showAll = true;
+            this.userControl1.PathChanged += UserControl1_PathChanged;
+            this.userControl1.FileSelect += UserControl1_FileSelect;
+            this.userControl1.SetPath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop));
             // 
             // menuStrip1
             // 
@@ -103,8 +115,11 @@
             this.сохранитьИзображениеToolStripMenuItem,
             this.toolStripSeparator2,
             this.восстановитьToolStripMenuItem,
+            this.toolStripSeparator3,
             this.выбратьПапкуToolStripMenuItem,
             this.скрытьГалереюToolStripMenuItem,
+            this.отображатьПапкиToolStripMenuItem,
+            this.отображатьФайоыToolStripMenuItem,
             this.tToolStripMenuItem});
             this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
             this.файлToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
@@ -140,6 +155,11 @@
             this.восстановитьToolStripMenuItem.Text = "Восстановить";
             this.восстановитьToolStripMenuItem.Click += new System.EventHandler(this.восстановитьToolStripMenuItem_Click);
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(252, 6);
+            // 
             // выбратьПапкуToolStripMenuItem
             // 
             this.выбратьПапкуToolStripMenuItem.Name = "выбратьПапкуToolStripMenuItem";
@@ -156,6 +176,28 @@
             this.скрытьГалереюToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
             this.скрытьГалереюToolStripMenuItem.Text = "Скрыть галерею";
             this.скрытьГалереюToolStripMenuItem.CheckedChanged += new System.EventHandler(this.СкрытьГалереюToolStripMenuItem_CheckedChanged);
+            // 
+            // отображатьПапкиToolStripMenuItem
+            // 
+            this.отображатьПапкиToolStripMenuItem.Checked = true;
+            this.отображатьПапкиToolStripMenuItem.CheckOnClick = true;
+            this.отображатьПапкиToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.отображатьПапкиToolStripMenuItem.Name = "отображатьПапкиToolStripMenuItem";
+            this.отображатьПапкиToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F6)));
+            this.отображатьПапкиToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.отображатьПапкиToolStripMenuItem.Text = "Отображать папки";
+            this.отображатьПапкиToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОтображатьПапкиToolStripMenuItem_CheckedChanged);
+            // 
+            // отображатьФайоыToolStripMenuItem
+            // 
+            this.отображатьФайоыToolStripMenuItem.Checked = true;
+            this.отображатьФайоыToolStripMenuItem.CheckOnClick = true;
+            this.отображатьФайоыToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.отображатьФайоыToolStripMenuItem.Name = "отображатьФайоыToolStripMenuItem";
+            this.отображатьФайоыToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F7)));
+            this.отображатьФайоыToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.отображатьФайоыToolStripMenuItem.Text = "Отображать все файлы";
+            this.отображатьФайоыToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОтображатьФайлыToolStripMenuItem_CheckedChanged);
             // 
             // tToolStripMenuItem
             // 
@@ -396,7 +438,7 @@
             this.elementHost1.Size = new System.Drawing.Size(613, 113);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = null;
+            this.elementHost1.Child = userControl1;
             // 
             // Form1
             // 
@@ -440,6 +482,7 @@
         }
 
         #endregion
+        private ExplorerImage.UserControl1 userControl1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem открытьИзображениеToolStripMenuItem;
@@ -471,6 +514,9 @@
         private System.Windows.Forms.ToolStripMenuItem скрытьГалереюToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tToolStripMenuItem;
         private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem отображатьПапкиToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem отображатьФайоыToolStripMenuItem;
     }
 }
 

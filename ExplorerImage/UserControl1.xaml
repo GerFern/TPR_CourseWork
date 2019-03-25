@@ -10,7 +10,7 @@
         
     <StackPanel x:Name="panel" CanHorizontallyScroll="True" CanVerticallyScroll="True" ScrollViewer.CanContentScroll="True">
        
-        <Label Content="Label"/>
+        <Label Content="Explorer"/>
 
     </StackPanel>
     </ScrollViewer>

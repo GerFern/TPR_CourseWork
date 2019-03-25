@@ -121,6 +121,7 @@ namespace ExplorerImage
 
         private string LoadPreview(string path, bool showAll, bool showDir)
         {
+            ShellContainer shellContainer = (ShellContainer)ShellObject.FromParsingName(path);
             //this.SuspendLayout();
             //flowLayoutPanel1.SuspendLayout();
 
@@ -135,74 +136,86 @@ namespace ExplorerImage
             previews.Clear();
             bitmaps.Clear();
 
-            ShellContainer shellContainer = (ShellContainer)ShellObject.FromParsingName(path);
             if (/*path != pathRoot &&*/ shellContainer.Parent != null)
             {
                 previews.Add(CreatePictureBoxWithLabel("..", shellContainer.Parent.ParsingName, true));
             }
             try
             {
-                if (showDir)
+                var list = shellContainer.AsEnumerable();
+                if (!showDir) list = list.Where(a => a is ShellFolder);
+                if (!showAll) list = list.Where(a => a.IsImage());
+                foreach (var item in list)
                 {
-                    foreach (var item in shellContainer.OfType<ShellFolder>())
-                    {
-                        //ShellObject shellObject = ShellObject.FromParsingName(item);
-                        BitmapSource b;
-                        ShellThumbnail st = item.Thumbnail;
-                        b = st.MediumBitmapSource;
-                        //try
-                        //{
-                        //    st.FormatOption = ShellThumbnailFormatOption.ThumbnailOnly;
-                        //    b = st.MediumBitmap;
-                        //}
-                        //catch
-                        //{
-                        //    st.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                        //    b = st.MediumBitmap;
-                        //    b.MakeTransparent();
-                        //}
-                        bitmaps.Add(item.ParsingName, b);
-                        Grid panel = CreatePictureBoxWithLabel(item.Name, item.ParsingName, true, b);
-
-                        previews.Add(panel);
-                    }
-                }
-
-                //var l = Directory.GetFiles(path);
-                IEnumerable<ShellFile> l = shellContainer.OfType<ShellFile>();
-                if (!showAll)
-                {
-                    l = l.Where(a => a.IsImage());
-                }
-                foreach (var item in l)
-                {
-
-                    string name = System.IO.Path.GetFileName(item.Path);
-                    //ShellObject shellObject = ShellObject.FromParsingName(item);
-                    //shellFolder.
-                    //ShellFile shellFile = ShellFile.FromFilePath(item);
                     BitmapSource b;
                     ShellThumbnail st = item.Thumbnail;
                     b = st.MediumBitmapSource;
-                    //try
-                    //{
-                    //    st.FormatOption = ShellThumbnailFormatOption.ThumbnailOnly;
-                    //    b = st.MediumBitmap;
-                    //}
-                    //catch
-                    //{
-                    //    st.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                    //    b = st.MediumBitmap;
-                    //    b.MakeTransparent();
-                    //}
-                    //b.MakeTransparent();
-                    bitmaps.Add(item.ParsingName, b);
-                    Grid panel = CreatePictureBoxWithLabel(name, item.ParsingName, false, b);
-                    previews.Add(panel);
-                    //previews.Add(new PictureBox { Size = new Size(64,64), Image = shellFile.Thumbnail.MediumIcon.ToBitmap(), SizeMode = PictureBoxSizeMode.Zoom });
-
+                    bitmaps.Add(item.ParsingName,b);
+                    Grid grid = CreatePictureBoxWithLabel(item.Name, item.ParsingName, item is ShellFolder, b);
+                    previews.Add(grid);
                 }
+                #region old
+                //if (showDir)
+                //{
+                //    foreach (var item in shellContainer.OfType<ShellFolder>())
+                //    {
+                //        //ShellObject shellObject = ShellObject.FromParsingName(item);
+                //        BitmapSource b;
+                //        ShellThumbnail st = item.Thumbnail;
+                //        b = st.MediumBitmapSource;
+                //        //try
+                //        //{
+                //        //    st.FormatOption = ShellThumbnailFormatOption.ThumbnailOnly;
+                //        //    b = st.MediumBitmap;
+                //        //}
+                //        //catch
+                //        //{
+                //        //    st.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                //        //    b = st.MediumBitmap;
+                //        //    b.MakeTransparent();
+                //        //}
+                //        bitmaps.Add(item.ParsingName, b);
+                //        Grid panel = CreatePictureBoxWithLabel(item.Name, item.ParsingName, true, b);
 
+                //        previews.Add(panel);
+                //    }
+                //}
+
+                ////var l = Directory.GetFiles(path);
+                //IEnumerable<ShellFile> l = shellContainer.OfType<ShellFile>();
+                //if (!showAll)
+                //{
+                //    l = l.Where(a => a.IsImage());
+                //}
+                //foreach (var item in l)
+                //{
+
+                //    string name = System.IO.Path.GetFileName(item.Path);
+                //    //ShellObject shellObject = ShellObject.FromParsingName(item);
+                //    //shellFolder.
+                //    //ShellFile shellFile = ShellFile.FromFilePath(item);
+                //    BitmapSource b;
+                //    ShellThumbnail st = item.Thumbnail;
+                //    b = st.MediumBitmapSource;
+                //    //try
+                //    //{
+                //    //    st.FormatOption = ShellThumbnailFormatOption.ThumbnailOnly;
+                //    //    b = st.MediumBitmap;
+                //    //}
+                //    //catch
+                //    //{
+                //    //    st.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                //    //    b = st.MediumBitmap;
+                //    //    b.MakeTransparent();
+                //    //}
+                //    //b.MakeTransparent();
+                //    bitmaps.Add(item.ParsingName, b);
+                //    Grid panel = CreatePictureBoxWithLabel(name, item.ParsingName, false, b);
+                //    previews.Add(panel);
+                //    //previews.Add(new PictureBox { Size = new Size(64,64), Image = shellFile.Thumbnail.MediumIcon.ToBitmap(), SizeMode = PictureBoxSizeMode.Zoom });
+
+                //}
+                #endregion
             }
             catch (Exception ex)
             {
@@ -230,14 +243,14 @@ namespace ExplorerImage
 
         private void Panel_Folder_Click(string path)
         {
-            PathChanged?.Invoke(this, new EventArgsWithFilePath(path, LoadPreview(path, showAll, showDir)));
             try
             {
+                PathChanged?.Invoke(this, new EventArgsWithFilePath(path, LoadPreview(path, showAll, showDir)));
                 //fileSystemWatcher1.Changed -= FileSystemWatcher1_Changed;
                 //fileSystemWatcher1.Path = path;
                 //fileSystemWatcher1.Changed += FileSystemWatcher1_Changed;
             }
-            catch { }
+            catch (Exception ex){ MessageBox.Show(ex.Message); }
         }
 
         private Grid CreatePictureBoxWithLabel(string name, string path,  bool IsDir, BitmapSource image = null)
@@ -368,9 +381,9 @@ namespace ExplorerImage
 
     public static class ShellExtension
     {
-        public static bool IsImage(this ShellFile shellFile)
+        public static bool IsImage(this ShellObject SO)
         {
-            string ext = System.IO.Path.GetExtension(shellFile.Path).ToLower();
+            string ext = System.IO.Path.GetExtension(SO.ParsingName).ToLower();
             return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp";
         }
     }
