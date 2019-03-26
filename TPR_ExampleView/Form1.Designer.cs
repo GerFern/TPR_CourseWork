@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.userControl1 = new ExplorerImage.UserControl1();
             this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,7 +44,6 @@
             this.библиотекиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.открытьПапкуСБиблиотекамиToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.imageBox1 = new Emgu.CV.UI.ImageBox();
@@ -64,6 +62,8 @@
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.userControl1 = new ExplorerImage.UserControl1();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripTextBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -87,14 +87,6 @@
             this.splitContainer3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
-            //
-            // userControl1
-            //
-            this.userControl1.showDir = true;
-            this.userControl1.showAll = true;
-            this.userControl1.PathChanged += UserControl1_PathChanged;
-            this.userControl1.FileSelect += UserControl1_FileSelect;
-            this.userControl1.SetPath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop));
             // 
             // menuStrip1
             // 
@@ -226,12 +218,6 @@
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(246, 6);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(22, 20);
-            this.toolStripMenuItem1.Text = " ";
             // 
             // splitContainer1
             // 
@@ -438,7 +424,15 @@
             this.elementHost1.Size = new System.Drawing.Size(613, 113);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = userControl1;
+            this.elementHost1.Child = this.userControl1;
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.BackColor = System.Drawing.SystemColors.Control;
+            this.toolStripMenuItem1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(22, 20);
+            this.toolStripMenuItem1.Text = " |";
             // 
             // Form1
             // 
@@ -489,7 +483,6 @@
         private System.Windows.Forms.ToolStripMenuItem сохранитьИзображениеToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem библиотекиToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem открытьПапкуСБиблиотекамиToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.GroupBox groupBox3;
         private Emgu.CV.UI.ImageBox imageBox1;
@@ -517,6 +510,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem отображатьПапкиToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem отображатьФайоыToolStripMenuItem;
+        private System.Windows.Forms.ToolStripTextBox toolStripMenuItem1;
     }
 }
 
