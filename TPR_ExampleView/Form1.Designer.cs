@@ -28,27 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.userControl1 = new ExplorerImage.UserControl1();
-            this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.открытьИзображениеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.сохранитьИзображениеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.восстановитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.выбратьПапкуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.скрытьГалереюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.отображатьПапкиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.отображатьФайоыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.добавитьФормуДляИзображенийToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.библиотекиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.открытьПапкуСБиблиотекамиToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.imageBox1 = new Emgu.CV.UI.ImageBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -64,13 +59,13 @@
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.userControl1 = new ExplorerImage.UserControl1();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -87,14 +82,6 @@
             this.splitContainer3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
-            //
-            // userControl1
-            //
-            this.userControl1.showDir = true;
-            this.userControl1.showAll = true;
-            this.userControl1.PathChanged += UserControl1_PathChanged;
-            this.userControl1.FileSelect += UserControl1_FileSelect;
-            this.userControl1.SetPath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop));
             // 
             // menuStrip1
             // 
@@ -112,15 +99,12 @@
             // 
             this.файлToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.открытьИзображениеToolStripMenuItem,
-            this.сохранитьИзображениеToolStripMenuItem,
             this.toolStripSeparator2,
-            this.восстановитьToolStripMenuItem,
-            this.toolStripSeparator3,
             this.выбратьПапкуToolStripMenuItem,
             this.скрытьГалереюToolStripMenuItem,
             this.отображатьПапкиToolStripMenuItem,
             this.отображатьФайоыToolStripMenuItem,
-            this.tToolStripMenuItem});
+            this.добавитьФормуДляИзображенийToolStripMenuItem});
             this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
             this.файлToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.файлToolStripMenuItem.Text = "Файл";
@@ -129,42 +113,20 @@
             // 
             this.открытьИзображениеToolStripMenuItem.Name = "открытьИзображениеToolStripMenuItem";
             this.открытьИзображениеToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F1)));
-            this.открытьИзображениеToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.открытьИзображениеToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.открытьИзображениеToolStripMenuItem.Text = "Открыть изображение";
             this.открытьИзображениеToolStripMenuItem.Click += new System.EventHandler(this.открытьИзображениеToolStripMenuItem_Click);
-            // 
-            // сохранитьИзображениеToolStripMenuItem
-            // 
-            this.сохранитьИзображениеToolStripMenuItem.Name = "сохранитьИзображениеToolStripMenuItem";
-            this.сохранитьИзображениеToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F2)));
-            this.сохранитьИзображениеToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
-            this.сохранитьИзображениеToolStripMenuItem.Text = "Сохранить изображение";
-            this.сохранитьИзображениеToolStripMenuItem.Click += new System.EventHandler(this.сохранитьИзображениеToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(252, 6);
-            // 
-            // восстановитьToolStripMenuItem
-            // 
-            this.восстановитьToolStripMenuItem.Enabled = false;
-            this.восстановитьToolStripMenuItem.Name = "восстановитьToolStripMenuItem";
-            this.восстановитьToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F3)));
-            this.восстановитьToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
-            this.восстановитьToolStripMenuItem.Text = "Восстановить";
-            this.восстановитьToolStripMenuItem.Click += new System.EventHandler(this.восстановитьToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(252, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(264, 6);
             // 
             // выбратьПапкуToolStripMenuItem
             // 
             this.выбратьПапкуToolStripMenuItem.Name = "выбратьПапкуToolStripMenuItem";
             this.выбратьПапкуToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F4)));
-            this.выбратьПапкуToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.выбратьПапкуToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.выбратьПапкуToolStripMenuItem.Text = "Выбрать папку";
             this.выбратьПапкуToolStripMenuItem.Click += new System.EventHandler(this.ВыбратьПапкуToolStripMenuItem_Click);
             // 
@@ -173,7 +135,7 @@
             this.скрытьГалереюToolStripMenuItem.CheckOnClick = true;
             this.скрытьГалереюToolStripMenuItem.Name = "скрытьГалереюToolStripMenuItem";
             this.скрытьГалереюToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F5)));
-            this.скрытьГалереюToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.скрытьГалереюToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.скрытьГалереюToolStripMenuItem.Text = "Скрыть галерею";
             this.скрытьГалереюToolStripMenuItem.CheckedChanged += new System.EventHandler(this.СкрытьГалереюToolStripMenuItem_CheckedChanged);
             // 
@@ -184,7 +146,7 @@
             this.отображатьПапкиToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.отображатьПапкиToolStripMenuItem.Name = "отображатьПапкиToolStripMenuItem";
             this.отображатьПапкиToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F6)));
-            this.отображатьПапкиToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.отображатьПапкиToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.отображатьПапкиToolStripMenuItem.Text = "Отображать папки";
             this.отображатьПапкиToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОтображатьПапкиToolStripMenuItem_CheckedChanged);
             // 
@@ -195,16 +157,18 @@
             this.отображатьФайоыToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.отображатьФайоыToolStripMenuItem.Name = "отображатьФайоыToolStripMenuItem";
             this.отображатьФайоыToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F7)));
-            this.отображатьФайоыToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.отображатьФайоыToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.отображатьФайоыToolStripMenuItem.Text = "Отображать все файлы";
             this.отображатьФайоыToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОтображатьФайлыToolStripMenuItem_CheckedChanged);
             // 
-            // tToolStripMenuItem
+            // добавитьФормуДляИзображенийToolStripMenuItem
             // 
-            this.tToolStripMenuItem.Name = "tToolStripMenuItem";
-            this.tToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
-            this.tToolStripMenuItem.Text = "t";
-            this.tToolStripMenuItem.Click += new System.EventHandler(this.TToolStripMenuItem_Click);
+            this.добавитьФормуДляИзображенийToolStripMenuItem.Name = "добавитьФормуДляИзображенийToolStripMenuItem";
+            this.добавитьФормуДляИзображенийToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
+            this.добавитьФормуДляИзображенийToolStripMenuItem.Text = "Добавить форму для изображений";
+            this.добавитьФормуДляИзображенийToolStripMenuItem.ToolTipText = "На данной форме можно будет свободно разместить изображения. Все изображения можн" +
+    "о перетягивать из вкладок с изображениями";
+            this.добавитьФормуДляИзображенийToolStripMenuItem.Click += new System.EventHandler(this.ДобавитьФормуДляИзображенийToolStripMenuItem_Click);
             // 
             // библиотекиToolStripMenuItem
             // 
@@ -253,23 +217,23 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.imageBox1);
+            this.groupBox3.Controls.Add(this.tabControl1);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(356, 219);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Изображение";
+            this.groupBox3.Text = "Окно изображений";
             // 
-            // imageBox1
+            // tabControl1
             // 
-            this.imageBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.imageBox1.Location = new System.Drawing.Point(3, 16);
-            this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(350, 200);
-            this.imageBox1.TabIndex = 2;
-            this.imageBox1.TabStop = false;
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(3, 16);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(350, 200);
+            this.tabControl1.TabIndex = 0;
             // 
             // splitContainer2
             // 
@@ -438,7 +402,7 @@
             this.elementHost1.Size = new System.Drawing.Size(613, 113);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = userControl1;
+            this.elementHost1.Child = this.userControl1;
             // 
             // Form1
             // 
@@ -447,9 +411,11 @@
             this.ClientSize = new System.Drawing.Size(619, 379);
             this.Controls.Add(this.splitContainer3);
             this.Controls.Add(this.menuStrip1);
+            this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Activated += new System.EventHandler(this.Form1_Activated);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -458,7 +424,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -486,13 +451,11 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem открытьИзображениеToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem сохранитьИзображениеToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem библиотекиToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem открытьПапкуСБиблиотекамиToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.GroupBox groupBox3;
-        private Emgu.CV.UI.ImageBox imageBox1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -507,16 +470,15 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem восстановитьToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem выбратьПапкуToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.ToolStripMenuItem скрытьГалереюToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tToolStripMenuItem;
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem отображатьПапкиToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem отображатьФайоыToolStripMenuItem;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.ToolStripMenuItem добавитьФормуДляИзображенийToolStripMenuItem;
     }
 }
 

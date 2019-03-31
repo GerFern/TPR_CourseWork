@@ -139,5 +139,9 @@ namespace BaseLibrary
         /// <para>Рекомендуемый тип <see cref="Emgu.CV.Image{TColor, TDepth}"/>, где TColor - <seealso cref="Emgu.CV.Structure.Bgr"/> или <seealso cref="Emgu.CV.Structure.Gray"/>, а TDepth - <seealso cref="byte"/></para>
         /// </summary>
         public Emgu.CV.IImage Image { get; set; }
+        /// <summary>
+        /// Название нового изображения
+        /// </summary>
+        public string Name { get; set; }
     }
 }

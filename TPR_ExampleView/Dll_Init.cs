@@ -8,6 +8,8 @@ using System.Reflection;
 using BaseLibrary;
 using System.Windows.Forms;
 using Emgu.CV;
+using Emgu.CV.Structure;
+using Emgu.CV.UI;
 
 namespace TPR_ExampleView
 {
@@ -65,7 +67,11 @@ namespace TPR_ExampleView
     }
     public class MenuMethod
     {
-        public static Emgu.CV.UI.ImageBox imageBox;
+        internal static Form1 MainForm { get; set; }
+        public static ImageForm SelectedForm { get; set; }
+        public static IImage SelectedImage;
+        public static Dictionary<string, Emgu.CV.UI.ImageViewer> images = new Dictionary<string, Emgu.CV.UI.ImageViewer>();
+        //public static Emgu.CV.UI.ImageBox imageBox;
         public static TextBox textBox;
         //public static IImage image;
         public static Dictionary<string, MenuMethod> Buttons { get; } = new Dictionary<string, MenuMethod>();
@@ -73,7 +79,19 @@ namespace TPR_ExampleView
         public ToolStripMenuItem MenuItem { get; }
         public MenuMethod Parent { get; }
         public Dictionary<string, MenuMethod> SubButtons { get; } = new Dictionary<string, MenuMethod>();
+
         public List<MethodInfo> Methods { get; } = new List<MethodInfo>();
+        public static IImage CreateImage(string path, string caption = null)
+        {
+            IImage t = new Image<Bgr, byte>(path);
+            return t;
+            //return caption == null ? new ImageViewer(t) : new ImageViewer(t, caption);
+            //return new ImageBox { Image = t };
+        }
+        public ImageViewer CreateImage(IImage img, string caption = null)
+        {
+            return caption == null ? new ImageViewer(img) : new ImageViewer(img, caption);
+        }
         public static void Add(string[] hierarchy, MethodInfo methodInfo)
         {
             MenuMethod current;
@@ -113,13 +131,19 @@ namespace TPR_ExampleView
                 parent.MenuItem.DropDownItems.Add(MenuItem);
         }
 
+        /// <summary>
+        /// Вызов метода
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuItem_Click(object sender, EventArgs e)
         {
-            if (imageBox.Image == null) return;
+            if (SelectedImage == null) return;
             ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
             if (menuItem.DropDownItems.Count > 0) return;
             MenuMethod butTag = menuItem.Tag as MenuMethod;
             MethodInfo methodInfo = null;
+            //Определение метода
             if (butTag.Methods.Count == 1)
             {
                 methodInfo = butTag.Methods.First();
@@ -138,7 +162,7 @@ namespace TPR_ExampleView
                 if (formCustom != null)
                 {
                     Type formType = formCustom.FormType;
-                    BaseForm form = Activator.CreateInstance(formType, imageBox.Image, methodInfo) as BaseForm;
+                    BaseForm form = Activator.CreateInstance(formType, SelectedImage, methodInfo) as BaseForm;
                     try
                     {
                         if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -159,7 +183,7 @@ namespace TPR_ExampleView
                 {
                     var formAuto = methodInfo.GetCustomAttributes<AutoForm>().ToArray();
                     if (formAuto.Count() > 0)
-                        using (FormP form = new FormP(formAuto, methodInfo, imageBox.Image))
+                        using (FormP form = new FormP(formAuto, methodInfo, SelectedImage))
                         {
                             if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
@@ -180,7 +204,7 @@ namespace TPR_ExampleView
                     else
                         try
                         {
-                            outputImage = methodInfo.Invoke(null, new object[] { imageBox.Image }) as OutputImage;
+                            outputImage = methodInfo.Invoke(null, new object[] { SelectedImage }) as OutputImage;
                         }
                         catch (TargetInvocationException ex)
                         {
@@ -191,10 +215,13 @@ namespace TPR_ExampleView
                             System.Windows.Forms.MessageBox.Show(ex.Message);
                         }
                 }
+                SelectedForm.ImageBox.Update();
                 if (outputImage != null)
                 {
                     if (outputImage.Image != null)
-                        imageBox.Image = outputImage.Image;
+                        MainForm.OpenImage(outputImage.Image, outputImage.Name);
+                        CreateImage(outputImage.Image);
+                        //imageBox.Image = outputImage.Image;
                     if (outputImage.Info != null)
                         textBox.Text = outputImage.Info;
                 }

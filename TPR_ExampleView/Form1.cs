@@ -12,24 +12,35 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ExplorerImage;
 using static ExplorerImage.UserControl1;
+using System.Runtime.InteropServices;
+using Emgu.CV.UI;
 //using static ImageCollection.UserControl1;
 
 namespace TPR_ExampleView
 {
     public partial class Form1 : Form
     {
+        IImage SelectedImage = MenuMethod.SelectedImage;
+        TabDragger tabDragger;
         //UserControl1 userControl1 = new UserControl1();
         IImage source = null;
         string imagePath = null;
         public Form1()
         {
             InitializeComponent();
+            MenuMethod.MainForm = this;
+            tabDragger = new TabDragger(tabControl1, TabDragBehavior.TabDragOut);
+            userControl1.FileSelect += UserControl1_FileSelect;
+            userControl1.PathChanged += UserControl1_PathChanged;
+            userControl1.showAll = userControl1.showDir = true;
+            userControl1.SetPath(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
         }
-
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            MenuMethod.imageBox = imageBox1;
+            //MenuMethod.ImageViewer
+
+            //MenuMethod.imageBox = imageBox1;
             MenuMethod.textBox = textBox1;
             DLL_Init.AssemblyInSolution = "TestLibrary";
             DLL_Init.Init(menuStrip1);
@@ -58,7 +69,7 @@ namespace TPR_ExampleView
             {
                 try
                 {
-                    imageBox1.Image.Save(sfd.FileName);
+                    SelectedImage.Save(sfd.FileName);
                 }
                 catch (Exception ex)
                 {
@@ -71,10 +82,10 @@ namespace TPR_ExampleView
         {
             try
             {
-                imageBox1.Image.Dispose();
-                imageBox1.Image = source.Clone() as IImage;
+                //imageBox1.Image.Dispose();
+                //imageBox1.Image = source.Clone() as IImage;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -88,7 +99,7 @@ namespace TPR_ExampleView
         private void ВыбратьПапкуToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog FBD = new FolderBrowserDialog();
-            if(FBD.ShowDialog()==DialogResult.OK)
+            if (FBD.ShowDialog() == DialogResult.OK)
             {
                 userControl1.SetPath(FBD.SelectedPath);
             }
@@ -108,13 +119,13 @@ namespace TPR_ExampleView
             }
             catch (Exception ex)
             {
-                if(MessageBox.Show($"{ex.Message}{Environment.NewLine}Открыть файл программой по умолчанию?" ,"",MessageBoxButtons.YesNo)==DialogResult.Yes)
+                if (MessageBox.Show($"{ex.Message}{Environment.NewLine}Открыть файл программой по умолчанию?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     try
                     {
                         System.Diagnostics.Process.Start(e.Path);
                     }
-                    catch(Exception ex2)
+                    catch (Exception ex2)
                     { MessageBox.Show(ex2.Message); }
                 }
             }
@@ -122,28 +133,43 @@ namespace TPR_ExampleView
 
         private void OpenImage(string path)
         {
-            IImage t = new Image<Bgr, byte>(path);
-            if (source != null) source.Dispose();
-            if (imageBox1.Image != null) imageBox1.Image.Dispose();
-            imageBox1.Image = t;
-            source = imageBox1.Image.Clone() as IImage;
-            восстановитьToolStripMenuItem.Enabled = true;
+            string name = System.IO.Path.GetFileName(path);
+            TabPage tabPage = new TabPage(name);
+            IImage img = MenuMethod.CreateImage(path);
+            ImageForm imageForm = new ImageForm(img, name)
+            {
+                TopLevel = false,
+                Dock = DockStyle.Fill
+            };
+            tabPage.Controls.Add(imageForm);
+            tabControl1.TabPages.Add(tabPage);
+            imageForm.MakeGeneral();
+            imageForm.Show();
+        }
+
+        public void OpenImage(IImage image, string name)
+        {
+            string n = name == null ? "" : name;
+            TabPage tabPage = new TabPage(n);
+            ImageForm imageForm = new ImageForm(image, n)
+            {
+                TopLevel = false,
+                Dock = DockStyle.Fill
+            };
+            tabPage.Controls.Add(imageForm);
+            tabControl1.TabPages.Add(tabPage);
+            //imageForm.MakeGeneral();
+            imageForm.Show();
+        }
+
+        private void ImageBox_Click(object sender, EventArgs e)
+        {
+            MenuMethod.SelectedImage = ((ImageBox)sender).Image;
         }
 
         private void СкрытьГалереюToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             splitContainer3.Panel1Collapsed = ((ToolStripMenuItem)sender).Checked;
-        }
-
-        private void TToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Form f = new Form();
-            Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser explorerBrowser = new Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser();
-            f.Controls.Add(explorerBrowser);
-
-            explorerBrowser.Dock = DockStyle.Fill;
-            explorerBrowser.Navigate((ShellObject)KnownFolders.Desktop);
-            f.Show();
         }
 
         private void ОтображатьПапкиToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
@@ -154,6 +180,17 @@ namespace TPR_ExampleView
         private void ОтображатьФайлыToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             userControl1.ShowAll = ((ToolStripMenuItem)sender).Checked;
+        }
+
+        private void ДобавитьФормуДляИзображенийToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TabDragger.CreatePanelForm();
+        }
+
+        private void Form1_Activated(object sender, EventArgs e)
+        {
+            //Нужно для деактивации tabControl
+            elementHost1.Select();
         }
     }
 }
