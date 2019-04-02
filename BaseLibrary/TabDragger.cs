@@ -8,13 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace TPR_ExampleView
+namespace BaseLibrary
 {
     //// в InitializeComponent():
     //TabDragger DragTabs = new TabDragger(this.tabControl1, TabDragBehavior.TabDragOut);
 
     // класс для драга
-    internal class TabDragger
+    public class TabDragger
     {
         public static List<TabDragger> TabDraggers { get; } = new List<TabDragger>();
         public static List<Form> MdiForms { get; } = new List<Form>();
@@ -159,7 +159,6 @@ namespace TPR_ExampleView
                             if (this.dragBehavior == TabDragBehavior.TabDragOut)
                             {
                                 if (dragTab.Tag != null)
-                                    //;
                                 {
                                     ((TabForm)dragTab.Tag).Dispose();
                                     dragTab.Tag = null;
@@ -168,7 +167,6 @@ namespace TPR_ExampleView
                                 {
                                     TabForm frm = new TabForm(dragTab);
                                     frm.MouseUp += tabControl_MouseUp;
-                                    //frm.Activated += Frm_Activated;
                                 }
                             }
                         }

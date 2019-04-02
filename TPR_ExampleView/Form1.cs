@@ -14,6 +14,7 @@ using ExplorerImage;
 using static ExplorerImage.UserControl1;
 using System.Runtime.InteropServices;
 using Emgu.CV.UI;
+using BaseLibrary;
 //using static ImageCollection.UserControl1;
 
 namespace TPR_ExampleView
@@ -32,8 +33,17 @@ namespace TPR_ExampleView
             tabDragger = new TabDragger(tabControl1, TabDragBehavior.TabDragOut);
             userControl1.FileSelect += UserControl1_FileSelect;
             userControl1.PathChanged += UserControl1_PathChanged;
-            userControl1.showAll = userControl1.showDir = true;
+            //userControl1.showAll = userControl1.showDir = true;
+            отображатьФайлыToolStripMenuItem.Checked = userControl1.showAll = Properties.Settings.Default.ShowAll;
+            отображатьПапкиToolStripMenuItem.Checked = userControl1.showDir = Properties.Settings.Default.ShowDir;
+            скрытьГалереюToolStripMenuItem.Checked = splitContainer3.Panel1Collapsed = Properties.Settings.Default.HideExplorer;
+
+            отображатьПапкиToolStripMenuItem.CheckedChanged += ОтображатьПапкиToolStripMenuItem_CheckedChanged;
+            отображатьФайлыToolStripMenuItem.CheckedChanged += ОтображатьФайлыToolStripMenuItem_CheckedChanged;
+            скрытьГалереюToolStripMenuItem.CheckedChanged += СкрытьГалереюToolStripMenuItem_CheckedChanged;
+
             userControl1.SetPath(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+            BaseLibrary.ImageForm.SetIsSelectedChangedMethod(new EventHandler<EventArgsWithImageForm>(MenuMethod.ChangeSelected));
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -113,22 +123,22 @@ namespace TPR_ExampleView
 
         private void UserControl1_FileSelect(object sender, EventArgsWithFilePath e)
         {
-            try
-            {
-                OpenImage(e.Path);
-            }
-            catch (Exception ex)
-            {
-                if (MessageBox.Show($"{ex.Message}{Environment.NewLine}Открыть файл программой по умолчанию?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    try
-                    {
-                        System.Diagnostics.Process.Start(e.Path);
-                    }
-                    catch (Exception ex2)
-                    { MessageBox.Show(ex2.Message); }
-                }
-            }
+            //try
+            //{
+            OpenImage(e.Path);
+            //}
+            //catch (Exception ex)
+            //{
+            //    if (MessageBox.Show($"{ex.Message}{Environment.NewLine}Открыть файл программой по умолчанию?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            //    {
+            //        try
+            //        {
+            //            System.Diagnostics.Process.Start(e.Path);
+            //        }
+            //        catch (Exception ex2)
+            //        { MessageBox.Show(ex2.Message); }
+            //    }
+            //}
         }
 
         private void OpenImage(string path)
@@ -143,7 +153,7 @@ namespace TPR_ExampleView
             };
             tabPage.Controls.Add(imageForm);
             tabControl1.TabPages.Add(tabPage);
-            imageForm.MakeGeneral();
+            imageForm.MakeSelected();
             imageForm.Show();
         }
 
@@ -169,17 +179,17 @@ namespace TPR_ExampleView
 
         private void СкрытьГалереюToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            splitContainer3.Panel1Collapsed = ((ToolStripMenuItem)sender).Checked;
+            Properties.Settings.Default.HideExplorer = splitContainer3.Panel1Collapsed = ((ToolStripMenuItem)sender).Checked;
         }
 
         private void ОтображатьПапкиToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            userControl1.ShowDir = ((ToolStripMenuItem)sender).Checked;
+            Properties.Settings.Default.ShowDir = userControl1.ShowDir = ((ToolStripMenuItem)sender).Checked;
         }
 
         private void ОтображатьФайлыToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            userControl1.ShowAll = ((ToolStripMenuItem)sender).Checked;
+            Properties.Settings.Default.ShowAll = userControl1.ShowAll = ((ToolStripMenuItem)sender).Checked;
         }
 
         private void ДобавитьФормуДляИзображенийToolStripMenuItem_Click(object sender, EventArgs e)
@@ -187,10 +197,9 @@ namespace TPR_ExampleView
             TabDragger.CreatePanelForm();
         }
 
-        private void Form1_Activated(object sender, EventArgs e)
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //Нужно для деактивации tabControl
-            elementHost1.Select();
+            Properties.Settings.Default.Save();
         }
     }
 }

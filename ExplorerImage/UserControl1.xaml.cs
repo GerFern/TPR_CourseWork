@@ -142,9 +142,13 @@ namespace ExplorerImage
             }
             try
             {
-                var list = shellContainer.AsEnumerable();
-                if (!showDir) list = list.Where(a => a is ShellFolder);
-                if (!showAll) list = list.Where(a => a.IsImage());
+                var list = shellContainer.AsEnumerable().Where(a=>a is ShellFile || a is ShellFolder);
+                if (!showAll && !showDir) list = list.Where(a => a.IsImage());
+                else
+                {
+                    if (!showDir) list = list.Where(a => a is ShellFile);
+                    if (!showAll) list = list.Where(a => a.IsImage() || a is ShellFolder);
+                }
                 foreach (var item in list)
                 {
                     BitmapSource b;

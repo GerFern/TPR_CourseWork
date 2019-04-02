@@ -143,5 +143,9 @@ namespace BaseLibrary
         /// Название нового изображения
         /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// Добавить форму, производную от <see cref="BaseLibrary.ImageForm"/>
+        /// </summary>
+        public ImageForm ImageForm { get; set; }
     }
 }

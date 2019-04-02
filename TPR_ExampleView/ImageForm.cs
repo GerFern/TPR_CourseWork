@@ -12,44 +12,60 @@ using TPR_ExampleView.Properties;
 
 namespace TPR_ExampleView
 {
-    public partial class ImageForm : Form
+    public partial class ImageForm : BaseLibrary.ImageForm
     {
-        string name;
         IImage backup;
         public Emgu.CV.UI.ImageBox ImageBox => imageBox;
-        public string ImageName => name;
-        public bool IsGeneral { get; private set; }
-        
-        public ImageForm()
+        //public ImageForm()
+        //{
+        //    InitializeComponent();
+        //}
+
+        public ImageForm(IImage image, string name):base()
         {
             InitializeComponent();
-        }
-
-        public ImageForm(IImage image, string name):this()
-        {
             backup = (IImage)image.Clone();
-            imageBox.Image = image;
-            this.name = name;
+            ImageChanged += ImageForm_ImageChanged;
+            IsSelectedChanged += ImageForm_IsSelectedChanged;
+            
+            this.Image = image;
+            this.NameForm = name;
             this.TopLevel = false;
         }
 
-        public void MakeGeneral()
+        private void ImageForm_IsSelectedChanged(object sender, EventArgs e)
         {
-            if (!IsGeneral)
-            {
-                try
-                {
-                    MenuMethod.SelectedForm.toolStripButton1.Image = Resources.пустой_чекбокс_32;
-                }
-                catch { }
-                toolStripButton1.Image = Resources.отмеченный_чекбокс_32;
-                MenuMethod.SelectedForm = this;
-                MenuMethod.SelectedImage = this.imageBox.Image;
-            }
+            this.toolStripButton1.Image = IsSelected ? Resources.отмеченный_чекбокс_32 : Resources.пустой_чекбокс_32;
+        }
+
+        private void ImageForm_ImageChanged(object sender, EventArgs e)
+        {
+            this.imageBox.Image = Image;
+        }
+
+        public void MakeSelected()
+        {
+            if (!IsSelected) IsSelected = true;
+            //if (!IsSelected)
+            //{
+            //    try
+            //    {
+            //        MenuMethod.SelectedForm.toolStripButton1.Image = Resources.пустой_чекбокс_32;
+            //    }
+            //    catch { }
+            //    toolStripButton1.Image = Resources.отмеченный_чекбокс_32;
+            //    MenuMethod.SelectedForm = this;
+            //    MenuMethod.SelectedImage = this.imageBox.Image;
+            //}
+        }
+
+        public override void UpdateImage()
+        {
+            imageBox.Update();
         }
         private void ToolStripButton1_Click(object sender, EventArgs e)
         {
-            MakeGeneral();
+            MakeSelected();
         }
 
         private void ToolStripButton2_Click(object sender, EventArgs e)
@@ -64,20 +80,20 @@ namespace TPR_ExampleView
 
         private void ToolStripButton4_Click(object sender, EventArgs e)
         {
-            if(this.Parent is TabForm tabForm)
-            {
-                tabForm.RestoreTabBeforeClosing = false;
-                tabForm.Close();
-            }
-            else if(this.Parent is TabPage tabPage)
-            {
-                tabPage.Dispose();
-            }
-            if (this.IsGeneral)
-            {
-                MenuMethod.SelectedForm = null;
-                MenuMethod.SelectedImage = null;
-            }
+            //if(this.Parent is TabForm tabForm)
+            //{
+            //    tabForm.RestoreTabBeforeClosing = false;
+            //    tabForm.Close();
+            //}
+            //else if(this.Parent is TabPage tabPage)
+            //{
+            //    tabPage.Dispose();
+            //}
+            //if (this.IsSelected)
+            //{
+            //    MenuMethod.SelectedForm = null;
+            //    MenuMethod.SelectedImage = null;
+            //}
             this.imageBox.Image.Dispose();
             backup.Dispose();
             this.Close();

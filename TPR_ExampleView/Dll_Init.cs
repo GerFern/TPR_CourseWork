@@ -68,7 +68,8 @@ namespace TPR_ExampleView
     public class MenuMethod
     {
         internal static Form1 MainForm { get; set; }
-        public static ImageForm SelectedForm { get; set; }
+        static bool repeatResist = false;
+        public static BaseLibrary.ImageForm SelectedForm { get; set; }
         public static IImage SelectedImage;
         public static Dictionary<string, Emgu.CV.UI.ImageViewer> images = new Dictionary<string, Emgu.CV.UI.ImageViewer>();
         //public static Emgu.CV.UI.ImageBox imageBox;
@@ -81,6 +82,26 @@ namespace TPR_ExampleView
         public Dictionary<string, MenuMethod> SubButtons { get; } = new Dictionary<string, MenuMethod>();
 
         public List<MethodInfo> Methods { get; } = new List<MethodInfo>();
+
+        public static void ChangeSelected(object sender, BaseLibrary.EventArgsWithImageForm e)
+        {
+            if (!repeatResist)
+            {
+                repeatResist = true;
+                if (SelectedForm != null)
+                {
+                    SelectedForm.IsSelected = false;
+                    SelectedForm = null;
+                    SelectedImage = null;
+                }
+                if (e.Selected)
+                {
+                    SelectedForm = e.Form;
+                    SelectedImage = e.Image;
+                }
+                repeatResist = false;
+            }
+        }
         public static IImage CreateImage(string path, string caption = null)
         {
             IImage t = new Image<Bgr, byte>(path);
@@ -215,7 +236,7 @@ namespace TPR_ExampleView
                             System.Windows.Forms.MessageBox.Show(ex.Message);
                         }
                 }
-                SelectedForm.ImageBox.Update();
+                SelectedForm.UpdateImage();
                 if (outputImage != null)
                 {
                     if (outputImage.Image != null)

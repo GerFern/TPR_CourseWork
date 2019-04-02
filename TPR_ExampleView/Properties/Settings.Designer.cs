@@ -22,5 +22,41 @@ namespace TPR_ExampleView.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowAll {
+            get {
+                return ((bool)(this["ShowAll"]));
+            }
+            set {
+                this["ShowAll"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowDir {
+            get {
+                return ((bool)(this["ShowDir"]));
+            }
+            set {
+                this["ShowDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideExplorer {
+            get {
+                return ((bool)(this["HideExplorer"]));
+            }
+            set {
+                this["HideExplorer"] = value;
+            }
+        }
     }
 }
