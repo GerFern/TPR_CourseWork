@@ -1,4 +1,5 @@
-﻿using Emgu.CV;
+﻿using BaseLibrary;
+using Emgu.CV;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,12 +26,29 @@ namespace TPR_ExampleView
         {
             InitializeComponent();
             backup = (IImage)image.Clone();
-            ImageChanged += ImageForm_ImageChanged;
-            IsSelectedChanged += ImageForm_IsSelectedChanged;
-            
             this.Image = image;
             this.NameForm = name;
-            this.TopLevel = false;
+        }
+        public ImageForm(string path):base()
+        {
+            InitializeComponent();
+            string name = System.IO.Path.GetFileName(path);
+            IsSelectedChanged += ImageForm_IsSelectedChanged;
+            Worker.DoWork += new DoWorkEventHandler((Object obj, DoWorkEventArgs arg) =>
+            {
+                BackgroundWorkerImg worker = (BackgroundWorkerImg)obj;
+                //(string path, string name) t = ((string, string))arg.Argument;
+                IImage img = MenuMethod.CreateImage((string)arg.Argument);
+                IImage image = img;
+                backup = (IImage)image.Clone();
+                this.Image = image;
+                arg.Result = img;
+                //worker.ImageForm = new ImageForm(img, t.name)
+                //{
+                //    Dock = DockStyle.Fill
+                //};
+            });
+            this.NameForm = name;
         }
 
         private void ImageForm_IsSelectedChanged(object sender, EventArgs e)
@@ -38,25 +56,10 @@ namespace TPR_ExampleView
             this.toolStripButton1.Image = IsSelected ? Resources.отмеченный_чекбокс_32 : Resources.пустой_чекбокс_32;
         }
 
-        private void ImageForm_ImageChanged(object sender, EventArgs e)
+
+        public override void SetImage(IImage image)
         {
             this.imageBox.Image = Image;
-        }
-
-        public void MakeSelected()
-        {
-            if (!IsSelected) IsSelected = true;
-            //if (!IsSelected)
-            //{
-            //    try
-            //    {
-            //        MenuMethod.SelectedForm.toolStripButton1.Image = Resources.пустой_чекбокс_32;
-            //    }
-            //    catch { }
-            //    toolStripButton1.Image = Resources.отмеченный_чекбокс_32;
-            //    MenuMethod.SelectedForm = this;
-            //    MenuMethod.SelectedImage = this.imageBox.Image;
-            //}
         }
 
         public override void UpdateImage()

@@ -109,7 +109,7 @@ namespace TPR_ExampleView
             //return caption == null ? new ImageViewer(t) : new ImageViewer(t, caption);
             //return new ImageBox { Image = t };
         }
-        public ImageViewer CreateImage(IImage img, string caption = null)
+        public static ImageViewer CreateImage(IImage img, string caption = null)
         {
             return caption == null ? new ImageViewer(img) : new ImageViewer(img, caption);
         }
@@ -180,25 +180,12 @@ namespace TPR_ExampleView
             {
                 OutputImage outputImage = null;
                 CustomForm formCustom = methodInfo.GetCustomAttribute<CustomForm>();
+                System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(InvMethod));
                 if (formCustom != null)
                 {
                     Type formType = formCustom.FormType;
                     BaseForm form = Activator.CreateInstance(formType, SelectedImage, methodInfo) as BaseForm;
-                    try
-                    {
-                        if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                        {
-                            outputImage = form.OutputImage;
-                        }
-                    }
-                    catch (TargetInvocationException ex)
-                    {
-                        System.Windows.Forms.MessageBox.Show(ex.InnerException.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Windows.Forms.MessageBox.Show(ex.Message);
-                    }
+                    thread.Start(new InvParam { TypeInvoke = TypeInvoke.a, BaseForm = form });
                 }
                 else
                 {
@@ -208,33 +195,35 @@ namespace TPR_ExampleView
                         {
                             if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
-                                try
-                                {
-                                    outputImage = methodInfo.Invoke(null, form.vs) as OutputImage;
-                                }
-                                catch (TargetInvocationException ex)
-                                {
-                                    System.Windows.Forms.MessageBox.Show(ex.InnerException.Message);
-                                }
-                                catch (Exception ex)
-                                {
-                                    System.Windows.Forms.MessageBox.Show(ex.Message);
-                                }
+                                thread.Start(new InvParam { TypeInvoke = TypeInvoke.b, FormP = form });
+                                //try
+                                //{
+                                //    outputImage = methodInfo.Invoke(null, form.vs) as OutputImage;
+                                //}
+                                //catch (TargetInvocationException ex)
+                                //{
+                                //    System.Windows.Forms.MessageBox.Show(ex.InnerException.Message);
+                                //}
+                                //catch (Exception ex)
+                                //{
+                                //    System.Windows.Forms.MessageBox.Show(ex.Message);
+                                //}
                             }
                         }
                     else
-                        try
-                        {
-                            outputImage = methodInfo.Invoke(null, new object[] { SelectedImage }) as OutputImage;
-                        }
-                        catch (TargetInvocationException ex)
-                        {
-                            System.Windows.Forms.MessageBox.Show(ex.InnerException.Message);
-                        }
-                        catch (Exception ex)
-                        {
-                            System.Windows.Forms.MessageBox.Show(ex.Message);
-                        }
+                        thread.Start();
+                        //try
+                        //{
+                        //    outputImage = methodInfo.Invoke(null, new object[] { SelectedImage }) as OutputImage;
+                        //}
+                        //catch (TargetInvocationException ex)
+                        //{
+                        //    System.Windows.Forms.MessageBox.Show(ex.InnerException.Message);
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    System.Windows.Forms.MessageBox.Show(ex.Message);
+                        //}
                 }
                 SelectedForm.UpdateImage();
                 if (outputImage != null)
@@ -249,6 +238,68 @@ namespace TPR_ExampleView
             }
         }
 
+        private class InvParam
+        {
+            public MethodInfo MethodInfo { get; set; }
+            public Form Form { get; set; }
+            public BaseForm BaseForm { get; set; }
+            public FormP FormP { get; set; }
+            public TypeInvoke TypeInvoke { get; set; }
+        }
+        private enum TypeInvoke
+        {
+            a,b,c
+        }
+        private static void InvMethod(object param)
+        {
+            if (param is InvParam invParam)
+            {
+                OutputImage outputImage = null;
+                try
+                {
+                    switch (invParam.TypeInvoke)
+                    {
+                        case TypeInvoke.a:
+                            if (invParam.Form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                            {
+                                outputImage = invParam.BaseForm.OutputImage;
+                            }
+                            break;
+                        case TypeInvoke.b:
+                            if (invParam.FormP.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                                outputImage = invParam.MethodInfo.Invoke(null, invParam.FormP.vs) as OutputImage;
+                            break;
+                        case TypeInvoke.c:
+                            outputImage = invParam.MethodInfo.Invoke(null, new object[] { SelectedImage }) as OutputImage;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    
+
+
+
+                }
+                catch (TargetInvocationException ex)
+                {
+                    System.Windows.Forms.MessageBox.Show(ex.InnerException.Message);
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show(ex.Message);
+                }
+                if (outputImage != null)
+                {
+                    if (outputImage.Image != null)
+                        MainForm.OpenImage(outputImage.Image, outputImage.Name);
+                    MenuMethod.CreateImage(outputImage.Image);
+                    //imageBox.Image = outputImage.Image;
+                    if (outputImage.Info != null)
+                        textBox.Text = outputImage.Info;
+                }
+            }
+        }
         public void Clear()
         {
             foreach (var item in Buttons.Values)

@@ -13,39 +13,46 @@ namespace BaseLibrary
 {
     public partial class ImageForm : Form
     {
+        public BackgroundWorkerImg Worker { get; set; }
         IImage _image;
-        bool _isSelected;
         string _nameForm;
 
+        /// <summary>
+        /// Основное изображение
+        /// </summary>
         public IImage Image
         {
             get => _image;
             set
             {
-                _image = value;
+                SetImage(_image = value);
                 ImageChanged?.Invoke(this, new EventArgs());
             }
         }
-        public virtual bool IsSelected
+        public static ImageForm selected;
+        public bool IsSelected
         {
-            get => _isSelected;
+            get => Object.ReferenceEquals(this, selected);
             set
             {
-                if (Image == null) throw new NullReferenceException();
-                _isSelected = value;
-                if (value)
+                if (value != IsSelected)
                 {
-                    _isSelectedChanged?.Invoke(this, new EventArgsWithImageForm(this, Image));
-                    IsSelectedChanged?.Invoke(this, new EventArgsWithImageForm(this, Image));
-                }
-                else
-                {
-                    _isSelectedChanged?.Invoke(this, new EventArgsWithImageForm());
-                    IsSelectedChanged?.Invoke(this, new EventArgsWithImageForm());
+                    if (Image == null) throw new NullReferenceException();
+                    //_isSelected = value;
+                    if (value)
+                    {
+                        _isSelectedChanged?.Invoke(this, new EventArgsWithImageForm(this, Image));
+                        IsSelectedChanged?.Invoke(this, new EventArgsWithImageForm(this, Image));
+                    }
+                    else
+                    {
+                        _isSelectedChanged?.Invoke(this, new EventArgsWithImageForm());
+                        IsSelectedChanged?.Invoke(this, new EventArgsWithImageForm());
+                    }
                 }
             }
         }
-        public virtual string NameForm
+        public string NameForm
         {
             get => _nameForm;
             set
@@ -86,7 +93,13 @@ namespace BaseLibrary
             if (_isSelectedChanged == null)
                 _isSelectedChanged = eventHandler;
         }
-       
+
+        public void MakeSelected()
+        {
+            if (!IsSelected) IsSelected = true;
+        }
+        public virtual void SetImage(IImage image) { }
+
         public virtual void UpdateImage() { }
         /// <summary>
         /// Можно переопределить для возврата true. Тогда при открытии формы изображение будет автоматически становится выделенным
@@ -100,6 +113,7 @@ namespace BaseLibrary
         {
             InitializeComponent();
             this.TopLevel = false;
+            Worker = new BackgroundWorkerImg(this);
         }
 
         private void ImageForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -135,6 +149,19 @@ namespace BaseLibrary
             Selected = true;
             Form = imageForm;
             Image = image;
+        }
+    }
+
+
+    public class BackgroundWorkerImg : BackgroundWorker
+    {
+        public ImageForm ImageForm { get; set; }
+        public TabPage TabPage { get; set; }
+
+        public BackgroundWorkerImg() : base() { }
+        public BackgroundWorkerImg(ImageForm imageForm) : base()
+        {
+            ImageForm = imageForm;
         }
     }
 }
