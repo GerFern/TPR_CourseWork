@@ -199,46 +199,13 @@ namespace TPR_ExampleView
                             if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
                                 thread.Start(new InvParam { TypeInvoke = TypeInvoke.b, FormP = form });
-                                //try
-                                //{
-                                //    outputImage = methodInfo.Invoke(null, form.vs) as OutputImage;
-                                //}
-                                //catch (TargetInvocationException ex)
-                                //{
-                                //    System.Windows.Forms.MessageBox.Show(ex.InnerException.Message);
-                                //}
-                                //catch (Exception ex)
-                                //{
-                                //    System.Windows.Forms.MessageBox.Show(ex.Message);
-                                //}
                             }
                         }
                     else
                         thread.Start(new InvParam { TypeInvoke = TypeInvoke.c, MethodInfo = methodInfo });
-                        //try
-                        //{
-                        //    outputImage = methodInfo.Invoke(null, new object[] { SelectedImage }) as OutputImage;
-                        //}
-                        //catch (TargetInvocationException ex)
-                        //{
-                        //    System.Windows.Forms.MessageBox.Show(ex.InnerException.Message);
-                        //}
-                        //catch (Exception ex)
-                        //{
-                        //    System.Windows.Forms.MessageBox.Show(ex.Message);
-                        //}
                 }
                 SelectedForm.UpdateImage();
                 BaseLibrary.BaseMethods.LoadOutputImage(outputImage);
-                //if (outputImage != null)
-                //{
-                //    if (outputImage.Image != null)
-                //        MainForm.OpenImage(outputImage.Image, outputImage.Name);
-                //        CreateImage(outputImage.Image);
-                //        //imageBox.Image = outputImage.Image;
-                //    if (outputImage.Info != null)
-                //        textBox.Text = outputImage.Info;
-                //}
             }
         }
 
@@ -294,16 +261,7 @@ namespace TPR_ExampleView
                     System.Windows.Forms.MessageBox.Show(ex.Message);
                 }
                 MainForm.Invoke(new MethodInvoker(()=>{
-                    if (outputImage != null)
-                    {
-
-                        if (outputImage.Image != null)
-                            MainForm.OpenImage(outputImage.Image, outputImage.Name);
-                        MenuMethod.CreateImage(outputImage.Image);
-                        //imageBox.Image = outputImage.Image;
-                        if (outputImage.Info != null)
-                            textBox.Text = outputImage.Info;
-                    }
+                    BaseLibrary.BaseMethods.LoadOutputImage(outputImage);
                 }));
             }
         }

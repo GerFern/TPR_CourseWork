@@ -26,6 +26,7 @@ namespace TPR_ExampleView
         public ImageForm(IImage image, string text):base()
         {
             InitializeComponent();
+            IsSelectedChanged += ImageForm_IsSelectedChanged;
             backup = (IImage)image.Clone();
             this.Image = image;
             this.Text = text;

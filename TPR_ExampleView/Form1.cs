@@ -49,10 +49,8 @@ namespace TPR_ExampleView
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //MenuMethod.ImageViewer
-
-            //MenuMethod.imageBox = imageBox1;
             MenuMethod.textBox = textBox1;
+            //Инициализация для открытия форм
             BaseMethods.Init(tabControl1,
                 new OutputImageInvoker((OutputImage img) =>
             {
@@ -65,6 +63,8 @@ namespace TPR_ExampleView
                             MenuMethod.CreateImage(img.Image);
                             if (img.Info != null)
                                 textBox1.Text = img.Info;
+                            if (img.ImageForm != null)
+                                img.ImageForm.ShowForm();
                         }
                     }));
                 return null;

@@ -74,21 +74,27 @@ namespace TestLibrary
             return new OutputImage { Image = image };
         }
 
-        [ImgMethod("Координаты")]
+        /// <summary>
+        /// Открытие формы
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        [ImgMethod("Формы","FloodFill (с координатами)")]
         public static OutputImage TestCoord(IImage image)
         {
             SelectCoord form = new SelectCoord(image);
-            return null;
+            //Можно двумя способами
+            //form.ShowForm();
+            //return null;
+            return new OutputImage { ImageForm = form };
         }
 
-        public static OutputImage FloodFill(IImage image, Point point)
+        public static OutputImage FloodFill(IImage image, Point point, int t1, int t2, int t3)
         {
             dynamic input = image;
-            //var res = new Image<Bgr, byte>(image.Size);
             var res = (IImage)image.Clone();
-            Mat outputMask = new Mat(input.Heigth + 2, input.Width + 2, DepthType.Cv8U, 1);
-            Rectangle rectangle;
-            CvInvoke.FloodFill(res, outputMask, point, new MCvScalar(255), out rectangle, new MCvScalar(100), new MCvScalar(200));
+            Mat outputMask = new Mat(input.Height + 2, input.Width + 2, DepthType.Cv8U, 1);
+            CvInvoke.FloodFill(res, outputMask, point, new MCvScalar(t1), out _, new MCvScalar(t2), new MCvScalar(t3));
             return new OutputImage { Image = res, Name = "FloodFill" };
         }
     }

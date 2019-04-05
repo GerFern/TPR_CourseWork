@@ -15,6 +15,9 @@ namespace TestLibrary
 {
     public partial class SelectCoord : ImageForm
     {
+        Rectangle rectImage;
+        public bool auto = false;
+        IImage backup;
         Point point = Point.Empty;
         Point t = Point.Empty;
         Point Point
@@ -33,7 +36,9 @@ namespace TestLibrary
         public SelectCoord(IImage image)
         {
             InitializeComponent();
+            backup = (IImage)image.Clone();
             Image = image;
+            rectImage = new Rectangle(Point.Empty, image.Size);
         }
 
         private void ImageBox_MouseMove(object sender, MouseEventArgs e)
@@ -48,19 +53,57 @@ namespace TestLibrary
 
         private void imageBox1_Click(object sender, EventArgs e)
         {
-            Point = t;
+            if (rectImage.Contains(t))
+            {
+                Point = t;
+                if (auto)
+                    Image = Class1.FloodFill(
+                    backup,
+                    Point,
+                    (int)numericUpDown1.Value,
+                    (int)numericUpDown2.Value,
+                    (int)numericUpDown3.Value).Image;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            OutputImage outputImage = Class1.FloodFill((Image<Bgr, byte>)Image, Point);
-            BaseMethods.LoadOutputImage(outputImage);
+            //Обязательно нужно клонировать изображение в данном случае, т.к. ссылка на изображение еще может быть использована
+            //А при закрытии формы, у изображения может быть вызван Dispose метод
+            //Если не клонировать изображение, то в будущем могут возникнуть ошибки
+            BaseMethods.LoadOutputImage(new OutputImage { Image = (IImage)Image.Clone()});
             //CastToOutputImage(outputImage);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            auto = ((CheckBox)sender).Checked;
+        }
+
+        private void Button3_Click(object sender, EventArgs e)
+        {
+            Image = Class1.FloodFill(
+                backup,
+                Point,
+                (int)numericUpDown1.Value,
+                (int)numericUpDown2.Value,
+                (int)numericUpDown3.Value).Image;
+        }
+
+        private void NumericUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            if(auto)
+                Image = Class1.FloodFill(
+                backup,
+                Point,
+                (int)numericUpDown1.Value,
+                (int)numericUpDown2.Value,
+                (int)numericUpDown3.Value).Image;
         }
     }
 }

@@ -30,6 +30,9 @@ namespace BaseLibrary
             }
         }
         public static ImageForm selected;
+        /// <summary>
+        /// Является ли изображение выделенным
+        /// </summary>
         public bool IsSelected
         {
             get => Object.ReferenceEquals(this, selected);
@@ -92,16 +95,27 @@ namespace BaseLibrary
                 }
             }
         }
+        /// <summary>
+        /// Загружает <see cref="OutputImage"/> объект на главную форму
+        /// </summary>
+        /// <param name="outputImage"></param>
         public void LoadOutputImage(OutputImage outputImage) => BaseMethods.LoadOutputImage(outputImage);
+        /// <summary>
+        /// Пометить изображение как выделенное
+        /// </summary>
         public void MakeSelected()
         {
             if (!IsSelected) IsSelected = true;
         }
+
         protected virtual void SetImage(IImage image) { }
 
+        /// <summary>
+        /// Обновить изображение
+        /// </summary>
         public virtual void UpdateImage() { }
         /// <summary>
-        /// Можно переопределить для возврата true. Тогда при открытии формы изображение будет автоматически становится выделенным
+        /// Можно переопределить для возврата <see langword="true"/> или с каким-то условием. Тогда при открытии формы изображение будет автоматически становится выделенным
         /// </summary>
         public virtual bool AutoSelect => false;
 
