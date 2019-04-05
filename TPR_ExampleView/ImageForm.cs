@@ -17,22 +17,23 @@ namespace TPR_ExampleView
     {
         IImage backup;
         public Emgu.CV.UI.ImageBox ImageBox => imageBox;
+        public override bool AutoSelect => true;
         //public ImageForm()
         //{
         //    InitializeComponent();
         //}
 
-        public ImageForm(IImage image, string name):base()
+        public ImageForm(IImage image, string text):base()
         {
             InitializeComponent();
             backup = (IImage)image.Clone();
             this.Image = image;
-            this.NameForm = name;
+            this.Text = text;
         }
         public ImageForm(string path):base()
         {
             InitializeComponent();
-            string name = System.IO.Path.GetFileName(path);
+            //string name = System.IO.Path.GetFileName(path);
             IsSelectedChanged += ImageForm_IsSelectedChanged;
             Worker.DoWork += new DoWorkEventHandler((Object obj, DoWorkEventArgs arg) =>
             {
@@ -43,21 +44,18 @@ namespace TPR_ExampleView
                 backup = (IImage)image.Clone();
                 this.Image = image;
                 arg.Result = img;
-                //worker.ImageForm = new ImageForm(img, t.name)
-                //{
-                //    Dock = DockStyle.Fill
-                //};
             });
-            this.NameForm = name;
+            this.Text = System.IO.Path.GetFileName(path);
+            //this.NameForm = name;
         }
 
-        private void ImageForm_IsSelectedChanged(object sender, EventArgs e)
+        private void ImageForm_IsSelectedChanged(object sender, EventArgsWithImageForm e)
         {
-            this.toolStripButton1.Image = IsSelected ? Resources.отмеченный_чекбокс_32 : Resources.пустой_чекбокс_32;
+            this.toolStripButton1.Image = e.Selected ? Resources.отмеченный_чекбокс_32 : Resources.пустой_чекбокс_32;
         }
 
 
-        public override void SetImage(IImage image)
+        protected override void SetImage(IImage image)
         {
             this.imageBox.Image = Image;
         }

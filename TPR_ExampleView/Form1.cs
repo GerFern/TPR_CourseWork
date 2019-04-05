@@ -53,6 +53,28 @@ namespace TPR_ExampleView
 
             //MenuMethod.imageBox = imageBox1;
             MenuMethod.textBox = textBox1;
+            BaseMethods.Init(tabControl1,
+                new OutputImageInvoker((OutputImage img) =>
+            {
+                this.Invoke(new MethodInvoker(() =>
+                    {
+                        if (img != null)
+                        {
+                            if (img.Image != null)
+                                this.OpenImage(img.Image, img.Name);
+                            MenuMethod.CreateImage(img.Image);
+                            if (img.Info != null)
+                                textBox1.Text = img.Info;
+                        }
+                    }));
+                return null;
+            }),
+                new OutputImageInvoker((OutputImage img) =>
+            {
+                ImageForm imageForm = new ImageForm(img.Image, img.Name);
+                if (img.Info != null) textBox1.Text = img.Info;
+                return imageForm;
+            }));
             DLL_Init.AssemblyInSolution = "TestLibrary";
             DLL_Init.Init(menuStrip1);
         }
@@ -144,98 +166,14 @@ namespace TPR_ExampleView
 
         private void OpenImage(string path)
         {
-            string name = System.IO.Path.GetFileName(path);
-            TabPage tabPage = new TabPage(name)
-            {
-                UseWaitCursor = true
-            };
-            //IImage img = MenuMethod.CreateImage(path);
-            //ImageForm imageForm = new ImageForm(img, name)
-            //{
-            //    //TopLevel = false,
-            //    //Dock = DockStyle.Fill
-            //};
-            //imageForm.MakeSelected();
-            //imageForm.Show();
             ImageForm imageForm = new ImageForm(path);
-            //backgroundWorker.DoWork += new DoWorkEventHandler((Object obj, DoWorkEventArgs target) =>
-            //{
-            //    BackgroundWorkerImg worker = (BackgroundWorkerImg)obj;
-            //    (string path, string name) t = ((string, string))target.Argument;
-            //    IImage img = MenuMethod.CreateImage(t.path);
-            //    worker.ImageForm = new ImageForm(img, t.name)
-            //    {
-            //        Dock = DockStyle.Fill
-            //    };
-            //});
-            imageForm.Worker.TabPage = tabPage;
-            imageForm.Worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler((Object obj, RunWorkerCompletedEventArgs target) =>
-            {
-                BackgroundWorkerImg worker = (BackgroundWorkerImg)obj;
-                worker.ImageForm.TopLevel = false;
-                worker.ImageForm.Parent = worker.TabPage;
-                worker.TabPage.UseWaitCursor = false;
-                worker.ImageForm.Dock = DockStyle.Fill;
-                //form.Dock = DockStyle.Fill;
-                worker.ImageForm.Visible = true;
-                worker.ImageForm.MakeSelected();
-                //}));
-                //tabPage.Controls.Add(imageForm);
-            });
-            tabControl1.TabPages.Add(tabPage);
-            imageForm.Worker.RunWorkerAsync(path);
-            //Thread thread = new Thread(new ParameterizedThreadStart((obj) => 
-            //{
-            //    (IImage, string, TabPage) t = ((IImage, string, TabPage))obj;
-            //    ImageForm form = new ImageForm(t.Item1, t.Item2);
-            //    //form.Dock = DockStyle.Fill;
-            //    var r= t.Item3.BeginInvoke(new MethodInvoker (()=>
-            //    {
-            //        //t.Item3.Controls.Add(form);
-            //        form.Parent = t.Item3;
-            //        //form.Dock = DockStyle.Fill;
-            //        form.Visible = true;
-            //    }));
-            //    t.Item3.EndInvoke(r);
-            //    form.Dock = DockStyle.Fill;
-            //    //MessageBox.Show("a2");
-            //    //Application.Run();
-
-            //    //while(true)
-            //    //{
-
-            //    //}
-            //    //t.Item3.Controls.Add(form);
-            //    //form.Load += new EventHandler((Object sender, EventArgs e) =>
-            //    //{
-            //    //    MessageBox.Show("AAAA");
-            //    //    ((Form)sender).Visible = true;
-            //    //});
-            //    //Application.Run(form);
-            //    //MessageBox.Show("Close");
-            //    //form.Visible = true;
-
-            //});
-            //tabPage.Controls.Add(imageForm);
-            //tabControl1.TabPages.Add(tabPage);
-            //thread.ApartmentState = ApartmentState.MTA;
-            //thread.SetApartmentState(ApartmentState.MTA);
-            //thread.Start((img, name, tabPage));
+            imageForm.ShowFormAsync(path);
         }
 
-        public void OpenImage(IImage image, string name)
+        public void OpenImage(IImage image, string text)
         {
-            string n = name == null ? "" : name;
-            TabPage tabPage = new TabPage(n);
-            ImageForm imageForm = new ImageForm(image, n)
-            {
-                TopLevel = false,
-                Dock = DockStyle.Fill
-            };
-            tabPage.Controls.Add(imageForm);
-            tabControl1.TabPages.Add(tabPage);
-            //imageForm.MakeGeneral();
-            imageForm.Show();
+            ImageForm imageForm = new ImageForm(image, text);
+            imageForm.ShowForm();
         }
 
         public void OpenForm(BaseLibrary.ImageForm imageForm, string name, object arg)

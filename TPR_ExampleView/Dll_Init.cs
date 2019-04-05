@@ -90,7 +90,9 @@ namespace TPR_ExampleView
                 repeatResist = true;
                 if (SelectedForm != null)
                 {
-                    SelectedForm.IsSelected = false;
+                    BaseLibrary.ImageForm t = SelectedForm;
+                    SelectedForm = null;
+                    t.IsSelected = false;
                     SelectedForm = null;
                     SelectedImage = null;
                 }
@@ -98,6 +100,7 @@ namespace TPR_ExampleView
                 {
                     SelectedForm = e.Form;
                     SelectedImage = e.Image;
+                    BaseLibrary.ImageForm.selected = SelectedForm;
                 }
                 repeatResist = false;
             }
@@ -211,7 +214,7 @@ namespace TPR_ExampleView
                             }
                         }
                     else
-                        thread.Start();
+                        thread.Start(new InvParam { TypeInvoke = TypeInvoke.c, MethodInfo = methodInfo });
                         //try
                         //{
                         //    outputImage = methodInfo.Invoke(null, new object[] { SelectedImage }) as OutputImage;
@@ -226,15 +229,16 @@ namespace TPR_ExampleView
                         //}
                 }
                 SelectedForm.UpdateImage();
-                if (outputImage != null)
-                {
-                    if (outputImage.Image != null)
-                        MainForm.OpenImage(outputImage.Image, outputImage.Name);
-                        CreateImage(outputImage.Image);
-                        //imageBox.Image = outputImage.Image;
-                    if (outputImage.Info != null)
-                        textBox.Text = outputImage.Info;
-                }
+                BaseLibrary.BaseMethods.LoadOutputImage(outputImage);
+                //if (outputImage != null)
+                //{
+                //    if (outputImage.Image != null)
+                //        MainForm.OpenImage(outputImage.Image, outputImage.Name);
+                //        CreateImage(outputImage.Image);
+                //        //imageBox.Image = outputImage.Image;
+                //    if (outputImage.Info != null)
+                //        textBox.Text = outputImage.Info;
+                //}
             }
         }
 
@@ -289,15 +293,18 @@ namespace TPR_ExampleView
                 {
                     System.Windows.Forms.MessageBox.Show(ex.Message);
                 }
-                if (outputImage != null)
-                {
-                    if (outputImage.Image != null)
-                        MainForm.OpenImage(outputImage.Image, outputImage.Name);
-                    MenuMethod.CreateImage(outputImage.Image);
-                    //imageBox.Image = outputImage.Image;
-                    if (outputImage.Info != null)
-                        textBox.Text = outputImage.Info;
-                }
+                MainForm.Invoke(new MethodInvoker(()=>{
+                    if (outputImage != null)
+                    {
+
+                        if (outputImage.Image != null)
+                            MainForm.OpenImage(outputImage.Image, outputImage.Name);
+                        MenuMethod.CreateImage(outputImage.Image);
+                        //imageBox.Image = outputImage.Image;
+                        if (outputImage.Info != null)
+                            textBox.Text = outputImage.Info;
+                    }
+                }));
             }
         }
         public void Clear()

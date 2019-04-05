@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BaseLibrary;
 using Emgu.CV;
+using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 
 namespace TestLibrary
@@ -67,9 +69,27 @@ namespace TestLibrary
 
         [ImgMethod("Отладка")]
         [CustomForm(typeof(Debug))]
-        public static OutputImage Debag(IImage image)
+        public static OutputImage Debug(IImage image)
         {
             return new OutputImage { Image = image };
+        }
+
+        [ImgMethod("Координаты")]
+        public static OutputImage TestCoord(IImage image)
+        {
+            SelectCoord form = new SelectCoord(image);
+            return null;
+        }
+
+        public static OutputImage FloodFill(IImage image, Point point)
+        {
+            dynamic input = image;
+            //var res = new Image<Bgr, byte>(image.Size);
+            var res = (IImage)image.Clone();
+            Mat outputMask = new Mat(input.Heigth + 2, input.Width + 2, DepthType.Cv8U, 1);
+            Rectangle rectangle;
+            CvInvoke.FloodFill(res, outputMask, point, new MCvScalar(255), out rectangle, new MCvScalar(100), new MCvScalar(200));
+            return new OutputImage { Image = res, Name = "FloodFill" };
         }
     }
 }
