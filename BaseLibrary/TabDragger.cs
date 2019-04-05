@@ -34,13 +34,13 @@ namespace BaseLibrary
 
         private void TabControl_GotFocus(object sender, EventArgs e)
         {
-            Debug.WriteLine($"Focus {e}:{sender}");
+            //Debug.WriteLine($"Focus {e}:{sender}");
             //throw new NotImplementedException();
         }
 
         private void TabControl_Enter(object sender, EventArgs e)
         {
-            Debug.WriteLine($"Enter {e}:{sender}");
+            //Debug.WriteLine($"Enter {e}:{sender}");
             //throw new NotImplementedException();
         }
 
@@ -199,7 +199,7 @@ namespace BaseLibrary
             Rectangle displayRC = tabControl.ClientRectangle; ;
             Rectangle r = tabControl.RectangleToScreen(tabBounds);
             Rectangle r2 = tabControl.RectangleToScreen(displayRC);
-            Debug.WriteLine(displayRC);
+            //Debug.WriteLine(displayRC);
 
             switch (tabControl.Alignment)
             {
@@ -223,7 +223,7 @@ namespace BaseLibrary
             }
             r2.Inflate(-3, 15);
             r2.Y += 12;
-            Debug.WriteLine(r2);
+            //Debug.WriteLine(r2);
             return r2.Contains(point);
         }
 
@@ -264,8 +264,28 @@ namespace BaseLibrary
             this.dragOffset.Y -= this.Location.Y;
         }
 
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            if (blur != null)
+            {
+                e.Graphics.DrawRectangle(new Pen(Color.AliceBlue), (Rectangle)blur);
+            }
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            base.OnPaintBackground(e);
+            if (blur != null)
+            {
+                e.Graphics.DrawRectangle(new Pen(Color.AliceBlue), (Rectangle)blur);
+            }
+        }
+
         public Emgu.CV.IImage Image => image;
         public bool RestoreTabBeforeClosing { get; set; } = true;
+        private static Form over;
+        private Rectangle? blur;
         private TabPage tabPage;
         private TabControl tabControl;
         private Emgu.CV.IImage image;
@@ -313,10 +333,58 @@ namespace BaseLibrary
                         break;
 
                 }
-                if (tabsRect.Contains(pt)) ;
-                //DockToTab();
-                else
-                    UnDockFromTab();
+                Point cursor = Cursor.Position;
+                //if(tabControl.PointInTabStrip(cursor))
+                blur = null;
+                    bool cont = false;
+                foreach (var item in TabDragger.TabDraggers)
+                {
+                    if(item.PointInTabStrip(cursor))
+                    {
+                        cont = true;
+                        if (over == null)
+                        {
+                            blur = tabControl.RectangleToScreen(pageRect);
+                            Color color;
+                            try
+                            {
+                                color = ((ImageForm)this.Controls[0]).OverColor;
+                            }
+                            catch
+                            {
+                                color = Color.Gray;
+                            }
+
+                            over = new Form
+                            {
+                                FormBorderStyle = FormBorderStyle.None,
+                                AllowTransparency = true,
+                                BackColor = color,
+                                //TransparencyKey = Color.AliceBlue,
+                                StartPosition = FormStartPosition.Manual,
+                                Location = blur.Value.Location,
+                                Size = blur.Value.Size,
+                                Opacity = 0.5,
+                                ShowIcon = false,
+                                ShowInTaskbar = false,
+                                TopMost = true
+                            };
+                            over.Visible = true;
+                            over.Click += new EventHandler((object o, EventArgs arg) => over.Close());
+                            //over.Location = blur.Value.Location;
+                            Debug.WriteLine(color);
+                        }
+                        break;
+                        //ControlPaint.FillReversibleRectangle(tabControl.RectangleToScreen(pageRect), Color.Red);
+                    }
+                }
+                if(!cont&&over!=null)
+                {
+                    over.Close();
+                    over = null;
+                }
+                //else
+                //    UnDockFromTab();
             }
             if(m.Msg == NativeMethods.WM_NCLBUTTONDBLCLK)
             {
@@ -334,35 +402,29 @@ namespace BaseLibrary
                 case NativeMethods.WM_ENTERSIZEMOVE:
                     moved = sized = false;
                     break;
-                case NativeMethods.WM_EXITSIZEMOVE:
+                case NativeMethods.WM_EXITSIZEMOVE: // Отпускание мыши от формы
                     if (!this.Visible)
                         this.Close();
-                    else if(MdiParent == null && moved&&!sized)
+                    else if(MdiParent == null && moved&&!sized)// Форма перемещалась, но не масштабировалась
                     {
                         bool cont = true;
-                        Point p = Cursor.Position;
-                        foreach (var item in TabDragger.TabDraggers)
+                        Point p = Cursor.Position; // Положение курсора
+                        foreach (var item in TabDragger.TabDraggers) // Для всех зарегистрированных TabControl
                         {
-                            if (item.PointInTabStrip(p))
+                            if (item.PointInTabStrip(p)) //Если указатель мыши над панелью вкладок
                             {
-                                
-                                //var p = c.PointToScreen(e.Location);
-                                //PointInTabStrip(p);
-                                this.Close();
+                                this.Close(); 
                                 this.tabPage.Tag = null;
-                                //((TabForm)dragTab.Tag).Close();
-                                //dragTab.Tag = null;
-                                //((TabForm)dragTab.Tag).Close();
                                 cont = false;
                                 break;
                             }
                         }
-                        if(cont)
+                        if(cont) // Если не над панелью вкладок
                         {
                             foreach (var item in TabDragger.MdiForms)
                             {
                                 if(item.RectangleToScreen(item.ClientRectangle).Contains(p))
-                                {
+                                { //Если входит в MDI форму, занести в нее
                                     this.MdiParent = item;
                                     this.Location = item.PointToClient(this.Location);
                                     break;
@@ -403,6 +465,11 @@ namespace BaseLibrary
 
         private void DockToTab()
         {
+            if(over!=null)
+            {
+                over.Close();
+                over = null;
+            }
             if (!tabControl.TabPages.Contains(tabPage))
             {
                 for (int id = this.Controls.Count - 1; id >= 0; id--)

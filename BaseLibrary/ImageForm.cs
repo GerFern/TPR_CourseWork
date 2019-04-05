@@ -13,6 +13,17 @@ namespace BaseLibrary
 {
     public partial class ImageForm : Form
     {
+        /// <summary>
+        /// Цвет, который показывается при перетаскивании формы на панель вкладок
+        /// </summary>
+        public virtual Color OverColor
+        {
+            get
+            {
+                Random r = new Random();
+                return Color.FromArgb(r.Next()%255,r.Next()%255,r.Next()%255);
+            }
+        }
         public BackgroundWorkerImg Worker { get; set; }
         IImage _image;
         private bool _cast = false;
