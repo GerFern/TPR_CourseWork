@@ -1,4 +1,5 @@
-﻿using Emgu.CV;
+﻿using BaseLibrary;
+using Emgu.CV;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,47 +17,48 @@ namespace TPR_ExampleView
     {
         IImage backup;
         public Emgu.CV.UI.ImageBox ImageBox => imageBox;
+        public override bool AutoSelect => true;
         //public ImageForm()
         //{
         //    InitializeComponent();
         //}
 
-        public ImageForm(IImage image, string name):base()
+        public ImageForm(IImage image, string text):base()
         {
             InitializeComponent();
-            backup = (IImage)image.Clone();
-            ImageChanged += ImageForm_ImageChanged;
             IsSelectedChanged += ImageForm_IsSelectedChanged;
-            
+            backup = (IImage)image.Clone();
             this.Image = image;
-            this.NameForm = name;
-            this.TopLevel = false;
+            this.Text = text;
         }
-
-        private void ImageForm_IsSelectedChanged(object sender, EventArgs e)
+        public ImageForm(string path):base()
         {
-            this.toolStripButton1.Image = IsSelected ? Resources.отмеченный_чекбокс_32 : Resources.пустой_чекбокс_32;
+            InitializeComponent();
+            //string name = System.IO.Path.GetFileName(path);
+            IsSelectedChanged += ImageForm_IsSelectedChanged;
+            Worker.DoWork += new DoWorkEventHandler((Object obj, DoWorkEventArgs arg) =>
+            {
+                BackgroundWorkerImg worker = (BackgroundWorkerImg)obj;
+                //(string path, string name) t = ((string, string))arg.Argument;
+                IImage img = MenuMethod.CreateImage((string)arg.Argument);
+                IImage image = img;
+                backup = (IImage)image.Clone();
+                this.Image = image;
+                arg.Result = img;
+            });
+            this.Text = System.IO.Path.GetFileName(path);
+            //this.NameForm = name;
         }
 
-        private void ImageForm_ImageChanged(object sender, EventArgs e)
+        private void ImageForm_IsSelectedChanged(object sender, EventArgsWithImageForm e)
+        {
+            this.toolStripButton1.Image = e.Selected ? Resources.отмеченный_чекбокс_32 : Resources.пустой_чекбокс_32;
+        }
+
+
+        protected override void SetImage(IImage image)
         {
             this.imageBox.Image = Image;
-        }
-
-        public void MakeSelected()
-        {
-            if (!IsSelected) IsSelected = true;
-            //if (!IsSelected)
-            //{
-            //    try
-            //    {
-            //        MenuMethod.SelectedForm.toolStripButton1.Image = Resources.пустой_чекбокс_32;
-            //    }
-            //    catch { }
-            //    toolStripButton1.Image = Resources.отмеченный_чекбокс_32;
-            //    MenuMethod.SelectedForm = this;
-            //    MenuMethod.SelectedImage = this.imageBox.Image;
-            //}
         }
 
         public override void UpdateImage()

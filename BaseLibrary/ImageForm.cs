@@ -13,56 +13,48 @@ namespace BaseLibrary
 {
     public partial class ImageForm : Form
     {
+        public BackgroundWorkerImg Worker { get; set; }
         IImage _image;
-        bool _isSelected;
-        string _nameForm;
-
+        private bool _cast = false;
+        private ImageForm _castForm;
+        /// <summary>
+        /// Основное изображение
+        /// </summary>
         public IImage Image
         {
             get => _image;
             set
             {
-                _image = value;
+                SetImage(_image = value);
                 ImageChanged?.Invoke(this, new EventArgs());
             }
         }
-        public virtual bool IsSelected
+        public static ImageForm selected;
+        /// <summary>
+        /// Является ли изображение выделенным
+        /// </summary>
+        public bool IsSelected
         {
-            get => _isSelected;
+            get => Object.ReferenceEquals(this, selected);
             set
             {
-                if (Image == null) throw new NullReferenceException();
-                _isSelected = value;
-                if (value)
+                if (value != IsSelected)
                 {
-                    _isSelectedChanged?.Invoke(this, new EventArgsWithImageForm(this, Image));
-                    IsSelectedChanged?.Invoke(this, new EventArgsWithImageForm(this, Image));
-                }
-                else
-                {
-                    _isSelectedChanged?.Invoke(this, new EventArgsWithImageForm());
-                    IsSelectedChanged?.Invoke(this, new EventArgsWithImageForm());
+                    if (Image == null) throw new NullReferenceException();
+                    //_isSelected = value;
+                    if (value)
+                    {
+                        _isSelectedChanged?.Invoke(this, new EventArgsWithImageForm(this, Image));
+                        IsSelectedChanged?.Invoke(this, new EventArgsWithImageForm(this, Image));
+                    }
+                    else
+                    {
+                        _isSelectedChanged?.Invoke(this, new EventArgsWithImageForm());
+                        IsSelectedChanged?.Invoke(this, new EventArgsWithImageForm());
+                    }
                 }
             }
         }
-        public virtual string NameForm
-        {
-            get => _nameForm;
-            set
-            {
-                _nameForm = value;
-                if (this.Parent is TabForm tabForm)
-                {
-                    tabForm.Text = value;
-                }
-                else if (this.Parent is TabPage tabPage)
-                {
-                    tabPage.Text = value;
-                }
-                NameFormChanged?.Invoke(this, new EventArgs());
-            }
-        }
-
         /// <summary>
         /// Если основное изображение изменено
         /// </summary>
@@ -86,10 +78,44 @@ namespace BaseLibrary
             if (_isSelectedChanged == null)
                 _isSelectedChanged = eventHandler;
         }
-       
+
+        /// <summary>
+        /// Превращает текущую форму в простую форму для отображения изображения. Вызывает метод Close(), так что текущая форма перестанет существовать
+        /// </summary>
+        /// <param name="outputImage"></param>
+        public void CastToOutputImage(OutputImage outputImage)
+        {
+            if (outputImage != null)
+            {
+                _castForm = BaseMethods.CreateFormFromOutputImage(outputImage);
+                if(_castForm!=null)
+                {
+                    _cast = true;
+                    Close();
+                }
+            }
+        }
+        /// <summary>
+        /// Загружает <see cref="OutputImage"/> объект на главную форму
+        /// </summary>
+        /// <param name="outputImage"></param>
+        public void LoadOutputImage(OutputImage outputImage) => BaseMethods.LoadOutputImage(outputImage);
+        /// <summary>
+        /// Пометить изображение как выделенное
+        /// </summary>
+        public void MakeSelected()
+        {
+            if (!IsSelected) IsSelected = true;
+        }
+
+        protected virtual void SetImage(IImage image) { }
+
+        /// <summary>
+        /// Обновить изображение
+        /// </summary>
         public virtual void UpdateImage() { }
         /// <summary>
-        /// Можно переопределить для возврата true. Тогда при открытии формы изображение будет автоматически становится выделенным
+        /// Можно переопределить для возврата <see langword="true"/> или с каким-то условием. Тогда при открытии формы изображение будет автоматически становится выделенным
         /// </summary>
         public virtual bool AutoSelect => false;
 
@@ -100,11 +126,41 @@ namespace BaseLibrary
         {
             InitializeComponent();
             this.TopLevel = false;
+            Worker = new BackgroundWorkerImg(this);
         }
 
+        /// <summary>
+        /// Вызывает imageForm.Worker.RunWorkerAsync(workerArgument), позволяя выполнять вычислительные операции без зависания главной формы. После завершения, показывает форму
+        /// </summary>
+        /// <param name="workerArgument">Аргументы для Worker</param>
+        /// <param name="dockStyle">Заполнение формы</param>
+        /// <param name="formBorderStyle">Границы формы</param>
+        public void ShowFormAsync(object argument,
+                                  FormBorderStyle formBorderStyle = FormBorderStyle.None,
+                                  DockStyle dockStyle = DockStyle.Fill)
+        {
+            BaseMethods.ShowFormAsync(this, argument, formBorderStyle, dockStyle);
+        }
+
+        /// <summary>
+        /// Показывает форму в главной форме
+        /// </summary>
+        /// <param name="dockStyle">Заполнение формы</param>
+        /// <param name="formBorderStyle">Границы формы</param>
+        public void ShowForm(FormBorderStyle formBorderStyle = FormBorderStyle.None,
+                             DockStyle dockStyle = DockStyle.Fill)
+        {
+            BaseMethods.ShowForm(this, formBorderStyle, dockStyle);
+        }
         private void ImageForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (this.Parent is TabForm tabForm)
+            if( _cast)
+            {
+                Control parent = this.Parent;
+                parent.Controls.Clear();
+                parent.Controls.Add(_castForm);
+            }
+            else if (this.Parent is TabForm tabForm)
             {
                 tabForm.RestoreTabBeforeClosing = false;
                 tabForm.Close();
@@ -117,7 +173,6 @@ namespace BaseLibrary
             {
                 _isSelectedChanged?.Invoke(this, new EventArgsWithImageForm());
             }
-            this.Close();
         }
     }
 
@@ -135,6 +190,19 @@ namespace BaseLibrary
             Selected = true;
             Form = imageForm;
             Image = image;
+        }
+    }
+
+
+    public class BackgroundWorkerImg : BackgroundWorker
+    {
+        public ImageForm ImageForm { get; set; }
+        public TabPage TabPage { get; set; }
+
+        public BackgroundWorkerImg() : base() { }
+        public BackgroundWorkerImg(ImageForm imageForm) : base()
+        {
+            ImageForm = imageForm;
         }
     }
 }

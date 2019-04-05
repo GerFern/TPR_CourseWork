@@ -15,6 +15,7 @@ using static ExplorerImage.UserControl1;
 using System.Runtime.InteropServices;
 using Emgu.CV.UI;
 using BaseLibrary;
+using System.Threading;
 //using static ImageCollection.UserControl1;
 
 namespace TPR_ExampleView
@@ -48,10 +49,32 @@ namespace TPR_ExampleView
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //MenuMethod.ImageViewer
-
-            //MenuMethod.imageBox = imageBox1;
             MenuMethod.textBox = textBox1;
+            //Инициализация для открытия форм
+            BaseMethods.Init(tabControl1,
+                new OutputImageInvoker((OutputImage img) =>
+            {
+                this.Invoke(new MethodInvoker(() =>
+                    {
+                        if (img != null)
+                        {
+                            if (img.Image != null)
+                                this.OpenImage(img.Image, img.Name);
+                            MenuMethod.CreateImage(img.Image);
+                            if (img.Info != null)
+                                textBox1.Text = img.Info;
+                            if (img.ImageForm != null)
+                                img.ImageForm.ShowForm();
+                        }
+                    }));
+                return null;
+            }),
+                new OutputImageInvoker((OutputImage img) =>
+            {
+                ImageForm imageForm = new ImageForm(img.Image, img.Name);
+                if (img.Info != null) textBox1.Text = img.Info;
+                return imageForm;
+            }));
             DLL_Init.AssemblyInSolution = "TestLibrary";
             DLL_Init.Init(menuStrip1);
         }
@@ -143,33 +166,30 @@ namespace TPR_ExampleView
 
         private void OpenImage(string path)
         {
-            string name = System.IO.Path.GetFileName(path);
-            TabPage tabPage = new TabPage(name);
-            IImage img = MenuMethod.CreateImage(path);
-            ImageForm imageForm = new ImageForm(img, name)
-            {
-                TopLevel = false,
-                Dock = DockStyle.Fill
-            };
-            tabPage.Controls.Add(imageForm);
-            tabControl1.TabPages.Add(tabPage);
-            imageForm.MakeSelected();
-            imageForm.Show();
+            ImageForm imageForm = new ImageForm(path);
+            imageForm.ShowFormAsync(path);
         }
 
-        public void OpenImage(IImage image, string name)
+        public void OpenImage(IImage image, string text)
         {
-            string n = name == null ? "" : name;
-            TabPage tabPage = new TabPage(n);
-            ImageForm imageForm = new ImageForm(image, n)
+            ImageForm imageForm = new ImageForm(image, text);
+            imageForm.ShowForm();
+        }
+
+        public void OpenForm(BaseLibrary.ImageForm imageForm, string name, object arg)
+        {
+            TabPage tabPage = new TabPage(name);
+            BackgroundWorker backgroundWorker = new BackgroundWorker();
+            backgroundWorker.DoWork += new DoWorkEventHandler((Object obj, DoWorkEventArgs args) =>
             {
-                TopLevel = false,
-                Dock = DockStyle.Fill
-            };
-            tabPage.Controls.Add(imageForm);
-            tabControl1.TabPages.Add(tabPage);
-            //imageForm.MakeGeneral();
-            imageForm.Show();
+
+            }
+            );
+            backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler((Object obj, RunWorkerCompletedEventArgs args) =>
+            {
+
+            }
+            );
         }
 
         private void ImageBox_Click(object sender, EventArgs e)
@@ -201,5 +221,7 @@ namespace TPR_ExampleView
         {
             Properties.Settings.Default.Save();
         }
+
+       
     }
 }
