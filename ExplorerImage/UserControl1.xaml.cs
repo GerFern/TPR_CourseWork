@@ -32,7 +32,7 @@ namespace ExplorerImage
             set
             {
                 showAll = value;
-                LoadPreview(pathRoot, showAll, showDir);
+                LoadPreview(path, showAll, showDir);
             }
         }
 
@@ -43,7 +43,7 @@ namespace ExplorerImage
             set
             {
                 showDir = value;
-                LoadPreview(pathRoot, showAll, showDir);
+                LoadPreview(path, showAll, showDir);
             }
         }
 
@@ -109,13 +109,13 @@ namespace ExplorerImage
 
         public void SetPath(string path)
         {
-            if (!Directory.Exists(path))
-            {
-                return;
-            }
+            //if (!Directory.Exists(path))
+            //{
+            //    return;
+            //}
 
-            this.path = this.pathRoot = path;
             string name = LoadPreview(path, showAll, showDir);
+            this.path = this.pathRoot = path;
             PathChanged?.Invoke(this, new EventArgsWithFilePath(path, name));
         }
 
@@ -142,22 +142,22 @@ namespace ExplorerImage
             }
             try
             {
-                var list = shellContainer.AsEnumerable().Where(a=>a is ShellFile || a is ShellFolder);
-                if (!showAll && !showDir) list = list.Where(a => a.IsImage());
-                else
-                {
-                    if (!showDir) list = list.Where(a => a is ShellFile);
-                    if (!showAll) list = list.Where(a => a.IsImage() || a is ShellFolder);
-                }
-                foreach (var item in list)
-                {
-                    BitmapSource b;
-                    ShellThumbnail st = item.Thumbnail;
-                    b = st.MediumBitmapSource;
-                    bitmaps.Add(item.ParsingName,b);
-                    Grid grid = CreatePictureBoxWithLabel(item.Name, item.ParsingName, item is ShellFolder, b);
-                    previews.Add(grid);
-                }
+                IEnumerable<ShellObject> list; //= shellContainer.AsEnumerable().Where(a=>a is ShellFile || a is ShellFolder);
+                if (showDir) foreach (var item in shellContainer.OfType<ShellFolder>()) Add(item);
+                if (showAll) foreach (var item in shellContainer.OfType<ShellFile>()) Add(item);
+                else foreach (var item in shellContainer.OfType<ShellFile>().Where(a=>a.IsImage())) Add(item);
+
+                    //list = shellContainer.OfType<ShellFolder>();
+                //if (!showAll && !showDir) list = list.Where(a => a.IsImage());
+                //else
+                //{
+                //    if (!showDir) list = list.Where(a => a is ShellFile);
+                //    if (!showAll) list = list.Where(a => a.IsImage() || a is ShellFolder);
+                //}
+                //foreach (var item in list)
+                //{
+                //    Add(item);
+                //}
                 #region old
                 //if (showDir)
                 //{
@@ -240,6 +240,16 @@ namespace ExplorerImage
             return shellContainer.Name;
         }
 
+        private void Add(ShellObject item)
+        {
+            BitmapSource b;
+            ShellThumbnail st = item.Thumbnail;
+            b = st.MediumBitmapSource;
+            bitmaps.Add(item.ParsingName, b);
+            Grid grid = CreatePictureBoxWithLabel(item.Name, item.ParsingName, item is ShellFolder, b);
+            previews.Add(grid);
+        }
+
         private void Panel_File_Click(string path)
         {
             FileSelect?.Invoke(this, new EventArgsWithFilePath(path));
@@ -317,13 +327,13 @@ namespace ExplorerImage
             return panel;
         }
 
-        private void Panel_DoubleClick(object sender, MouseButtonEventArgs e)
+        private static void Panel_DoubleClick(object sender, MouseButtonEventArgs e)
         {
             if(e.ClickCount>=2)
             ((PanelClick)((FrameworkElement)sender).Tag).Click();
         }
 
-        private void SubPanel_Click(object sender, MouseButtonEventArgs e)
+        private static void SubPanel_Click(object sender, MouseButtonEventArgs e)
         {
             //if (e.ClickCount == 2)
             //    ((PanelClick)((Grid)((FrameworkElement)sender).Parent).Tag).Click();
@@ -391,6 +401,4 @@ namespace ExplorerImage
             return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp";
         }
     }
-
-
 }

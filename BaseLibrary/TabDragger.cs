@@ -344,7 +344,7 @@ namespace BaseLibrary
                         cont = true;
                         if (over == null)
                         {
-                            blur = tabControl.RectangleToScreen(pageRect);
+                            blur = tabControl.RectangleToScreen(tabControl.DisplayRectangle);
                             Color color;
                             try
                             {
@@ -370,7 +370,9 @@ namespace BaseLibrary
                                 TopMost = true
                             };
                             over.Visible = true;
-                            over.Click += new EventHandler((object o, EventArgs arg) => over.Close());
+                            this.Opacity = 0.8;
+                            over.Click += new EventHandler((object o, EventArgs arg) =>
+                            { over.Close(); this.Opacity = 1; });
                             //over.Location = blur.Value.Location;
                             Debug.WriteLine(color);
                         }
@@ -381,6 +383,7 @@ namespace BaseLibrary
                 if(!cont&&over!=null)
                 {
                     over.Close();
+                    this.Opacity = 1;
                     over = null;
                 }
                 //else

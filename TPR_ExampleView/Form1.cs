@@ -16,6 +16,7 @@ using System.Runtime.InteropServices;
 using Emgu.CV.UI;
 using BaseLibrary;
 using System.Threading;
+using System.IO;
 //using static ImageCollection.UserControl1;
 
 namespace TPR_ExampleView
@@ -27,6 +28,7 @@ namespace TPR_ExampleView
         //UserControl1 userControl1 = new UserControl1();
         IImage source = null;
         string imagePath = null;
+
         public Form1()
         {
             InitializeComponent();
@@ -43,7 +45,8 @@ namespace TPR_ExampleView
             отображатьФайлыToolStripMenuItem.CheckedChanged += ОтображатьФайлыToolStripMenuItem_CheckedChanged;
             скрытьГалереюToolStripMenuItem.CheckedChanged += СкрытьГалереюToolStripMenuItem_CheckedChanged;
 
-            userControl1.SetPath(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+            try { userControl1.SetPath(Properties.Settings.Default.ExplorerPath); }
+            catch { userControl1.SetPath(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)); }
             BaseLibrary.ImageForm.SetIsSelectedChangedMethod(new EventHandler<EventArgsWithImageForm>(MenuMethod.ChangeSelected));
         }
 
@@ -52,7 +55,8 @@ namespace TPR_ExampleView
             MenuMethod.textBox = textBox1;
             //Инициализация для открытия форм
             BaseMethods.Init(tabControl1,
-                new OutputImageInvoker((OutputImage img) =>
+            //
+            new OutputImageInvoker((OutputImage img) =>
             {
                 this.Invoke(new MethodInvoker(() =>
                     {
@@ -69,7 +73,7 @@ namespace TPR_ExampleView
                     }));
                 return null;
             }),
-                new OutputImageInvoker((OutputImage img) =>
+            new OutputImageInvoker((OutputImage img) =>
             {
                 ImageForm imageForm = new ImageForm(img.Image, img.Name);
                 if (img.Info != null) textBox1.Text = img.Info;
@@ -142,6 +146,7 @@ namespace TPR_ExampleView
         {
             if (e.Path.Split(new char[] { '\\', '/' }).Last() == e.PathName) groupBox4.Text = $"Галерея - {e.Path}";
             else groupBox4.Text = $"Галерея - {e.Path} ({e.PathName})";
+            Properties.Settings.Default.ExplorerPath = e.Path;
         }
 
         private void UserControl1_FileSelect(object sender, EventArgsWithFilePath e)

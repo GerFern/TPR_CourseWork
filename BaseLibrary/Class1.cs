@@ -160,7 +160,6 @@ namespace BaseLibrary
         /// <summary>
         /// Не нужно использовать. Требуется для инициализации
         /// </summary>
-        /// <param name="tabControl"></param>
         public static void Init(TabControl tabControl, OutputImageInvoker load, OutputImageInvoker create)
         {
             if (!_init)

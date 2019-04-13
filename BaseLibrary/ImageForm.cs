@@ -16,14 +16,11 @@ namespace BaseLibrary
         /// <summary>
         /// Цвет, который показывается при перетаскивании формы на панель вкладок
         /// </summary>
+        [System.ComponentModel.DefaultValue(typeof(Color), "DeepSkyBlue")]
         public virtual Color OverColor
         {
-            get
-            {
-                Random r = new Random();
-                return Color.FromArgb(r.Next()%255,r.Next()%255,r.Next()%255);
-            }
-        }
+            get; set;
+        } = Color.DeepSkyBlue;
         public BackgroundWorkerImg Worker { get; set; }
         IImage _image;
         private bool _cast = false;
