@@ -8,6 +8,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,6 +16,7 @@ namespace TestLibrary
 {
     public partial class SelectCoord : ImageForm
     {
+        Random testR = new Random();
         Rectangle rectImage;
         public bool auto = false;
         IImage backup;
@@ -72,7 +74,6 @@ namespace TestLibrary
             //А при закрытии формы, у изображения может быть вызван Dispose метод
             //Если не клонировать изображение, то в будущем могут возникнуть ошибки
             BaseMethods.LoadOutputImage(new OutputImage { Image = (IImage)Image.Clone()});
-            //CastToOutputImage(outputImage);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -104,6 +105,22 @@ namespace TestLibrary
                 (int)numericUpDown1.Value,
                 (int)numericUpDown2.Value,
                 (int)numericUpDown3.Value).Image;
+        }
+
+        private void Button4_Click(object sender, EventArgs e)
+        {
+            //Тест вмешательства из одного потока в другой
+            Thread thread = new Thread(new ThreadStart(()=>{
+                for (int i = 0; i < 5; i++)
+                {
+                    Thread.Sleep(1500);
+                    BaseMethods.Invoke(new MethodInvoker(() =>
+                    {
+                        label1.Text = testR.Next().ToString();
+                    }));
+                }
+            }));
+            thread.Start();
         }
     }
 }

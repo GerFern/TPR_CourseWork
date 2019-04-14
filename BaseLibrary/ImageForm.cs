@@ -107,7 +107,7 @@ namespace BaseLibrary
         /// Загружает <see cref="OutputImage"/> объект на главную форму
         /// </summary>
         /// <param name="outputImage"></param>
-        public void LoadOutputImage(OutputImage outputImage) => BaseMethods.LoadOutputImage(outputImage);
+        public static void LoadOutputImage(OutputImage outputImage) => BaseMethods.LoadOutputImage(outputImage);
         /// <summary>
         /// Пометить изображение как выделенное
         /// </summary>
@@ -133,12 +133,12 @@ namespace BaseLibrary
         public ImageForm()
         {
             InitializeComponent();
-            this.TopLevel = false;
             Worker = new BackgroundWorkerImg(this);
         }
 
         /// <summary>
         /// Вызывает imageForm.Worker.RunWorkerAsync(workerArgument), позволяя выполнять вычислительные операции без зависания главной формы. После завершения, показывает форму
+        /// Для этого должны быть определены события <code>Worker.DoWork</code>
         /// </summary>
         /// <param name="workerArgument">Аргументы для Worker</param>
         /// <param name="dockStyle">Заполнение формы</param>

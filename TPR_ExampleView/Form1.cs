@@ -233,6 +233,18 @@ namespace TPR_ExampleView
             Properties.Settings.Default.Save();
         }
 
-       
+        public class ToolStripVerticalSeparator:ToolStripItem
+        {
+            //public override string Text { get => ""; set { } }
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                if (this.Owner != null)
+                {
+                    //ToolStripRenderer renderer 
+                    Graphics g = e.Graphics;
+                    g.DrawLine(new Pen(ForeColor), new Point(this.Size.Width / 2, 0), new Point(this.Size.Width / 2, this.Size.Height));
+                }
+            }
+        }
     }
 }

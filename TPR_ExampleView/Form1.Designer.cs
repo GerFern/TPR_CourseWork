@@ -40,7 +40,7 @@
             this.библиотекиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.открытьПапкуСБиблиотекамиToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new TPR_ExampleView.Form1.ToolStripVerticalSeparator();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -191,9 +191,10 @@
             // 
             // toolStripMenuItem1
             // 
+            this.toolStripMenuItem1.Enabled = false;
+            this.toolStripMenuItem1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(22, 20);
-            this.toolStripMenuItem1.Text = " ";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(4, 17);
             // 
             // splitContainer1
             // 
@@ -397,6 +398,7 @@
             // elementHost1
             // 
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.ForeColor = System.Drawing.SystemColors.InactiveCaption;
             this.elementHost1.Location = new System.Drawing.Point(3, 16);
             this.elementHost1.Name = "elementHost1";
             this.elementHost1.Size = new System.Drawing.Size(613, 113);
@@ -453,7 +455,7 @@
         private System.Windows.Forms.ToolStripMenuItem открытьИзображениеToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem библиотекиToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem открытьПапкуСБиблиотекамиToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private ToolStripVerticalSeparator toolStripMenuItem1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.SplitContainer splitContainer2;

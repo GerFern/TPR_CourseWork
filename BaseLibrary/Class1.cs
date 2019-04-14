@@ -158,6 +158,25 @@ namespace BaseLibrary
         private static OutputImageInvoker _loadOutputImage;
         private static OutputImageInvoker _createFormFromOutputImage;
         /// <summary>
+        /// Выполняет делегат в главном потоке
+        /// </summary>
+        /// <param name="method">Делегат, содержащий метод, который необходимо вызвать в главном потоке</param>
+        /// <returns></returns>
+        public static object Invoke(Delegate method)
+        {
+            return tabControl.Invoke(method);
+        }
+        /// <summary>
+        /// Выполняет делегат в главном потоке, с указанным списком аргументов
+        /// </summary>
+        /// <param name="method">Делегат, содержащий метод, который необходимо вызвать в главном потоке</param>
+        /// <param name="args">Массив объектов, передаваемых в качестве аргументов указаному методу</param>
+        /// <returns></returns>
+        public static object Invoke(Delegate method, params object[] args)
+        {
+            return tabControl.Invoke(method, args);
+        }
+        /// <summary>
         /// Не нужно использовать. Требуется для инициализации
         /// </summary>
         public static void Init(TabControl tabControl, OutputImageInvoker load, OutputImageInvoker create, MesWrites writes)
