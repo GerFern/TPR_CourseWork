@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using BaseLibrary;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
@@ -71,6 +72,7 @@ namespace TestLibrary
         [CustomForm(typeof(Debug))]
         public static OutputImage Debug(IImage image)
         {
+            
             return new OutputImage { Image = image };
         }
 
