@@ -160,13 +160,14 @@ namespace BaseLibrary
         /// <summary>
         /// Не нужно использовать. Требуется для инициализации
         /// </summary>
-        public static void Init(TabControl tabControl, OutputImageInvoker load, OutputImageInvoker create)
+        public static void Init(TabControl tabControl, OutputImageInvoker load, OutputImageInvoker create, MesWrites writes)
         {
             if (!_init)
             {
                 _init = true;
                 BaseMethods.tabControl = tabControl;
                 _loadOutputImage = load;
+                On_Writing = writes;
             }
         }
 
@@ -249,6 +250,14 @@ namespace BaseLibrary
                 imageForm.Worker.TabPage = tabPage;
                 imageForm.Worker.RunWorkerAsync(workerArgument);
             }));
+        }
+        //static недоступен делегату
+        public delegate void MesWrites(string s);
+        public static event MesWrites On_Writing;
+
+        static void WriteMessege(string s)
+        {
+            On_Writing(s);
         }
 
         //public static void LoadOutputImage(OutputImage outputImage)

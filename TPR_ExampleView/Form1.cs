@@ -78,9 +78,15 @@ namespace TPR_ExampleView
                 ImageForm imageForm = new ImageForm(img.Image, img.Name);
                 if (img.Info != null) textBox1.Text = img.Info;
                 return imageForm;
-            }));
+            }), WriteToOutput);
+            //BaseMethods.On_Writing += WriteToOutput;
             DLL_Init.AssemblyInSolution = "TestLibrary";
-            DLL_Init.Init(menuStrip1);
+            DLL_Init.Init(menuStrip1); 
+        }
+
+        void WriteToOutput(string s)
+        {
+            textBox1.Invoke(new Action(() => { textBox1.Text += s; }));
         }
 
         private void открытьИзображениеToolStripMenuItem_Click(object sender, EventArgs e)
