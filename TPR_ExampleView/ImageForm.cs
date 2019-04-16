@@ -61,9 +61,10 @@ namespace TPR_ExampleView
             this.imageBox.Image = Image;
         }
 
-        public override void UpdateImage()
+        public override void UpdateImage(IImage image = null)
         {
-            imageBox.Update();
+            if (image != null) imageBox.Image = image;
+            else imageBox.Update();
         }
         private void ToolStripButton1_Click(object sender, EventArgs e)
         {

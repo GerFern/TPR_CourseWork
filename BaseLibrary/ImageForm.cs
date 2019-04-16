@@ -121,7 +121,7 @@ namespace BaseLibrary
         /// <summary>
         /// Обновить изображение
         /// </summary>
-        public virtual void UpdateImage() { }
+        public virtual void UpdateImage(IImage image = null) { }
         /// <summary>
         /// Можно переопределить для возврата <see langword="true"/> или с каким-то условием. Тогда при открытии формы изображение будет автоматически становится выделенным
         /// </summary>

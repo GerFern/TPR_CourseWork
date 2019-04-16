@@ -148,6 +148,10 @@ namespace BaseLibrary
         /// Добавить форму, производную от <see cref="BaseLibrary.ImageForm"/>
         /// </summary>
         public ImageForm ImageForm { get; set; }
+        /// <summary>
+        /// Предназначено для обновления выбранного изображения
+        /// </summary>
+        public ImageForm UpdateSelectedImage { get; set; }
     }
 
     public delegate ImageForm OutputImageInvoker(OutputImage outputImage);
@@ -196,7 +200,7 @@ namespace BaseLibrary
         /// <param name="outputImage"></param>
         public static void LoadOutputImage(OutputImage outputImage)
         {
-            _loadOutputImage?.Invoke(outputImage);
+            BaseMethods.Invoke(new Action(()=> _loadOutputImage?.Invoke(outputImage)));
         }
 
         public static ImageForm CreateFormFromOutputImage(OutputImage outputImage)

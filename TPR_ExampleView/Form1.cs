@@ -69,6 +69,8 @@ namespace TPR_ExampleView
                                 textBox1.Text = img.Info;
                             if (img.ImageForm != null)
                                 img.ImageForm.ShowForm();
+                            if (img.UpdateSelectedImage != null)
+                                MenuMethod.SelectedForm.UpdateImage();
                         }
                     }));
                 return null;

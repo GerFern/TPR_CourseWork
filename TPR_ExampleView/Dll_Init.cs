@@ -235,7 +235,7 @@ namespace TPR_ExampleView
                         {
                             if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
-                                thread.Start(new InvParam { TypeInvoke = TypeInvoke.b, FormP = form });
+                                thread.Start(new InvParam { TypeInvoke = TypeInvoke.b, Vs = form.vs, MethodInfo = methodInfo.MethodInfo });
                             }
                         }
                     else
@@ -252,6 +252,7 @@ namespace TPR_ExampleView
             public Form Form { get; set; }
             public BaseForm BaseForm { get; set; }
             public FormP FormP { get; set; }
+            public object[] Vs { get; set; }
             public TypeInvoke TypeInvoke { get; set; }
         }
         private enum TypeInvoke
@@ -274,8 +275,10 @@ namespace TPR_ExampleView
                             }
                             break;
                         case TypeInvoke.b:
-                            if (invParam.FormP.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                                outputImage = invParam.MethodInfo.Invoke(null, invParam.FormP.vs) as OutputImage;
+                            
+                                outputImage = invParam.MethodInfo.Invoke(null, invParam.Vs) as OutputImage;
+                                SelectedForm.Invoke(new MethodInvoker(() => SelectedForm.Update()));
+
                             break;
                         case TypeInvoke.c:
                             outputImage = invParam.MethodInfo.Invoke(null, new object[] { SelectedImage }) as OutputImage;
