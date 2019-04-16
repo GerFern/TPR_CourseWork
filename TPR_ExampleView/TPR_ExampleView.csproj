@@ -152,10 +152,6 @@
       <Project>{cf3ccd2e-c24f-460e-904a-677be24f3842}</Project>
       <Name>BaseLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ClassLibrary2\ClassLibrary2.csproj">
-      <Project>{b8db105d-e712-4edf-bc74-18804ec2ccf1}</Project>
-      <Name>ClassLibrary2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ExplorerImage\ExplorerImage.csproj">
       <Project>{bd244bb0-4a77-4a7f-8fc5-0bbf79e9a0cf}</Project>
       <Name>ExplorerImage</Name>

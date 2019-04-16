@@ -1,4 +1,4 @@
-﻿namespace BaseLibrary
+﻿namespace TestLibrary
 {
     partial class ImageForm
     {

@@ -224,7 +224,7 @@ namespace TPR_ExampleView
                 if (formCustom != null)
                 {
                     Type formType = formCustom.FormType;
-                    BaseForm form = Activator.CreateInstance(formType, SelectedImage, methodInfo) as BaseForm;
+                    BaseForm form = Activator.CreateInstance(formType, SelectedImage, methodInfo.MethodInfo) as BaseForm;
                     thread.Start(new InvParam { TypeInvoke = TypeInvoke.a, BaseForm = form });
                 }
                 else
@@ -268,7 +268,7 @@ namespace TPR_ExampleView
                     switch (invParam.TypeInvoke)
                     {
                         case TypeInvoke.a:
-                            if (invParam.Form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                            if (invParam.BaseForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
                                 outputImage = invParam.BaseForm.OutputImage;
                             }
