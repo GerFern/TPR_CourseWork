@@ -28,6 +28,43 @@ namespace TPR_ExampleView
         //UserControl1 userControl1 = new UserControl1();
         IImage source = null;
         string imagePath = null;
+        Dictionary<int, ProgressBar> progressDict = new Dictionary<int, ProgressBar>();
+        int id_gen = 0;
+        int oldWidthTabs;
+        int tabFirstIndex;
+        int tabSecondIndex;
+        bool hideTabs;
+        bool noHide;
+        bool HideTabs
+        {
+            get => hideTabs;
+            set
+            {
+                if (value)
+                {
+                    if (!hideTabs)
+                    {
+                        tabControl2.SelectedIndex = -1;
+                        oldWidthTabs = splitContainer4.SplitterDistance;
+                        splitContainer4.Panel1MinSize = 0;
+                        splitContainer4.SplitterDistance = tabControl2.GetTabRect(0).Width + 2;
+                        splitContainer4.IsSplitterFixed = true;
+                        hideTabs = true;
+                    }
+                }
+                else if (hideTabs)
+                {
+                    noHide = true;
+                    tabFirstIndex = tabControl2.SelectedIndex;
+                    splitContainer4.SplitterDistance = oldWidthTabs;
+                    splitContainer4.Panel1MinSize = 100;
+                    splitContainer4.IsSplitterFixed = false;
+                    hideTabs = false;
+                }
+            }
+        }
+        
+
 
         public Form1()
         {
@@ -80,7 +117,9 @@ namespace TPR_ExampleView
                 ImageForm imageForm = new ImageForm(img.Image, img.Name);
                 if (img.Info != null) textBox1.Text = img.Info;
                 return imageForm;
-            }), WriteToOutput);
+            }),
+            WriteToOutput,
+            new GetProgressBar((InputImage img) => progressDict.ContainsKey(img.ID) ? progressDict[img.ID] : null));
             //BaseMethods.On_Writing += WriteToOutput;
             DLL_Init.AssemblyInSolution = "TestLibrary";
             DLL_Init.Init(menuStrip1); 
@@ -248,5 +287,102 @@ namespace TPR_ExampleView
                 }
             }
         }
+
+        private void TToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new Test().ShowDialog();
+        }
+
+        private void СкрыватьБоковоеМенюToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if(((ToolStripMenuItem)sender).Checked)
+            {
+                HideTabs = true;
+                tabControl2.Leave += TabControl2_LostFocus;
+            }
+            else
+            {
+                HideTabs = false;
+                tabControl2.Leave -= TabControl2_LostFocus;
+            }
+        }
+
+        private void TabControl2_LostFocus(object sender, EventArgs e)
+        {
+             HideTabs = true;
+        }
+
+        private void TabControl2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            tabFirstIndex = tabSecondIndex;
+            tabSecondIndex = tabControl2.SelectedIndex;
+            if (tabControl2.SelectedIndex >= 0 && hideTabs)
+            {
+                HideTabs = false;
+            }
+        }
+
+        private void TabControl2_Click(object sender, EventArgs e)
+        {
+            //if (e is MouseEventArgs meargs && meargs.Button == MouseButtons.Left && tabControl2.SelectedIndex >= 0 && tabControl2.GetTabRect(tabControl2.SelectedIndex).Contains(meargs.Location))
+            //{
+            //    HideTabs = true;
+            //    tabControl2.Click -= TabControl2_Click;
+            //    //tabControl2.Click += TabControl2_ClickAlt;
+            //}
+        }
+
+
+        private void TabControl2_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (HideTabs) tabFirstIndex = -1;
+            //tabFirstIndex = tabControl2.SelectedIndex;
+        }
+        private void TabControl2_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (noHide) noHide = false;
+            else if (tabFirstIndex >= 0)
+                for (int i = 0; i < tabControl2.TabCount; i++)
+                {
+                    if (tabControl2.GetTabRect(i).Contains(e.Location))
+                    {
+                        if (tabFirstIndex == i) HideTabs = true;
+                        else tabFirstIndex = tabSecondIndex = i;
+                        return;
+                    }
+                }
+        }
+
+        internal int CreateTask(MyMethodInfo myMethodInfo)
+        {
+            this.Invoke(new Action(()=>{
+                tableLayoutPanel1.SuspendLayout();
+                ProgressBar progressBar = new ProgressBar();
+                progressDict.Add(id_gen, progressBar);
+                TableLayoutPanel tlp = new TableLayoutPanel();
+                tlp.RowCount = 2;
+                tlp.ColumnCount = 1;
+                tlp.Controls.Add(new Label { Text = DateTime.Now.ToString(), Dock = DockStyle.Fill }, 0, 0);
+                tlp.Controls.Add(progressBar, 0, 1);
+                if (id_gen != 0)
+                    tableLayoutPanel1.RowCount++;
+                else
+                    tableLayoutPanel1.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
+                for (int i = tableLayoutPanel1.RowCount - 2; i >= 0; i--)
+                {
+                    tableLayoutPanel1.SetRow(tableLayoutPanel1.GetControlFromPosition(0, i), i + 1);
+                }
+                tableLayoutPanel1.Controls.Add(tlp, 0, 0);
+                tableLayoutPanel1.ResumeLayout();
+            }));
+            return id_gen++;
+        }
+
+        private void ToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            CreateTask(null);
+        }
+
+        
     }
 }

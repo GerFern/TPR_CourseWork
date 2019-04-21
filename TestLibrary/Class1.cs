@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BaseLibrary;
@@ -58,12 +59,18 @@ namespace TestLibrary
 
         [ImgMethod("Фильтр", "Гауссовое размытие")]
         [CustomForm(typeof(Form1))]//Своя форма для метода
-        public static OutputImage GausForm(IImage image, string s1, string s2, int kernelSize)
+        public static OutputImage GausForm(InputImage inputImage, int iteration, int iterTime, int kernelSize)
         {
-            dynamic img = image;
+            dynamic img = inputImage.Image;
+            inputImage.Progress.Run(1, iteration);
+            for (int i = 0; i < iteration; i++)
+            {
+                Thread.Sleep(iterTime);
+                inputImage.Progress.PerformStep();
+            }
+            inputImage.Progress.Finish();
             return new OutputImage
             {
-                Info = $"{s1}{Environment.NewLine}{s2}",
                 Image = img.SmoothGaussian(kernelSize)
             };
         }
@@ -98,6 +105,35 @@ namespace TestLibrary
             Mat outputMask = new Mat(input.Height + 2, input.Width + 2, DepthType.Cv8U, 1);
             CvInvoke.FloodFill(res, outputMask, point, new MCvScalar(t1), out _, new MCvScalar(t2), new MCvScalar(t3));
             return new OutputImage { Image = res, Name = "FloodFill" };
+        }
+
+        [ImgMethod("Прогресс","Без форм")]
+        public static OutputImage ProgressTest(InputImage inputImage)
+        {
+            //MessageBox.Show("Hello");
+            inputImage.Progress.Run(1, 20);
+            for (int i = 0; i < 20; i++)
+            {
+                Thread.Sleep(1000);
+                inputImage.Progress.PerformStep();
+            }
+            inputImage.Progress.Finish();
+            return new OutputImage();
+        }
+        [ImgMethod("Прогресс", "Параметризированная форма")]
+        [AutoForm(1, typeof(int), "Итераций")]
+        [AutoForm(2, typeof(int), "Перерывы между итерациями")]
+        [AutoForm(3, typeof(bool), "Копировать изображение")]
+        public static OutputImage ProgressTest(InputImage inputImage, int iteration, int timeIter, bool copy)
+        {
+            inputImage.Progress.Run(1, iteration);
+            for (int i = 0; i < iteration; i++)
+            {
+                Thread.Sleep(timeIter);
+                inputImage.Progress.PerformStep();
+            }
+            inputImage.Progress.Finish();
+            return copy ? new OutputImage { Image = inputImage.Image } : new OutputImage();
         }
     }
 }

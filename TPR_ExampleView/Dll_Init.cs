@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define test
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,12 +13,14 @@ using Emgu.CV.Structure;
 using Emgu.CV.UI;
 using System.ComponentModel;
 using Newtonsoft.Json.Linq;
+using System.Threading;
 
 namespace TPR_ExampleView
 {
     internal class AssemblyItem
     {
         static Type TypeDefOutputImage = typeof(BaseLibrary.OutputImage);
+        static Type TypeDefInputImage = typeof(BaseLibrary.InputImage);
         static Type TypeDefIImage = typeof(Emgu.CV.IImage);
         public class ClassItem
         {
@@ -52,9 +55,18 @@ namespace TPR_ExampleView
                                 ParameterInfo[] parameters = item2.GetParameters();
                                 ParameterInfo p = parameters.First();
                                 Type t = p.ParameterType;
-                                if (t == TypeDefIImage || t.GetInterfaces().Contains(typeof(Emgu.CV.IImage)))
+                                if (t == TypeDefIImage || t.GetInterfaces().Contains(TypeDefIImage))
                                 {
-                                    MyMethodInfo mmi = new MyMethodInfo(item2);
+                                    MyMethodInfo mmi = new MyMethodInfo(item2, false);
+                                    classItem.Methods.Add(mmi);
+                                    if (imgMethod.Hierarchy.Length >= 1)
+                                    {
+                                        MenuMethod.Add(mmi);
+                                    }
+                                }
+                                else if(t == TypeDefInputImage)
+                                {
+                                    MyMethodInfo mmi = new MyMethodInfo(item2, true);
                                     classItem.Methods.Add(mmi);
                                     if (imgMethod.Hierarchy.Length >= 1)
                                     {
@@ -220,12 +232,18 @@ namespace TPR_ExampleView
             {
                 OutputImage outputImage = null;
                 CustomForm formCustom = methodInfo.CustomForm;
-                System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(InvMethod));
+                Thread thread = new Thread(new ParameterizedThreadStart(InvMethod));
                 if (formCustom != null)
                 {
                     Type formType = formCustom.FormType;
-                    BaseForm form = Activator.CreateInstance(formType, SelectedImage, methodInfo.MethodInfo) as BaseForm;
-                    thread.Start(new InvParam { TypeInvoke = TypeInvoke.a, BaseForm = form });
+                    BaseForm form;
+                    if(methodInfo.IsInputImage) form = Activator.CreateInstance(formType, new InputImage(SelectedImage, MainForm.CreateTask(methodInfo)), methodInfo.MethodInfo) as BaseForm;
+                    else form = Activator.CreateInstance(formType, SelectedImage, methodInfo.MethodInfo) as BaseForm;
+                    using (form)
+                    {
+                        if(form.ShowDialog()==DialogResult.OK)
+                        thread.Start(new InvParam { TypeInvoke = TypeInvoke.CustomForm, BaseForm = form });
+                    }
                 }
                 else
                 {
@@ -233,13 +251,13 @@ namespace TPR_ExampleView
                     if (formAuto.Count() > 0)
                         using (FormP form = new FormP(formAuto, methodInfo, SelectedImage))
                         {
-                            if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                            if (form.ShowDialog() == DialogResult.OK)
                             {
-                                thread.Start(new InvParam { TypeInvoke = TypeInvoke.b, Vs = form.vs, MethodInfo = methodInfo.MethodInfo });
+                                thread.Start(new InvParam { TypeInvoke = TypeInvoke.ParameterizedForm, Vs = form.vs, MethodInfo = methodInfo });
                             }
                         }
                     else
-                        thread.Start(new InvParam { TypeInvoke = TypeInvoke.c, MethodInfo = methodInfo.MethodInfo });
+                        thread.Start(new InvParam { TypeInvoke = TypeInvoke.WithoutForm, MethodInfo = methodInfo });
                 }
                 SelectedForm.UpdateImage();
                 BaseLibrary.BaseMethods.LoadOutputImage(outputImage);
@@ -248,7 +266,7 @@ namespace TPR_ExampleView
 
         private class InvParam
         {
-            public MethodInfo MethodInfo { get; set; }
+            public MyMethodInfo MethodInfo { get; set; }
             public Form Form { get; set; }
             public BaseForm BaseForm { get; set; }
             public FormP FormP { get; set; }
@@ -257,41 +275,50 @@ namespace TPR_ExampleView
         }
         private enum TypeInvoke
         {
-            a,b,c
+            CustomForm,ParameterizedForm,WithoutForm
         }
         private static void InvMethod(object param)
         {
             if (param is InvParam invParam)
             {
                 OutputImage outputImage = null;
+#if !test
                 try
                 {
+#endif
                     switch (invParam.TypeInvoke)
                     {
-                        case TypeInvoke.a:
-                            if (invParam.BaseForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                            {
-                                outputImage = invParam.BaseForm.OutputImage;
-                            }
-                            break;
-                        case TypeInvoke.b:
-                            
-                                outputImage = invParam.MethodInfo.Invoke(null, invParam.Vs) as OutputImage;
-                                SelectedForm.Invoke(new MethodInvoker(() => SelectedForm.Update()));
+                        case TypeInvoke.CustomForm:
+                            BaseForm form = invParam.BaseForm;
+                        //if(form.Vs[0] is InputImage inputImage)
+                        //{
+                        //}
+                        if (form.IsInvoked)
+#pragma warning disable CS0612 // Тип или член устарел
+                            outputImage = form.OutputImage;
+#pragma warning restore CS0612 // Тип или член устарел
+                        else
+                            outputImage = form.MethodInfo.Invoke(null, form.Vs) as OutputImage;
+                        break;
+                        case TypeInvoke.ParameterizedForm:
+                                outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, invParam.Vs) as OutputImage;
 
                             break;
-                        case TypeInvoke.c:
-                            outputImage = invParam.MethodInfo.Invoke(null, new object[] { SelectedImage }) as OutputImage;
+                        case TypeInvoke.WithoutForm:
+                        if (invParam.MethodInfo.IsInputImage)
+                            outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { new InputImage(SelectedImage, MainForm.CreateTask(invParam.MethodInfo)) }) as OutputImage;
+
+                        //    MainForm.Invoke(new Action(()=>
+                        //   { outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { new InputImage(SelectedImage, MainForm.CreateTask(invParam.MethodInfo)) }) as OutputImage; }
+                        //));
+                        else outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { SelectedImage }) as OutputImage;
                             break;
                         default:
                             break;
                     }
-
-                    
-
-
-
-                }
+                    SelectedForm.Invoke(new MethodInvoker(() => SelectedForm.Update()));
+#if !test
+            }
                 catch (TargetInvocationException ex)
                 {
                     System.Windows.Forms.MessageBox.Show(ex.InnerException.Message);
@@ -300,9 +327,12 @@ namespace TPR_ExampleView
                 {
                     System.Windows.Forms.MessageBox.Show(ex.Message);
                 }
-                MainForm.Invoke(new MethodInvoker(()=>{
-                    BaseLibrary.BaseMethods.LoadOutputImage(outputImage);
-                }));
+#endif
+                if (outputImage != null)
+                    MainForm.Invoke(new MethodInvoker(() =>
+                    {
+                        BaseLibrary.BaseMethods.LoadOutputImage(outputImage);
+                    }));
             }
         }
         public void Clear()
@@ -315,6 +345,7 @@ namespace TPR_ExampleView
 
     internal class MyMethodInfo
     {
+        public bool IsInputImage;
         public MethodInfo MethodInfo { get; }
         public string[] Hierarchy { get => ImgMethod.Hierarchy; }
         public CustomForm CustomForm { get; }
@@ -322,12 +353,13 @@ namespace TPR_ExampleView
         public ImgMethod ImgMethod { get; }
         public Assembly Assembly { get => MethodInfo.Module.Assembly; }
         public Module Module { get => MethodInfo.Module; }
-        public MyMethodInfo(MethodInfo methodInfo)
+        public MyMethodInfo(MethodInfo methodInfo, bool isInputImage)
         {
             MethodInfo = methodInfo;
             ImgMethod = methodInfo.GetCustomAttribute<ImgMethod>();
             CustomForm = methodInfo.GetCustomAttribute<CustomForm>();
             AutoForms = methodInfo.GetCustomAttributes<AutoForm>().ToArray();
+            IsInputImage = isInputImage;
         }
     }
 
@@ -337,15 +369,15 @@ namespace TPR_ExampleView
         MyMethodInfo methodInfo;
         IImage image;
         Type[] Types;
-        System.Windows.Forms.Button OK = new System.Windows.Forms.Button { Text = "OK", DialogResult = System.Windows.Forms.DialogResult.OK };
-        System.Windows.Forms.Button Cancel = new System.Windows.Forms.Button { Text = "Отмена", DialogResult = System.Windows.Forms.DialogResult.Cancel };
-        System.Windows.Forms.TextBox[] textBoxes;
-        System.Windows.Forms.FlowLayoutPanel flp = new System.Windows.Forms.FlowLayoutPanel
+        Button OK = new System.Windows.Forms.Button { Text = "OK", DialogResult = System.Windows.Forms.DialogResult.OK };
+        Button Cancel = new System.Windows.Forms.Button { Text = "Отмена", DialogResult = System.Windows.Forms.DialogResult.Cancel };
+        TextBox[] textBoxes;
+        FlowLayoutPanel flp = new System.Windows.Forms.FlowLayoutPanel
         {
             FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft,
             Dock = System.Windows.Forms.DockStyle.Fill
         };
-        System.Windows.Forms.TableLayoutPanel tlp = new System.Windows.Forms.TableLayoutPanel
+        TableLayoutPanel tlp = new System.Windows.Forms.TableLayoutPanel
         {
             Dock = System.Windows.Forms.DockStyle.Fill,
             ColumnCount = 1,
@@ -385,14 +417,18 @@ namespace TPR_ExampleView
             {
                 jRoot = JObject.Parse(File.ReadAllText(asm));
                 jDict = (JObject)jRoot[methodInfo.MethodInfo.Name];
-                foreach (var item in jDict)
+                try
                 {
-                    TextBox textBox = textBoxes.Where(a => ((ParameterInfo)a.Tag).Name == item.Key).FirstOrDefault();
-                    if(textBox!=null)
+                    foreach (var item in jDict)
                     {
-                        textBox.Text = item.Value.ToObject<string>();
+                        TextBox textBox = textBoxes.Where(a => ((ParameterInfo)a.Tag).Name == item.Key).FirstOrDefault();
+                        if (textBox != null)
+                        {
+                            textBox.Text = item.Value.ToObject<string>();
+                        }
                     }
                 }
+                catch { }
             }
         }
         public FormP(AutoForm[] formAuto, MyMethodInfo methodInfo, IImage image) : base()
@@ -429,7 +465,7 @@ namespace TPR_ExampleView
                 if (DialogResult == System.Windows.Forms.DialogResult.OK)
                 {
                     vs = new object[textBoxes.Length + 1];
-                    vs[0] = image;
+                    vs[0] = methodInfo.IsInputImage ? new InputImage(image, MenuMethod.MainForm.CreateTask(methodInfo)) : (object)image;
                     for (int i = 0; i < Types.Length; i++)
                     {
                         try
