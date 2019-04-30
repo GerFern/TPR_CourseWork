@@ -101,14 +101,19 @@ namespace TPR_ExampleView
         }
         protected override void OnPaint(PaintEventArgs pe)
         {
-            if(SelectedIndex>=0)
-            base.OnPaint(pe);
+            if (SelectedIndex >= 0)
+                base.OnPaint(pe);
         }
         //method for drawing tab items 
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
             base.OnDrawItem(e);
-            bool selected = this.SelectedTab == this.TabPages[e.Index];
+            bool selected;
+            try
+            {
+                selected = this.SelectedTab == this.TabPages[e.Index];
+            }
+            catch { selected = false; }
             Rectangle rc = GetTabRect(e.Index);
             if (selected)
             {
@@ -142,17 +147,17 @@ namespace TPR_ExampleView
                     break;
                 case TabAlignment.Left:
                     paddedBounds.X += 9;
-                    if(ShowClose)
+                    if (ShowClose)
                     {
                         paddedBounds.Y -= 10;
                     }
                     else
                     {
-                        paddedBounds.Y -= paddedBounds.Height/2;
+                        paddedBounds.Y -= paddedBounds.Height / 2;
                     }
-                    if (selected) paddedBounds.Y+= 7;
-                        e.Graphics.DrawRotatedText(paddedBounds.X, paddedBounds.Y, 90, text, this.Font, new SolidBrush(forecolor));
-                        //e.Graphics.drawRotatedText(paddedBounds.X+2, paddedBounds.Y-24, 90, this.TabPages[e.Index].Text, this.Font, new SolidBrush(forecolor));
+                    if (selected) paddedBounds.Y += 7;
+                    e.Graphics.DrawRotatedText(paddedBounds.X, paddedBounds.Y, 90, text, this.Font, new SolidBrush(forecolor));
+                    //e.Graphics.drawRotatedText(paddedBounds.X+2, paddedBounds.Y-24, 90, this.TabPages[e.Index].Text, this.Font, new SolidBrush(forecolor));
 
                     //e.Graphics.TranslateTransform(sz.Width / 2, sz.Height / 2);
                     //sz = e.Graphics.MeasureString(this.TabPages[e.Index].Text, this.Font);
@@ -188,10 +193,10 @@ namespace TPR_ExampleView
                 {
                     e.Graphics.FillRectangle(br, rrr);
                 }
-                if(selected)
-                e.Graphics.DrawString("X", new Font("Calibri", 9, FontStyle.Bold), Brushes.White, e.Bounds.Right + 1 - 18, e.Bounds.Top + 4);
+                if (selected)
+                    e.Graphics.DrawString("X", new Font("Calibri", 9, FontStyle.Bold), Brushes.White, e.Bounds.Right + 1 - 18, e.Bounds.Top + 4);
                 else
-                e.Graphics.DrawString("X", new Font("Calibri", 9, FontStyle.Bold), Brushes.White, e.Bounds.Right + 1 - 15, e.Bounds.Top + 4);
+                    e.Graphics.DrawString("X", new Font("Calibri", 9, FontStyle.Bold), Brushes.White, e.Bounds.Right + 1 - 15, e.Bounds.Top + 4);
             }
             e.DrawFocusRectangle();
         }
@@ -199,7 +204,7 @@ namespace TPR_ExampleView
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if(ShowClose)
+            if (ShowClose)
             {
                 for (int i = 0; i < this.TabPages.Count; i++)
                 {
@@ -239,7 +244,7 @@ namespace TPR_ExampleView
             g.RotateTransform(angle); // Rotate text
             g.TranslateTransform(-x, -y); // Reset translate transform
             SizeF size = g.MeasureString(text, font); // Get size of rotated text (bounding box)
-            g.DrawString(text, font, brush, new PointF(x + size.Width / 2.0f, y - size.Height / 2.0f )); // Draw string centered in x, y (x + size.Width / 2.0f, y - size.Height ))
+            g.DrawString(text, font, brush, new PointF(x + size.Width / 2.0f, y - size.Height / 2.0f)); // Draw string centered in x, y (x + size.Width / 2.0f, y - size.Height ))
             g.ResetTransform(); // Only needed if you reuse the Graphics object for multiple calls to DrawString
         }
     }

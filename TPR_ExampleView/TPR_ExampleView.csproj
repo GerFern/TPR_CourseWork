@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dll_Init.cs" />
+    <Compile Include="Dll_LoadInSolution.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -163,6 +164,12 @@
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
       <Project>{cf3ccd2e-c24f-460e-904a-677be24f3842}</Project>
       <Name>BaseLibrary</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\ClassLibrary2\ClassLibrary2.csproj">
+      <Project>{b8db105d-e712-4edf-bc74-18804ec2ccf1}</Project>
+      <Name>ClassLibrary2</Name>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\ExplorerImage\ExplorerImage.csproj">
       <Project>{bd244bb0-4a77-4a7f-8fc5-0bbf79e9a0cf}</Project>
@@ -171,6 +178,11 @@
     <ProjectReference Include="..\ImageCollection\ImageCollection.csproj">
       <Project>{c43cbba3-3098-474d-a8e5-d58bcd0d1591}</Project>
       <Name>ImageCollection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\myLab\myLab.csproj">
+      <Project>{4b9d67fd-b4c2-4bc8-bdcb-129e00c0c778}</Project>
+      <Name>myLab</Name>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\TestLibrary\TestLibrary.csproj">
       <Project>{61858e9e-5fe8-4805-b778-cbe06d65a31f}</Project>

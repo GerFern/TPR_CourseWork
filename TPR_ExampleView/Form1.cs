@@ -121,7 +121,7 @@ namespace TPR_ExampleView
             WriteToOutput,
             new GetProgressBar((InputImage img) => progressDict.ContainsKey(img.ID) ? progressDict[img.ID] : null));
             //BaseMethods.On_Writing += WriteToOutput;
-            DLL_Init.AssemblyInSolution = "TestLibrary";
+            //DLL_Init.AssemblyInSolution = "myLab";
             DLL_Init.Init(menuStrip1); 
         }
 
@@ -288,11 +288,6 @@ namespace TPR_ExampleView
             }
         }
 
-        private void TToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new Test().ShowDialog();
-        }
-
         private void СкрыватьБоковоеМенюToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             if(((ToolStripMenuItem)sender).Checked)
@@ -377,12 +372,5 @@ namespace TPR_ExampleView
             }));
             return id_gen++;
         }
-
-        private void ToolStripMenuItem2_Click(object sender, EventArgs e)
-        {
-            CreateTask(null);
-        }
-
-        
     }
 }

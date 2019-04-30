@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /ClassLibrary2
+/MyLab

@@ -59,7 +59,7 @@ namespace TestLibrary
 
         [ImgMethod("Фильтр", "Гауссовое размытие")]
         [CustomForm(typeof(Form1))]//Своя форма для метода
-        public static OutputImage GausForm(InputImage inputImage, int iteration, int iterTime, int kernelSize)
+        public static OutputImage GausForm(InputImage inputImage, int iteration, int iterTime, int kernelSize, bool new_img)
         {
             dynamic img = inputImage.Image;
             inputImage.Progress.Run(1, iteration);
@@ -69,17 +69,18 @@ namespace TestLibrary
                 inputImage.Progress.PerformStep();
             }
             inputImage.Progress.Finish();
-            return new OutputImage
-            {
-                Image = img.SmoothGaussian(kernelSize)
-            };
+            img = img.SmoothGaussian(kernelSize);
+            if (new_img)
+                return new OutputImage { UpdateSelectedImage = img };
+            else
+                return new OutputImage { Image = img };
         }
 
         [ImgMethod("Отладка")]
         [CustomForm(typeof(Debug))]
         public static OutputImage Debug(IImage image)
         {
-            
+
             return new OutputImage { Image = image };
         }
 
@@ -88,7 +89,7 @@ namespace TestLibrary
         /// </summary>
         /// <param name="image"></param>
         /// <returns></returns>
-        [ImgMethod("Формы","FloodFill (с координатами)")]
+        [ImgMethod("Формы", "FloodFill (с координатами)")]
         public static OutputImage TestCoord(IImage image)
         {
             SelectCoord form = new SelectCoord(image);
@@ -107,7 +108,7 @@ namespace TestLibrary
             return new OutputImage { Image = res, Name = "FloodFill" };
         }
 
-        [ImgMethod("Прогресс","Без форм")]
+        [ImgMethod("Прогресс", "Без форм")]
         public static OutputImage ProgressTest(InputImage inputImage)
         {
             //MessageBox.Show("Hello");

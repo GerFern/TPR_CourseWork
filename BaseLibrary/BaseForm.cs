@@ -19,6 +19,7 @@ namespace BaseLibrary
         /// Результат
         /// </summary>
         public OutputImage OutputImage { get => outputImage; }
+        public InputImage InputImage { get; }
         public bool IsInvoked { get; private set; }
         private OutputImage outputImage;
         public MethodInfo MethodInfo { get; }
@@ -29,6 +30,8 @@ namespace BaseLibrary
         /// <summary>
         /// Входное изображение для обработки
         /// </summary>
+        public IImage Image { get; }
+        [Obsolete("Используйте свойство Image", true)]
         public IImage image;
         /// <summary>
         /// Здесь будут храниться параметры для функции. Элемент с индексом 0 должен соответсвовать интерфейсу <see cref="Emgu.CV.IImage"/> или быть элементом класса <see cref="InputImage"/>
@@ -45,14 +48,14 @@ namespace BaseLibrary
             InitializeComponent();
             MethodInfo = methodInfo;
             Vs = new object[methodInfo.GetParameters().Length];
-            Vs[0] = image;
+            Vs[0] = Image = image;
         }
         public BaseForm(InputImage inputImage, MethodInfo methodInfo)
         {
             InitializeComponent();
             MethodInfo = methodInfo;
             Vs = new object[methodInfo.GetParameters().Length];
-            Vs[0] = inputImage;
+            Vs[0] = InputImage = inputImage;
         }
 
         [Obsolete("Можно не использовать", false)]
@@ -63,8 +66,8 @@ namespace BaseLibrary
         {
             try
             {
-                if(MethodInfo.GetParameters()[0].ParameterType == typeof(InputImage))
-                outputImage = (OutputImage)MethodInfo.Invoke(null, Vs);
+                if (MethodInfo.GetParameters()[0].ParameterType == typeof(InputImage))
+                    outputImage = (OutputImage)MethodInfo.Invoke(null, Vs);
                 IsInvoked = true;
                 return true;
             }

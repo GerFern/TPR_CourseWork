@@ -34,7 +34,7 @@ namespace BaseLibrary
     /// <para/>Следующие параметры можно определять как угодно
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
-    public class ImgMethod: Attribute
+    public class ImgMethod : Attribute
     {
         public string[] Hierarchy { get; }
         /// <summary>
@@ -135,6 +135,11 @@ namespace BaseLibrary
         public Type TColor { get; }
         public Type TDepth { get; }
         public ProgressInfo Progress { get; }
+        public static IImage Convert<TColor, TDepth>(IImage image) where TColor : struct, IColor where TDepth : new()
+        {
+            dynamic t = image;
+            return t.Convert<TColor, TDepth>();
+        }
 
         public InputImage(IImage image, int ID)
         {
@@ -267,7 +272,7 @@ namespace BaseLibrary
         /// <summary>
         /// Предназначено для обновления выбранного изображения
         /// </summary>
-        public ImageForm UpdateSelectedImage { get; set; }
+        public IImage UpdateSelectedImage { get; set; }
     }
 
     public delegate ImageForm OutputImageInvoker(OutputImage outputImage);
@@ -319,12 +324,12 @@ namespace BaseLibrary
         /// <param name="outputImage"></param>
         public static void LoadOutputImage(OutputImage outputImage)
         {
-            BaseMethods.Invoke(new Action(()=> _loadOutputImage?.Invoke(outputImage)));
+            BaseMethods.Invoke(new Action(() => _loadOutputImage?.Invoke(outputImage)));
         }
 
         public static ImageForm CreateFormFromOutputImage(OutputImage outputImage)
         {
-            return _createFormFromOutputImage == null 
+            return _createFormFromOutputImage == null
                 ? null
                 : _createFormFromOutputImage.Invoke(outputImage);
         }
@@ -397,7 +402,7 @@ namespace BaseLibrary
         public delegate void MesWrites(string s);
         public static event MesWrites On_Writing;
 
-        static void WriteMessege(string s)
+        public static void WriteLog(string s)
         {
             On_Writing(s);
         }

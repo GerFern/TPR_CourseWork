@@ -64,7 +64,7 @@ namespace TPR_ExampleView
                                         MenuMethod.Add(mmi);
                                     }
                                 }
-                                else if(t == TypeDefInputImage)
+                                else if (t == TypeDefInputImage)
                                 {
                                     MyMethodInfo mmi = new MyMethodInfo(item2, true);
                                     classItem.Methods.Add(mmi);
@@ -219,9 +219,9 @@ namespace TPR_ExampleView
             {
                 using (Form f = new Form())
                 {
-                    TableLayoutPanel tlp = new TableLayoutPanel { RowCount=1, ColumnCount = 3, Parent = f, Dock = DockStyle.Fill};
+                    TableLayoutPanel tlp = new TableLayoutPanel { RowCount = 1, ColumnCount = 3, Parent = f, Dock = DockStyle.Fill };
                     ComboBox comboBox = new ComboBox();
-                    
+
                 }
                 //Если есть неоднозначности в выборе метода
                 //Доделать с выбором через форму определенного метода
@@ -237,12 +237,12 @@ namespace TPR_ExampleView
                 {
                     Type formType = formCustom.FormType;
                     BaseForm form;
-                    if(methodInfo.IsInputImage) form = Activator.CreateInstance(formType, new InputImage(SelectedImage, MainForm.CreateTask(methodInfo)), methodInfo.MethodInfo) as BaseForm;
+                    if (methodInfo.IsInputImage) form = Activator.CreateInstance(formType, new InputImage(SelectedImage, MainForm.CreateTask(methodInfo)), methodInfo.MethodInfo) as BaseForm;
                     else form = Activator.CreateInstance(formType, SelectedImage, methodInfo.MethodInfo) as BaseForm;
                     using (form)
                     {
-                        if(form.ShowDialog()==DialogResult.OK)
-                        thread.Start(new InvParam { TypeInvoke = TypeInvoke.CustomForm, BaseForm = form });
+                        if (form.ShowDialog() == DialogResult.OK)
+                            thread.Start(new InvParam { TypeInvoke = TypeInvoke.CustomForm, BaseForm = form });
                     }
                 }
                 else
@@ -275,7 +275,7 @@ namespace TPR_ExampleView
         }
         private enum TypeInvoke
         {
-            CustomForm,ParameterizedForm,WithoutForm
+            CustomForm, ParameterizedForm, WithoutForm
         }
         private static void InvMethod(object param)
         {
@@ -286,10 +286,10 @@ namespace TPR_ExampleView
                 try
                 {
 #endif
-                    switch (invParam.TypeInvoke)
-                    {
-                        case TypeInvoke.CustomForm:
-                            BaseForm form = invParam.BaseForm;
+                switch (invParam.TypeInvoke)
+                {
+                    case TypeInvoke.CustomForm:
+                        BaseForm form = invParam.BaseForm;
                         //if(form.Vs[0] is InputImage inputImage)
                         //{
                         //}
@@ -300,11 +300,11 @@ namespace TPR_ExampleView
                         else
                             outputImage = form.MethodInfo.Invoke(null, form.Vs) as OutputImage;
                         break;
-                        case TypeInvoke.ParameterizedForm:
-                                outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, invParam.Vs) as OutputImage;
+                    case TypeInvoke.ParameterizedForm:
+                        outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, invParam.Vs) as OutputImage;
 
-                            break;
-                        case TypeInvoke.WithoutForm:
+                        break;
+                    case TypeInvoke.WithoutForm:
                         if (invParam.MethodInfo.IsInputImage)
                             outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { new InputImage(SelectedImage, MainForm.CreateTask(invParam.MethodInfo)) }) as OutputImage;
 
@@ -312,11 +312,11 @@ namespace TPR_ExampleView
                         //   { outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { new InputImage(SelectedImage, MainForm.CreateTask(invParam.MethodInfo)) }) as OutputImage; }
                         //));
                         else outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { SelectedImage }) as OutputImage;
-                            break;
-                        default:
-                            break;
-                    }
-                    SelectedForm.Invoke(new MethodInvoker(() => SelectedForm.Update()));
+                        break;
+                    default:
+                        break;
+                }
+                SelectedForm.Invoke(new MethodInvoker(() => SelectedForm.Update()));
 #if !test
             }
                 catch (TargetInvocationException ex)
@@ -393,7 +393,7 @@ namespace TPR_ExampleView
                 jRoot = JObject.Parse(File.ReadAllText(asm));
             else
                 jRoot = new JObject();
-                Dictionary<String, String> vs = new Dictionary<string, string>();
+            Dictionary<String, String> vs = new Dictionary<string, string>();
             JObject jDict = new JObject();
             foreach (Control item in textBoxes)
             {
@@ -500,23 +500,26 @@ namespace TPR_ExampleView
             {
                 if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-            try
+            foreach (var item in Dll_LoadInSolution.List)
             {
-                if (!string.IsNullOrEmpty(AssemblyInSolution)) assemblies.Add(new AssemblyItem(Assembly.Load(AssemblyInSolution)));
-            }
-            catch
-            {
-                MessageBox.Show($"Не удалось загрузить {AssemblyInSolution}");
+                try
+                {
+                    assemblies.Add(new AssemblyItem(Assembly.Load(item)));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Не удалось загрузить {AssemblyInSolution}{Environment.NewLine}{ex.Message}");
+                }
             }
             foreach (var item in Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories))
             {
                 try
                 {
-                    assemblies.Add(new AssemblyItem(Assembly.LoadFile(Environment.CurrentDirectory +"\\"+ item)));
+                    assemblies.Add(new AssemblyItem(Assembly.LoadFile(Environment.CurrentDirectory + "\\" + item)));
                 }
                 catch (Exception ex)
                 {
