@@ -73,7 +73,18 @@ namespace TPR_ExampleView
 
         private void ToolStripButton2_Click(object sender, EventArgs e)
         {
-            
+            SaveFileDialog sfd = new SaveFileDialog();
+            if(sfd.ShowDialog()==DialogResult.OK)
+            {
+                try
+                {
+                    Image.Save(sfd.FileName);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
 
         private void ToolStripButton3_Click(object sender, EventArgs e)

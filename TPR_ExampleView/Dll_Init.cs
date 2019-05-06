@@ -1,4 +1,4 @@
-﻿#define test
+﻿//#define test
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +40,7 @@ namespace TPR_ExampleView
             Classes = new List<ClassItem>();
             foreach (var item in assembly.ExportedTypes)
             {
-                ImgClass imgClass = item.GetCustomAttribute<ImgClass>();
+                ImgClassAttribute imgClass = item.GetCustomAttribute<ImgClassAttribute>();
                 if (imgClass != null)
                 {
                     ClassItem classItem = new ClassItem(item);
@@ -231,7 +231,7 @@ namespace TPR_ExampleView
             if (methodInfo != null)
             {
                 OutputImage outputImage = null;
-                CustomForm formCustom = methodInfo.CustomForm;
+                CustomFormAttribute formCustom = methodInfo.CustomForm;
                 Thread thread = new Thread(new ParameterizedThreadStart(InvMethod));
                 if (formCustom != null)
                 {
@@ -247,9 +247,8 @@ namespace TPR_ExampleView
                 }
                 else
                 {
-                    var formAuto = methodInfo.AutoForms;
-                    if (formAuto.Count() > 0)
-                        using (FormP form = new FormP(formAuto, methodInfo, SelectedImage))
+                    if (methodInfo.IsAutoForm)
+                        using (FormP form = new FormP(methodInfo, SelectedImage))
                         {
                             if (form.ShowDialog() == DialogResult.OK)
                             {
@@ -345,11 +344,16 @@ namespace TPR_ExampleView
 
     internal class MyMethodInfo
     {
+        public bool IsAutoForm;
         public bool IsInputImage;
         public MethodInfo MethodInfo { get; }
         public string[] Hierarchy { get => ImgMethod.Hierarchy; }
-        public CustomForm CustomForm { get; }
-        public AutoForm[] AutoForms { get; }
+        public CustomFormAttribute CustomForm { get; }
+        public ControlFormAttribute[] ControlForms { get; }
+        public ControlPropertyAttribute[] ControlProperties { get; }
+        public Dictionary<int, List<ControlPropertyAttribute>> DictControlProperties { get; }
+        public AutoFormAttribute[] AutoForms { get; }
+        public TPRFormAttribute[] AutoAndControlForms { get; }
         public ImgMethod ImgMethod { get; }
         public Assembly Assembly { get => MethodInfo.Module.Assembly; }
         public Module Module { get => MethodInfo.Module; }
@@ -357,9 +361,35 @@ namespace TPR_ExampleView
         {
             MethodInfo = methodInfo;
             ImgMethod = methodInfo.GetCustomAttribute<ImgMethod>();
-            CustomForm = methodInfo.GetCustomAttribute<CustomForm>();
-            AutoForms = methodInfo.GetCustomAttributes<AutoForm>().ToArray();
+            CustomForm = methodInfo.GetCustomAttribute<CustomFormAttribute>();
+            AutoForms = methodInfo.GetCustomAttributes<AutoFormAttribute>().ToArray();
+            ControlForms = methodInfo.GetCustomAttributes<ControlFormAttribute>().ToArray();
+            ControlProperties = methodInfo.GetCustomAttributes<ControlPropertyAttribute>().ToArray();
             IsInputImage = isInputImage;
+            IsAutoForm = AutoForms.Length > 0 || ControlForms.Length > 0;
+            DictControlProperties = new Dictionary<int, List<ControlPropertyAttribute>>();
+            if(IsAutoForm)
+            {
+                Type typeAutoForm = typeof(AutoFormAttribute);
+                Type typeControlForm = typeof(ControlFormAttribute);
+                AutoAndControlForms = new TPRFormAttribute[AutoForms.Length + ControlForms.Length];
+                IEnumerator<CustomAttributeData> e = methodInfo.CustomAttributes.GetEnumerator();
+                for (int i = 0; i < AutoAndControlForms.Length; i++)
+                {
+                    e.MoveNext();
+                    while (!(e.Current.AttributeType == typeAutoForm || e.Current.AttributeType == typeControlForm))
+                    {
+                        e.MoveNext();
+                    }
+                    AutoAndControlForms[i] = (TPRFormAttribute)e.Current.Constructor.Invoke(e.Current.ConstructorArguments.Select(a=>a.Value).ToArray());
+                }
+                foreach (var item in ControlProperties)
+                {
+                    if(!DictControlProperties.ContainsKey(item.ParamIndex))
+                        DictControlProperties.Add(item.ParamIndex, new List<ControlPropertyAttribute>());
+                    DictControlProperties[item.ParamIndex].Add(item);
+                }
+            }
         }
     }
 
@@ -371,7 +401,11 @@ namespace TPR_ExampleView
         Type[] Types;
         Button OK = new System.Windows.Forms.Button { Text = "OK", DialogResult = System.Windows.Forms.DialogResult.OK };
         Button Cancel = new System.Windows.Forms.Button { Text = "Отмена", DialogResult = System.Windows.Forms.DialogResult.Cancel };
-        TextBox[] textBoxes;
+        Control[] controls;
+        string[] propertyStr;
+        PropertyInfo[] propertyInfos;
+        int[] indeces;
+        ParameterInfo[] parameters;
         FlowLayoutPanel flp = new System.Windows.Forms.FlowLayoutPanel
         {
             FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft,
@@ -395,11 +429,15 @@ namespace TPR_ExampleView
                 jRoot = new JObject();
             Dictionary<String, String> vs = new Dictionary<string, string>();
             JObject jDict = new JObject();
-            foreach (Control item in textBoxes)
+            for (int i = 0; i < controls.Length; i++)
             {
-                jDict[((ParameterInfo)item.Tag).Name] = item.Text;
-                //vs.Add(((ParameterInfo)item.Tag).Name, item.Text);
+                jDict[parameters[i].Name] = Convert.ToString(propertyInfos[i].GetValue(controls[i]));
             }
+            //foreach (Control item in controls)
+            //{
+            //    jDict[((ParameterInfo)item.Tag).Name] = item.Text;
+            //    //vs.Add(((ParameterInfo)item.Tag).Name, item.Text);
+            //}
             //Newtonsoft.Json.Linq.JObject jDict = new Newtonsoft.Json.Linq.JObject(vs);
             jDict.ToString();
             jRoot[name] = jDict;
@@ -417,70 +455,185 @@ namespace TPR_ExampleView
             {
                 jRoot = JObject.Parse(File.ReadAllText(asm));
                 jDict = (JObject)jRoot[methodInfo.MethodInfo.Name];
-                try
+                //try
+                //{
+                if (jDict != null)
                 {
                     foreach (var item in jDict)
                     {
-                        TextBox textBox = textBoxes.Where(a => ((ParameterInfo)a.Tag).Name == item.Key).FirstOrDefault();
-                        if (textBox != null)
+                        int index = -1;
+                        for (int i = 0; i < parameters.Length; i++)
                         {
-                            textBox.Text = item.Value.ToObject<string>();
+                            if (parameters[i].Name == item.Key)
+                            {
+                                index = i;
+                                break;
+                            }
                         }
+                        if (index >= 0)
+                        {
+                            object nVal = ((IConvertible)item.Value).ToType(propertyInfos[index].PropertyType, System.Globalization.CultureInfo.CurrentCulture);
+                            propertyInfos[index].SetValue(controls[index], nVal);
+                        }
+                        //if (control != null)
+                        //{
+                        //    control.Text = item.Value.ToObject<string>();
+                        //}
                     }
                 }
-                catch { }
+                //}
+                //catch { }
             }
         }
-        public FormP(AutoForm[] formAuto, MyMethodInfo methodInfo, IImage image) : base()
+        public FormP(MyMethodInfo methodInfo, IImage image) : base()
         {
+            PropertyInfo propertyText = typeof(TextBox).GetProperty("Text");
+            int heigth = 80;
             this.AcceptButton = this.OK;
             this.CancelButton = this.Cancel;
-            Types = new Type[formAuto.Length];
-            textBoxes = new System.Windows.Forms.TextBox[formAuto.Length];
             this.image = image;
             this.methodInfo = methodInfo;
+            this.SuspendLayout();
+            tlp.Parent = this;
+            tlp.RowCount = methodInfo.AutoAndControlForms.Length * 2 + 1;
+            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            controls = new Control[methodInfo.AutoAndControlForms.Length];
+            propertyInfos = new PropertyInfo[methodInfo.AutoAndControlForms.Length];
+            propertyStr = new string[methodInfo.AutoAndControlForms.Length];
+            indeces = new int[methodInfo.AutoAndControlForms.Length];
+            parameters = new ParameterInfo[methodInfo.AutoAndControlForms.Length];
+            var unsortParams = methodInfo.MethodInfo.GetParameters();
+            for (int i = 0; i < methodInfo.AutoAndControlForms.Length; i++)
+            {
+                Attribute attribute = methodInfo.AutoAndControlForms[i];
+                RowStyle rowStyle = new RowStyle(SizeType.Absolute, 26);
+                if(attribute is AutoFormAttribute autoForm)
+                {
+                    TextBox tb;
+                    controls[i] = tb = new TextBox { Dock = DockStyle.Fill};
+                    propertyStr[i] = "Text";
+                    propertyInfos[i] = propertyText;
+                    indeces[i] = autoForm.Index;
+                    parameters[i] = unsortParams[autoForm.Index];
+                    if(autoForm.IsMultiline)
+                    {
+                        tb.Multiline = true;
+                        rowStyle.Height = tb.Height = autoForm.TextBoxHeigth;
+                    }
+                    tlp.Controls.Add(new Label { Text = autoForm.LabelText, Dock = DockStyle.Bottom }, 0, i * 2);
+                    tlp.Controls.Add(tb, 0, i * 2 + 1);
+                }
+                else if(attribute is ControlFormAttribute controlForm)
+                {
+                    Control control;
+                    controls[i] = control = (Control)Activator.CreateInstance(controlForm.ControlType);
+                    propertyInfos[i] = controlForm.ControlType.GetProperty(propertyStr[i] = controlForm.Property);
+                    indeces[i] = controlForm.Index;
+                    parameters[i] = unsortParams[controlForm.Index];
+                    control.Dock = DockStyle.Fill;
+                    if (methodInfo.DictControlProperties.ContainsKey(controlForm.Index))
+                        foreach (var item in methodInfo.DictControlProperties[controlForm.Index])
+                        {
+                            if (item.PropertyName == "Height") rowStyle.Height = float.Parse(item.PropertyValue);
+                            //try
+                            //{
+                            PropertyInfo property = controlForm.ControlType.GetProperty(item.PropertyName);
+                            Type propertyType = property.PropertyType;
+                            object nVal = ((IConvertible)item.PropertyValue).ToType(propertyType, System.Globalization.CultureInfo.CurrentCulture);
+                            property.SetValue(control, nVal);
+                            //}
+                            //catch
+                            //{
+
+                            //}
+                        }
+                    tlp.Controls.Add(new Label { Text = controlForm.LabelText, Dock = DockStyle.Bottom }, 0, i * 2);
+                    tlp.Controls.Add(control, 0, i * 2 + 1);
+                }
+                tlp.RowStyles.Add(new RowStyle(SizeType.Absolute, 26));
+                tlp.RowStyles.Add(rowStyle);
+                heigth += (int)rowStyle.Height + 26;
+            }
             flp.Controls.Add(OK);
             flp.Controls.Add(Cancel);
-            tlp.RowCount = (formAuto.Length * 2 + 1);
-            int l = tlp.RowCount - 1;
-            this.Height = 80;
-            for (int i = 0; i < formAuto.Length; i++)
-            {
-                AutoForm item = formAuto.ElementAt(i);
-                Types[i] = item.Type;
-                tlp.Controls.Add(new System.Windows.Forms.Label { Text = item.LabelText, Dock = System.Windows.Forms.DockStyle.Bottom }, 0, i * 2);
-                tlp.Controls.Add(textBoxes[i] = new System.Windows.Forms.TextBox { Dock = System.Windows.Forms.DockStyle.Fill, Tag = methodInfo.MethodInfo.GetParameters()[item.Index] }, 0, i * 2 + 1);
-                tlp.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26));
-                int h;
-                if (item.IsMultiline) h = item.TextBoxHeigth;
-                else h = 26;
-                tlp.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, h));
-                Height += 26 + h;
-            }
-            tlp.Controls.Add(flp, 0, l);
-            Controls.Add(tlp);
+            flp.Dock = DockStyle.Fill;
+            tlp.Controls.Add(flp, 0, tlp.RowCount - 1);
             LoadParams();
+            this.Height = heigth;
+            this.ResumeLayout();
             FormClosing += delegate (object sender, System.Windows.Forms.FormClosingEventArgs e)
             {
                 if (DialogResult == System.Windows.Forms.DialogResult.OK)
                 {
-                    vs = new object[textBoxes.Length + 1];
+                    vs = new object[methodInfo.MethodInfo.GetParameters().Length];
                     vs[0] = methodInfo.IsInputImage ? new InputImage(image, MenuMethod.MainForm.CreateTask(methodInfo)) : (object)image;
-                    for (int i = 0; i < Types.Length; i++)
+                    for (int i = 0; i < controls.Length; i++)
                     {
+                        TPRFormAttribute pFormAttribute = methodInfo.AutoAndControlForms[i];
                         try
                         {
-                            vs[i + 1] = ((IConvertible)textBoxes[i].Text).ToType(Types[i], System.Globalization.CultureInfo.CurrentCulture);
+                            object p = propertyInfos[i].GetValue(controls[i]);
+                            vs[pFormAttribute.Index] = Convert.ChangeType(p, unsortParams[pFormAttribute.Index].ParameterType);
+                            //vs[i + 1] = ((IConvertible)controls[i].Text).ToType(Types[i], System.Globalization.CultureInfo.CurrentCulture);
                         }
-                        catch
+                        catch (Exception ex)
                         {
                             e.Cancel = true;
-                            System.Windows.Forms.MessageBox.Show("Неверный параметр " + i);
+                            MessageBox.Show($"Неверный параметр {pFormAttribute.LabelText} ({i})\r\n{ex.Message}");
                         }
                     }
                 }
                 SaveParams();
             };
+
+
+            //var formAuto = methodInfo.AutoForms;
+            //Types = new Type[formAuto.Length];
+            //textBoxes = new System.Windows.Forms.TextBox[formAuto.Length];
+            //this.image = image;
+            //this.methodInfo = methodInfo;
+            //flp.Controls.Add(OK);
+            //flp.Controls.Add(Cancel);
+            //tlp.RowCount = (formAuto.Length * 2 + 1);
+            //int l = tlp.RowCount - 1;
+            //this.Height = 80;
+            //for (int i = 0; i < formAuto.Length; i++)
+            //{
+            //    AutoFormAttribute item = formAuto.ElementAt(i);
+            //    Types[i] = item.Type;
+            //    tlp.Controls.Add(new System.Windows.Forms.Label { Text = item.LabelText, Dock = System.Windows.Forms.DockStyle.Bottom }, 0, i * 2);
+            //    tlp.Controls.Add(textBoxes[i] = new System.Windows.Forms.TextBox { Dock = System.Windows.Forms.DockStyle.Fill, Tag = methodInfo.MethodInfo.GetParameters()[item.Index] }, 0, i * 2 + 1);
+            //    tlp.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26));
+            //    int h;
+            //    if (item.IsMultiline) h = item.TextBoxHeigth;
+            //    else h = 26;
+            //    tlp.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, h));
+            //    Height += 26 + h;
+            //}
+            //tlp.Controls.Add(flp, 0, l);
+            //Controls.Add(tlp);
+            //LoadParams();
+            //FormClosing += delegate (object sender, System.Windows.Forms.FormClosingEventArgs e)
+            //{
+            //    if (DialogResult == System.Windows.Forms.DialogResult.OK)
+            //    {
+            //        vs = new object[textBoxes.Length + 1];
+            //        vs[0] = methodInfo.IsInputImage ? new InputImage(image, MenuMethod.MainForm.CreateTask(methodInfo)) : (object)image;
+            //        for (int i = 0; i < Types.Length; i++)
+            //        {
+            //            try
+            //            {
+            //                vs[i + 1] = ((IConvertible)textBoxes[i].Text).ToType(Types[i], System.Globalization.CultureInfo.CurrentCulture);
+            //            }
+            //            catch
+            //            {
+            //                e.Cancel = true;
+            //                System.Windows.Forms.MessageBox.Show("Неверный параметр " + i);
+            //            }
+            //        }
+            //    }
+            //    SaveParams();
+            //};
         }
     }
 

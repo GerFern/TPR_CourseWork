@@ -1,6 +1,7 @@
 ﻿using Emgu.CV;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,20 +10,25 @@ using System.Windows.Forms;
 
 namespace BaseLibrary
 {
+    public abstract class TPRAttribute : Attribute
+    {
+
+    }
+
     /// <summary>
     /// Отмечает, что в данном классе имеются статические методы, которые нужно использовать для обработки изображений
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-    public sealed class ImgClass : Attribute
+    public sealed class ImgClassAttribute : Attribute
     {
-        public string StudentName { get; }
+        public string[] Authors { get; }
         /// <summary>
         /// Отмечает, что в данном классе имеются статические методы, которые нужно использовать для обработки изображений
         /// </summary>
-        /// <param name="StudentName">ФИО студента, который выполнил задание</param>
-        public ImgClass(string StudentName)
+        /// <param name="authors">ФИО разработчиков, которые написали код</param>
+        public ImgClassAttribute(params string[] authors)
         {
-            this.StudentName = StudentName;
+            this.Authors = authors;
         }
     }
 
@@ -34,7 +40,7 @@ namespace BaseLibrary
     /// <para/>Следующие параметры можно определять как угодно
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
-    public class ImgMethod : Attribute
+    public class ImgMethod : TPRAttribute
     {
         public string[] Hierarchy { get; }
         /// <summary>
@@ -60,17 +66,8 @@ namespace BaseLibrary
         protected ImgMethod() { }
     }
 
-    /// <summary>
-    /// Отмечает, что для данного метода будет автоматически сконструирована простая форма выбора параметров.
-    /// Если нужно несколько параметров, то необходимо определить несколько таких атрибутов
-    /// </summary>
-    [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
-    public sealed class AutoForm : Attribute
+    public abstract class TPRFormAttribute : TPRAttribute
     {
-        /// <summary>
-        /// Тип параметра
-        /// </summary>
-        public Type Type { get; }
         /// <summary>
         /// Текст параметра
         /// </summary>
@@ -79,6 +76,26 @@ namespace BaseLibrary
         /// Индекс параметра
         /// </summary>
         public int Index { get; }
+
+        protected TPRFormAttribute(string labelText, int index)
+        {
+            LabelText = labelText;
+            Index = index;
+        }
+    }
+
+    /// <summary>
+    /// Отмечает, что для данного метода будет автоматически сконструирована простая форма выбора параметров.
+    /// Если нужно несколько параметров, то необходимо определить несколько таких атрибутов
+    /// </summary>
+    [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
+    public sealed class AutoFormAttribute : TPRFormAttribute
+    {
+        /// <summary>
+        /// Тип параметра
+        /// </summary>
+        public Type Type { get; }
+        
         /// <summary>
         /// Высота элемента <see cref="System.Windows.Forms.TextBox"/> для ввода
         /// </summary>
@@ -91,26 +108,56 @@ namespace BaseLibrary
         /// Отмечает, что для данного метода будет автоматически сконструирована простая форма выбора параметров.
         /// Если нужно несколько параметров, то необходимо определить несколько таких атрибутов
         /// </summary>
-        /// <param name="Index">Индекс параметра метода, начинающийся с 1</param>
-        /// <param name="Type">Тип параметра. Поддерживаются <see cref="int"/>, <see cref="float"/>, <see cref="double"/>. Получить через <see langword="typeof"/></param>
-        /// <param name="LabelText">Название параметра, который будет отображаться в форме.</param>
-        /// <param name="IsMultiline">Многстрочное тесктовое поле/></param>
-        /// <param name="TextBoxHeigth">Высота текстового поля, если свойство <paramref name="IsMultiline"/> == <see langword="true"/></param>
-        public AutoForm(int Index, Type Type, string LabelText, bool IsMultiline = false, int TextBoxHeigth = 26)
+        /// <param name="index">Индекс параметра метода, начинающийся с 1</param>
+        /// <param name="type">Тип параметра. Поддерживаются <see cref="int"/>, <see cref="float"/>, <see cref="double"/>. Получить через <see langword="typeof"/></param>
+        /// <param name="labelText">Название параметра, который будет отображаться в форме.</param>
+        /// <param name="isMultiline">Многстрочное тесктовое поле/></param>
+        /// <param name="textBoxHeigth">Высота текстового поля, если свойство <paramref name="isMultiline"/> == <see langword="true"/></param>
+        public AutoFormAttribute(int index, Type type, string labelText, bool isMultiline = false, int textBoxHeigth = 26) : base(labelText, index)
         {
-            this.Index = Index;
-            this.Type = Type;
-            this.LabelText = LabelText;
-            this.IsMultiline = IsMultiline;
-            this.TextBoxHeigth = TextBoxHeigth;
+            this.Type = type;
+            this.IsMultiline = isMultiline;
+            this.TextBoxHeigth = textBoxHeigth;
         }
+    }
+
+    [System.AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
+    public sealed class ControlFormAttribute : TPRFormAttribute
+    {
+        public ControlFormAttribute(Type controlType, string propertyValue, int index, string labelText) : base(labelText, index)
+        {
+            if (string.IsNullOrEmpty(propertyValue))
+                throw new ArgumentNullException(nameof(propertyValue));
+            if (string.IsNullOrEmpty(labelText))
+                throw new ArgumentNullException(nameof(labelText));
+
+            ControlType = controlType ?? throw new ArgumentNullException(nameof(controlType));
+            Property = propertyValue;
+        }
+
+        public Type ControlType { get; }
+        public string Property { get; }
+    }
+    [System.AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
+    public sealed class ControlPropertyAttribute : TPRAttribute
+    {
+        public ControlPropertyAttribute(string propertyName, string propertyValue, int paramIndex)
+        {
+            PropertyName = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
+            PropertyValue = propertyValue ?? throw new ArgumentNullException(nameof(propertyValue));
+            ParamIndex = paramIndex;
+        }
+
+        public string PropertyName { get; }
+        public string PropertyValue { get; }
+        public int ParamIndex { get; }
     }
 
     /// <summary>
     ///  Отмечает, что для данного метода использоваться особая форма
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
-    public sealed class CustomForm : Attribute
+    public sealed class CustomFormAttribute : TPRAttribute
     {
         /// <summary>
         /// <see cref="Type"/> формы
@@ -121,7 +168,7 @@ namespace BaseLibrary
         /// </summary>
         /// <param name="baseAttribute">Базовый атрибут с необходимыми параметрами</param>
         /// <param name="FormType"><see cref="Type"/> формы. Получить через <see langword="typeof"/>(MyFormClass)</param>
-        public CustomForm(Type FormType)
+        public CustomFormAttribute(Type FormType)
         {
             this.FormType = FormType;
         }
@@ -401,6 +448,13 @@ namespace BaseLibrary
         //static недоступен делегату
         public delegate void MesWrites(string s);
         public static event MesWrites On_Writing;
+
+        public static Point GetCoord(IImage image)
+        {
+            SelectCoord selectCoord = new SelectCoord(image, false);
+            selectCoord.ShowDialog();
+            return selectCoord.SelectedPoint;
+        }
 
         public static void WriteLog(string s)
         {

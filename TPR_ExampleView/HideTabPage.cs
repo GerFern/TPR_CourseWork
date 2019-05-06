@@ -107,7 +107,7 @@ namespace TPR_ExampleView
         //method for drawing tab items 
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
-            base.OnDrawItem(e);
+            //base.OnDrawItem(e);
             bool selected;
             try
             {
@@ -115,6 +115,7 @@ namespace TPR_ExampleView
             }
             catch { selected = false; }
             Rectangle rc = GetTabRect(e.Index);
+           
             if (selected)
             {
                 Color c1 = Color.FromArgb(color1Transparent, active_color1);
@@ -212,7 +213,7 @@ namespace TPR_ExampleView
                     Rectangle closeButton = new Rectangle(r.Right + 1 - 15, r.Top + 4, 12, 12);
                     if (closeButton.Contains(e.Location))
                     {
-                        if (MessageBox.Show("Могут быть потеряны несохраненные данные", "Закрыть вкладку?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        if (MessageBox.Show("Закрыть вкладку?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
                             try
                             {

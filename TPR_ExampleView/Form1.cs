@@ -63,12 +63,13 @@ namespace TPR_ExampleView
                 }
             }
         }
-        
+
 
 
         public Form1()
         {
             InitializeComponent();
+
             MenuMethod.MainForm = this;
             tabDragger = new TabDragger(tabControl1, TabDragBehavior.TabDragOut);
             userControl1.FileSelect += UserControl1_FileSelect;
@@ -85,7 +86,13 @@ namespace TPR_ExampleView
             try { userControl1.SetPath(Properties.Settings.Default.ExplorerPath); }
             catch { userControl1.SetPath(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)); }
             BaseLibrary.ImageForm.SetIsSelectedChangedMethod(new EventHandler<EventArgsWithImageForm>(MenuMethod.ChangeSelected));
-        }
+            HideTabs = true;
+            tabControl2.SelectedIndex = -1;
+            try {
+                throw new Exception("aaa");
+            }
+            catch { }
+            }
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -277,13 +284,40 @@ namespace TPR_ExampleView
         public class ToolStripVerticalSeparator:ToolStripItem
         {
             //public override string Text { get => ""; set { } }
+            bool qwerty = false;
+            public override Rectangle Bounds => DesignMode ? new Rectangle(base.Bounds.Location, new Size(300, base.Bounds.Height)) : base.Bounds;
             protected override void OnPaint(PaintEventArgs e)
             {
-                if (this.Owner != null)
+                Graphics g = e.Graphics;
+                if (this.DesignMode)
                 {
-                    //ToolStripRenderer renderer 
-                    Graphics g = e.Graphics;
-                    g.DrawLine(new Pen(ForeColor), new Point(this.Size.Width / 2, 0), new Point(this.Size.Width / 2, this.Size.Height));
+                    //e.Graphics.Clip = new Region();
+                    Random r = new Random();
+                    if (this.qwerty)
+                    {
+                        qwerty = false;
+                        this.Invalidate();
+                        if (r.Next() % 100 == 0)
+                        {
+                            Thread.Sleep(4321);
+                            //new Form1().Show();
+                            for (int i = 0; i < 20; i++)
+                            {
+                                ControlPaint.FillReversibleRectangle(new Rectangle((r.Next() % 1500)-100, (r.Next() % 1000)-100, r.Next() % 400, r.Next() % 400), Color.FromArgb(r.Next()));
+                            }
+                        }
+                    }
+                    else qwerty = true;
+                    using (System.Drawing.Drawing2D.LinearGradientBrush brush = new System.Drawing.Drawing2D.LinearGradientBrush(
+                        new Point(0, 0), new Point(0, this.Height),
+                        Color.FromArgb(r.Next() % 255, r.Next() % 255, r.Next() % 255),
+                        Color.FromArgb(r.Next() % 255, r.Next() % 255, r.Next() % 255)))
+                        g.FillRectangle(brush, new Rectangle(Point.Empty, this.Size));
+                }
+                else
+                {
+                    using (Pen pen = new Pen(ForeColor))
+                        g.DrawLine(pen, new Point(this.Size.Width / 2, 0), new Point(this.Size.Width / 2, this.Size.Height));
                 }
             }
         }
@@ -371,6 +405,11 @@ namespace TPR_ExampleView
                 tableLayoutPanel1.ResumeLayout();
             }));
             return id_gen++;
+        }
+
+        private void ОтладкаИсключенийToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.debugException = ((ToolStripMenuItem)sender).Checked;
         }
     }
 }

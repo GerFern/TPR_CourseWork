@@ -38,6 +38,7 @@
             this.отображатьФайлыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.добавитьФормуДляИзображенийToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.скрыватьБоковоеМенюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.отладкаИсключенийToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.библиотекиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.открытьПапкуСБиблиотекамиToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -118,7 +119,8 @@
             this.отображатьПапкиToolStripMenuItem,
             this.отображатьФайлыToolStripMenuItem,
             this.добавитьФормуДляИзображенийToolStripMenuItem,
-            this.скрыватьБоковоеМенюToolStripMenuItem});
+            this.скрыватьБоковоеМенюToolStripMenuItem,
+            this.отладкаИсключенийToolStripMenuItem});
             this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
             this.файлToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.файлToolStripMenuItem.Text = "Файл";
@@ -190,6 +192,15 @@
             this.скрыватьБоковоеМенюToolStripMenuItem.Text = "Автоскрытие бокового меню";
             this.скрыватьБоковоеМенюToolStripMenuItem.CheckedChanged += new System.EventHandler(this.СкрыватьБоковоеМенюToolStripMenuItem_CheckedChanged);
             // 
+            // отладкаИсключенийToolStripMenuItem
+            // 
+            this.отладкаИсключенийToolStripMenuItem.CheckOnClick = true;
+            this.отладкаИсключенийToolStripMenuItem.Name = "отладкаИсключенийToolStripMenuItem";
+            this.отладкаИсключенийToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F9)));
+            this.отладкаИсключенийToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.отладкаИсключенийToolStripMenuItem.Text = "Отладка исключений";
+            this.отладкаИсключенийToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОтладкаИсключенийToolStripMenuItem_CheckedChanged);
+            // 
             // библиотекиToolStripMenuItem
             // 
             this.библиотекиToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -216,7 +227,7 @@
             this.toolStripMenuItem1.Enabled = false;
             this.toolStripMenuItem1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(4, 17);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(300, 17);
             // 
             // splitContainer1
             // 
@@ -534,7 +545,7 @@
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "ТПР";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
@@ -613,6 +624,7 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.ToolStripMenuItem скрыватьБоковоеМенюToolStripMenuItem;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.ToolStripMenuItem отладкаИсключенийToolStripMenuItem;
     }
 }
 

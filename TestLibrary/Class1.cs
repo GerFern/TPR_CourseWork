@@ -16,6 +16,13 @@ namespace TestLibrary
     [ImgClass("Лялин М.С.")]//Тут можно указать свое имя, а также пометить, что в этом классе есть методы для обработки изображений
     public static class Class1
     {
+        [ImgMethod("Debug", "Exception")]
+        public static OutputImage TestException(IImage image)
+        {
+            int zero = 0;
+            int t = int.MaxValue / zero;
+            return null;
+        }
         /// <summary>
         /// Преобразование в оттенки серого
         /// </summary>
@@ -35,7 +42,7 @@ namespace TestLibrary
         /// <param name="size">Размер фильтрации (число должно быть положительным и нечетным)</param>
         /// <returns>Обработаное изображение</returns>
         [ImgMethod("Фильтр", "Медианая фильтрация")]
-        [AutoForm(1, typeof(int), "Размер фильтрации")]//Автоматическое построение формы
+        [ControlForm(typeof(NumericUpDown), "Value", 1, "Размер фильтрации")]//Автоматическое построение формы
         public static OutputImage TestMedian(IImage image, int size)
         {
             dynamic img = image;//Простой обход проверки на тип, чтобы не определять универсальные параметры Image используя к рефлексию
@@ -50,7 +57,8 @@ namespace TestLibrary
         /// <param name="s2">Текст 2</param>
         /// <returns></returns>
         [ImgMethod("Анализ", "Тестовое сообщение")]
-        [AutoForm(1, typeof(string), "Текст 1")]
+        //[AutoForm(1, typeof(string), "Текст 1")]
+        [ControlForm(typeof(TextBox), "Text", 1, "Текст_")]
         [AutoForm(2, typeof(string), "Текст 2", true, 100)]//Форма с несколькими параметрами
         public static OutputImage TestMessage(IImage image, string s1, string s2)
         {
@@ -76,12 +84,13 @@ namespace TestLibrary
                 return new OutputImage { Image = img };
         }
 
-        [ImgMethod("Отладка")]
-        [CustomForm(typeof(Debug))]
+        [ImgMethod("Debug", "Point")]
+        //[CustomForm(typeof(Debug))]
         public static OutputImage Debug(IImage image)
         {
-
-            return new OutputImage { Image = image };
+            Point point = BaseMethods.GetCoord(image);
+            MessageBox.Show(point.ToString());
+            return null;
         }
 
         /// <summary>
