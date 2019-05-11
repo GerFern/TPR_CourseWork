@@ -107,10 +107,13 @@ namespace TPR_ExampleView
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
             //base.OnDrawItem(e);
+            if (TabPages.Count <= e.Index) return;
             bool selected;
             try
             {
-                selected = this.SelectedTab == this.TabPages[e.Index];
+                if (this.SelectedTab != null)
+                    selected = this.SelectedTab == this.TabPages[e.Index];
+                else selected = false;
             }
             catch { selected = false; }
             Rectangle rc = GetTabRect(e.Index);
