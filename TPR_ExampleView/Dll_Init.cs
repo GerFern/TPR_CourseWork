@@ -660,7 +660,27 @@ namespace TPR_ExampleView
             {
                 MessageBox.Show(ex.Message);
             }
-            foreach (var item in Dll_LoadInSolution.List)
+            List<string> list = new List<string>();
+            if (!File.Exists("dll_load.conf"))
+            {
+                //  File.Create("dll_load.conf");
+                StreamWriter sw = new StreamWriter("dll_load.conf");
+                sw.WriteLine("TestLibrary");
+                sw.Close();
+                list.Add("TestLibrary");
+            }
+            else
+            {
+                StreamReader sr = new StreamReader("dll_load.conf");
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    list.Add(line);
+
+                }
+                sr.Close();
+            }
+            foreach(var item in list)
             {
                 try
                 {

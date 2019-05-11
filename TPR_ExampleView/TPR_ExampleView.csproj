@@ -89,7 +89,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dll_Init.cs" />
-    <Compile Include="Dll_LoadInSolution.cs" />
     <Compile Include="Controls\ExceptionInfoControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
