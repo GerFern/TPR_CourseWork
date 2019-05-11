@@ -37,7 +37,6 @@
             this.ClientSize = new System.Drawing.Size(441, 255);
             this.Name = "ImageForm";
             this.Text = "ImageForm";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ImageForm_FormClosed);
             this.ResumeLayout(false);
 
         }

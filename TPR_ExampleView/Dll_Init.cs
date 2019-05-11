@@ -259,7 +259,7 @@ namespace TPR_ExampleView
                         thread.Start(new InvParam { TypeInvoke = TypeInvoke.WithoutForm, MethodInfo = methodInfo });
                 }
                 SelectedForm.UpdateImage();
-                BaseLibrary.BaseMethods.LoadOutputImage(outputImage);
+                //BaseLibrary.BaseMethods.LoadOutputImage(outputImage);
             }
         }
 
@@ -285,42 +285,43 @@ namespace TPR_ExampleView
                 try
                 {
 #endif
-                switch (invParam.TypeInvoke)
-                {
-                    case TypeInvoke.CustomForm:
-                        BaseForm form = invParam.BaseForm;
-                        //if(form.Vs[0] is InputImage inputImage)
-                        //{
-                        //}
-                        if (form.IsInvoked)
+                    switch (invParam.TypeInvoke)
+                    {
+                        case TypeInvoke.CustomForm:
+                            BaseForm form = invParam.BaseForm;
+                            //if(form.Vs[0] is InputImage inputImage)
+                            //{
+                            //}
+                            if (form.IsInvoked)
 #pragma warning disable CS0612 // Тип или член устарел
-                            outputImage = form.OutputImage;
+                                outputImage = form.OutputImage;
 #pragma warning restore CS0612 // Тип или член устарел
-                        else
-                            outputImage = form.MethodInfo.Invoke(null, form.Vs) as OutputImage;
-                        break;
-                    case TypeInvoke.ParameterizedForm:
-                        outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, invParam.Vs) as OutputImage;
+                            else
+                                outputImage = form.MethodInfo.Invoke(null, form.Vs) as OutputImage;
+                            break;
+                        case TypeInvoke.ParameterizedForm:
+                            outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, invParam.Vs) as OutputImage;
 
-                        break;
-                    case TypeInvoke.WithoutForm:
-                        if (invParam.MethodInfo.IsInputImage)
-                            outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { new InputImage(SelectedImage, MainForm.CreateTask(invParam.MethodInfo)) }) as OutputImage;
+                            break;
+                        case TypeInvoke.WithoutForm:
+                            if (invParam.MethodInfo.IsInputImage)
+                                outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { new InputImage(SelectedImage, MainForm.CreateTask(invParam.MethodInfo)) }) as OutputImage;
 
-                        //    MainForm.Invoke(new Action(()=>
-                        //   { outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { new InputImage(SelectedImage, MainForm.CreateTask(invParam.MethodInfo)) }) as OutputImage; }
-                        //));
-                        else outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { SelectedImage }) as OutputImage;
-                        break;
-                    default:
-                        break;
-                }
-                SelectedForm.Invoke(new MethodInvoker(() => SelectedForm.Update()));
+                            //    MainForm.Invoke(new Action(()=>
+                            //   { outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { new InputImage(SelectedImage, MainForm.CreateTask(invParam.MethodInfo)) }) as OutputImage; }
+                            //));
+                            else outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { SelectedImage }) as OutputImage;
+                            break;
+                        default:
+                            break;
+                    }
+                    SelectedForm.Invoke(new MethodInvoker(() => SelectedForm.Update()));
 #if !test
-            }
+                }
                 catch (TargetInvocationException ex)
                 {
-                    System.Windows.Forms.MessageBox.Show(ex.InnerException.Message);
+                    MainForm.SetExceptionError(ex.InnerException);
+                    //System.Windows.Forms.MessageBox.Show(ex.InnerException.Message);
                 }
                 catch (Exception ex)
                 {
@@ -328,10 +329,13 @@ namespace TPR_ExampleView
                 }
 #endif
                 if (outputImage != null)
-                    MainForm.Invoke(new MethodInvoker(() =>
-                    {
-                        BaseLibrary.BaseMethods.LoadOutputImage(outputImage);
-                    }));
+                {
+                    BaseLibrary.BaseMethods.LoadOutputImage(outputImage);
+                    //    MainForm.Invoke(new MethodInvoker(() =>
+                    //    {
+                    //        BaseLibrary.BaseMethods.LoadOutputImage(outputImage);
+                    //    }));
+                }
             }
         }
         public void Clear()
@@ -642,7 +646,6 @@ namespace TPR_ExampleView
         /// <summary>
         /// Название библиотеки, находящемся в решении, без помещения в папку с библиотеками. Полезно для отладки<para/>Можно не использовать
         /// </summary>
-        public static string AssemblyInSolution;
         public static string path = "DLL";
         public static string Log { get; set; }
         public static List<AssemblyItem> assemblies = new List<AssemblyItem>();
@@ -665,7 +668,7 @@ namespace TPR_ExampleView
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Не удалось загрузить {AssemblyInSolution}{Environment.NewLine}{ex.Message}");
+                    MessageBox.Show($"Не удалось загрузить {item}{Environment.NewLine}{ex.Message}");
                 }
             }
             foreach (var item in Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories))
@@ -685,5 +688,16 @@ namespace TPR_ExampleView
                 menuTool.Enabled = false;
             }
         }
+    }
+
+    internal class IImageInfo
+    {
+        IImage Image { get; set; }
+        string Text { get; set; }
+        string FileImgPath { get; set; }
+        bool SelectedMult { get; set; }
+        bool IsLoaded { get; set; }
+        bool IsDisposed { get; set; }
+
     }
 }

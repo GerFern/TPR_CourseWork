@@ -31,10 +31,11 @@ namespace TPR_ExampleView
             this.Image = image;
             this.Text = text;
         }
-        public ImageForm(string path):base()
+        public ImageForm(string path, bool register = true) : base(register)
         {
             InitializeComponent();
             //string name = System.IO.Path.GetFileName(path);
+            FilePath = path;
             IsSelectedChanged += ImageForm_IsSelectedChanged;
             Worker.DoWork += new DoWorkEventHandler((Object obj, DoWorkEventArgs arg) =>
             {
@@ -108,8 +109,8 @@ namespace TPR_ExampleView
             //    MenuMethod.SelectedForm = null;
             //    MenuMethod.SelectedImage = null;
             //}
-            this.imageBox.Image.Dispose();
-            backup.Dispose();
+            imageBox.Image?.Dispose();
+            backup?.Dispose();
             this.Close();
         }
 

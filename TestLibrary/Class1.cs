@@ -19,6 +19,11 @@ namespace TestLibrary
         [ImgMethod("Debug", "Exception")]
         public static OutputImage TestException(IImage image)
         {
+            try
+            {
+                throw new Exception("AAAA");
+            }
+            catch { }
             int zero = 0;
             int t = int.MaxValue / zero;
             return null;

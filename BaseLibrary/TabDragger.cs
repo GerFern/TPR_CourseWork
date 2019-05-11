@@ -468,6 +468,7 @@ namespace BaseLibrary
 
         private void DockToTab()
         {
+            tabPage.Text = this.Text;
             if(over!=null)
             {
                 over.Close();
@@ -481,7 +482,10 @@ namespace BaseLibrary
                 }
                 try
                 {
-                    tabControl.TabPages.Insert(tabID, tabPage);
+                    if (tabControl.TabPages.Count > tabID)
+                        tabControl.TabPages.Insert(tabID, tabPage);
+                    else
+                        tabControl.TabPages.Add(tabPage);
                 }
                 catch
                 {

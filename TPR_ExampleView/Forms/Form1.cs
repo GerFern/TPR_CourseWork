@@ -63,13 +63,26 @@ namespace TPR_ExampleView
                 }
             }
         }
-
+        bool _multiImage;
+        bool _multiImageChange = false;
+        public bool MultiImage
+        {
+            get => _multiImage;
+            set
+            {
+                _multiImageChange = true;
+                _multiImage = value;
+                одноИзображениеToolStripMenuItem.Checked = !value;
+                несколькоИзображенийToolStripMenuItem.Checked = value;
+                _multiImageChange = false;
+            }
+        }
 
 
         public Form1()
         {
             InitializeComponent();
-
+            tabPage3.Parent = null;
             MenuMethod.MainForm = this;
             tabDragger = new TabDragger(tabControl1, TabDragBehavior.TabDragOut);
             userControl1.FileSelect += UserControl1_FileSelect;
@@ -83,26 +96,37 @@ namespace TPR_ExampleView
             отображатьФайлыToolStripMenuItem.CheckedChanged += ОтображатьФайлыToolStripMenuItem_CheckedChanged;
             скрытьГалереюToolStripMenuItem.CheckedChanged += СкрытьГалереюToolStripMenuItem_CheckedChanged;
 
-            try { userControl1.SetPath(Properties.Settings.Default.ExplorerPath); }
-            catch { userControl1.SetPath(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)); }
+           
             BaseLibrary.ImageForm.SetIsSelectedChangedMethod(new EventHandler<EventArgsWithImageForm>(MenuMethod.ChangeSelected));
+            BaseLibrary.BaseMethods.NewImageForm += new EventHandler<EventArgsNewImageForm>((object _, EventArgsNewImageForm args) =>
+            {
+                imageList1.Invoke(new Action(() =>
+                    imageList1.Add(new ImageInfo(1, args.ImageForm, args.ImageForm.FilePath))));
+            });
+
             HideTabs = true;
             tabControl2.SelectedIndex = -1;
-            try {
-                throw new Exception("aaa");
-            }
-            catch { }
-            }
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            try { userControl1.SetPath(Properties.Settings.Default.ExplorerPath); }
+            catch { userControl1.SetPath(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)); }
+            MultiImage = false;
             MenuMethod.textBox = textBox1;
             //Инициализация для открытия форм
             BaseMethods.Init(tabControl1,
             //
             new OutputImageInvoker((OutputImage img) =>
             {
-                this.Invoke(new MethodInvoker(() =>
+                if (!this.InvokeRequired) MessageBox.Show("AAA");
+                if(!img.ImageForm.InvokeRequired)
+                {
+                    //img.ImageForm.Show();
+                    //    img.ImageForm.CreateControl();
+                    //if (!img.ImageForm.IsHandleCreated)
+                }
+                this.BeginInvoke(new MethodInvoker(() =>
                     {
                         if (img != null)
                         {
@@ -227,7 +251,26 @@ namespace TPR_ExampleView
         {
             ImageForm imageForm = new ImageForm(path);
             imageForm.ShowFormAsync(path);
+            //imageForm.Worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler((object o, RunWorkerCompletedEventArgs e) =>
+            //    imageList1.Add(new ImageInfo(1, imageForm, path)));
         }
+
+        public IEnumerable<IImage> SelectedImages => imageList1.CheckedImages;
+
+        public void SetExceptionError(Exception ex)
+        {
+            this.Invoke(new Action(() => exceptionList1.SetLastExceptionError(ex)));
+        }
+        public void AddException(Exception exception, bool error) =>
+            this.Invoke(new Action(() =>
+            {
+                if (!tabControl2.TabPages.Contains(tabPage3))
+                {
+                    tabControl2.TabPages.Add(tabPage3);
+                    if (HideTabs) tabControl2.SelectedIndex = -1;
+                }
+                exceptionList1.Add(new ExceptionInfoControl(exception, error));
+            }));
 
         public void OpenImage(IImage image, string text)
         {
@@ -258,17 +301,17 @@ namespace TPR_ExampleView
 
         private void СкрытьГалереюToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.HideExplorer = splitContainer3.Panel1Collapsed = ((ToolStripMenuItem)sender).Checked;
+
         }
 
         private void ОтображатьПапкиToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.ShowDir = userControl1.ShowDir = ((ToolStripMenuItem)sender).Checked;
+
         }
 
         private void ОтображатьФайлыToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.ShowAll = userControl1.ShowAll = ((ToolStripMenuItem)sender).Checked;
+
         }
 
         private void ДобавитьФормуДляИзображенийToolStripMenuItem_Click(object sender, EventArgs e)
@@ -410,6 +453,43 @@ namespace TPR_ExampleView
         private void ОтладкаИсключенийToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             Program.debugException = ((ToolStripMenuItem)sender).Checked;
+        }
+
+        private void AddToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            imageList1.Add(new ImageInfo());
+        }
+
+        private void ExceptionList1_AllClear(object sender, EventArgs e)
+        {
+            if (tabControl2.SelectedIndex == 2) HideTabs = true;
+            tabControl2.TabPages.RemoveAt(2);
+            tabPage3.Text = $"Исключения";
+        }
+
+        private void ExceptionList1_AddException(object sender, EventArgs e)
+        {
+            tabPage3.Text = $"Исключения ({exceptionList1.ExceptionCount})";
+        }
+
+        private void ОдноИзображениеToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_multiImageChange)
+            {
+                var t = ((ToolStripMenuItem)sender);
+                MultiImage = false;
+                if (t.Checked) несколькоИзображенийToolStripMenuItem.Checked = false;
+            }
+        }
+
+        private void НесколькоИзображенийToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_multiImageChange)
+            {
+                var t = ((ToolStripMenuItem)sender);
+                MultiImage = true;
+                if (t.Checked) одноИзображениеToolStripMenuItem.Checked = false;
+            }
         }
     }
 }

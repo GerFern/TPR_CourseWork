@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace TPR_ExampleView
@@ -20,15 +18,15 @@ namespace TPR_ExampleView
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.ThreadException +=
-                new System.Threading.ThreadExceptionEventHandler((object o, System.Threading.ThreadExceptionEventArgs e)
-                =>
-                { MessageBox.Show(e.Exception.Message, "Необработанное исключение"); Debugger.Launch(); });
+                new System.Threading.ThreadExceptionEventHandler((object o, System.Threading.ThreadExceptionEventArgs e) => 
+                    { MessageBox.Show(e.Exception.Message, "Необработанное исключение"); form.SetExceptionError(e.Exception); Debugger.Launch(); Debugger.Break(); });
 
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
             form = new Form1();
             Application.Run(form);
         }
 
+        [DebuggerNonUserCode]
         private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         {
             if (debugException)
@@ -38,9 +36,13 @@ namespace TPR_ExampleView
                     if (Debugger.IsAttached)
                         Debugger.Break();
                     //Проверьте стек вызовов. Код остановлен до перехода в catch
-                    else System.Diagnostics.Debugger.Launch();
+                    else Debugger.Launch();
                 }
             }
+
+            //Уведомление об ошибке
+            if (!(e.Exception is TargetInvocationException||form==null||form.IsDisposed))
+                form.AddException(e.Exception, false);
         }
     }
 }

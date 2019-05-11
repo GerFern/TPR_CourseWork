@@ -97,7 +97,6 @@ namespace TPR_ExampleView
         public MyTabControl()
         {
             this.DrawMode = TabDrawMode.OwnerDrawFixed;
-            this.Padding = new System.Drawing.Point(22, 4);
         }
         protected override void OnPaint(PaintEventArgs pe)
         {
@@ -120,7 +119,7 @@ namespace TPR_ExampleView
             {
                 Color c1 = Color.FromArgb(color1Transparent, active_color1);
                 Color c2 = Color.FromArgb(color2Transparent, active_color2);
-                using (LinearGradientBrush br = new LinearGradientBrush(rc, c1, c2, angle))
+                using (LinearGradientBrush br = new LinearGradientBrush(e.Bounds, c1, c2, angle))
                 {
                     e.Graphics.FillRectangle(br, rc);
                 }
@@ -129,58 +128,85 @@ namespace TPR_ExampleView
             {
                 Color c1 = Color.FromArgb(color1Transparent, nonactive_color1);
                 Color c2 = Color.FromArgb(color2Transparent, nonactive_color2);
-                using (LinearGradientBrush br = new LinearGradientBrush(rc, c1, c2, angle))
+                using (LinearGradientBrush br = new LinearGradientBrush(e.Bounds, c1, c2, angle))
                 {
                     e.Graphics.FillRectangle(br, rc);
                 }
             }
 
-            string text = this.TabPages[e.Index].Text;
-            this.TabPages[e.Index].BorderStyle = BorderStyle.FixedSingle;
-            this.TabPages[e.Index].ForeColor = SystemColors.ControlText;
-            SizeF sz = e.Graphics.VisibleClipBounds.Size;
-            SizeF st = e.Graphics.MeasureString(text, this.Font);
-            Rectangle paddedBounds = e.Bounds;
-            paddedBounds.Inflate(-2, -2);
+            TabPage tabPage = TabPages[e.Index];
+            string text = tabPage.Text;
+            Font font = tabPage.Font;
+            Color color = tabPage.ForeColor;
+            Rectangle rectangle = e.Bounds;
+            StringFormat stringFormat = new StringFormat();
             switch (Alignment)
             {
+                case TabAlignment.Top:
+                    stringFormat.Alignment = StringAlignment.Near;
+                    rectangle.Y += 4;
+                    rectangle.X += 5;
+                    break;
                 case TabAlignment.Bottom:
                     break;
                 case TabAlignment.Left:
-                    paddedBounds.X += 9;
-                    if (ShowClose)
-                    {
-                        paddedBounds.Y -= 10;
-                    }
-                    else
-                    {
-                        paddedBounds.Y -= paddedBounds.Height / 2;
-                    }
-                    if (selected) paddedBounds.Y += 7;
-                    e.Graphics.DrawRotatedText(paddedBounds.X, paddedBounds.Y, 90, text, this.Font, new SolidBrush(forecolor));
-                    //e.Graphics.drawRotatedText(paddedBounds.X+2, paddedBounds.Y-24, 90, this.TabPages[e.Index].Text, this.Font, new SolidBrush(forecolor));
-
-                    //e.Graphics.TranslateTransform(sz.Width / 2, sz.Height / 2);
-                    //sz = e.Graphics.MeasureString(this.TabPages[e.Index].Text, this.Font);
-                    ////e.Graphics.RotateTransform(90);
-                    ////paddedBounds.Width += 100;
-                    ////TextRenderer.DrawText(e.Graphics, this.TabPages[e.Index].Text, this.Font, paddedBounds, forecolor);
-                    //e.Graphics.DrawString(this.TabPages[e.Index].Text, this.Font, new SolidBrush(forecolor), -(sz.Width / 2), -(sz.Height / 2));
-                    ////e.Graphics.ResetTransform();
-                    ////e.Graphics.DrawString(this.TabPages[e.Index].Text, this.Font, new SolidBrush(forecolor), paddedBounds);
+                    if (this.SelectedIndex == e.Index)
+                        rectangle.X += 2;
+                    stringFormat.Alignment = StringAlignment.Center;
+                    stringFormat.FormatFlags = StringFormatFlags.DirectionVertical;
                     break;
                 case TabAlignment.Right:
-                    break;
-                default:
-                    if (ShowClose) paddedBounds.X += 3;
-                    if (selected)
-                        e.Graphics.DrawString(text, this.Font, new SolidBrush(forecolor), paddedBounds.X + 2, paddedBounds.Y + 2);
-                    else
-                        e.Graphics.DrawString(text, this.Font, new SolidBrush(forecolor), paddedBounds.X - 1, paddedBounds.Y + 2);
+                    stringFormat.Alignment = StringAlignment.Center;
+                    stringFormat.FormatFlags = StringFormatFlags.DirectionVertical;
                     break;
             }
-            //e.Graphics.DrawString(this.TabPages[e.Index].Text, this.Font, new SolidBrush(forecolor), paddedBounds);
-            e.Graphics.ResetTransform();
+            using (Brush brush = new SolidBrush(color))
+                        e.Graphics.DrawString(text, font, brush, rectangle, stringFormat);
+            //this.TabPages[e.Index].BorderStyle = BorderStyle.FixedSingle;
+            //this.TabPages[e.Index].ForeColor = SystemColors.ControlText;
+            //SizeF sz = e.Graphics.VisibleClipBounds.Size;
+            //SizeF st = e.Graphics.MeasureString(text, this.Font);
+            //Rectangle paddedBounds = e.Bounds;
+            //paddedBounds.Inflate(-2, -2);
+            //switch (Alignment)
+            //{
+            //    case TabAlignment.Bottom:
+            //        break;
+            //    case TabAlignment.Left:
+            //        paddedBounds.X += 9;
+            //        if (ShowClose)
+            //        {
+            //            paddedBounds.Y -= 10;
+            //        }
+            //        else
+            //        {
+            //            paddedBounds.Y -= paddedBounds.Height / 2;
+            //        }
+            //        if (selected) paddedBounds.Y += 7;
+            //        e.Graphics.DrawRotatedText(paddedBounds.X, paddedBounds.Y, 90, text, this.Font, new SolidBrush(forecolor));
+            //        //e.Graphics.drawRotatedText(paddedBounds.X+2, paddedBounds.Y-24, 90, this.TabPages[e.Index].Text, this.Font, new SolidBrush(forecolor));
+
+            //        //e.Graphics.TranslateTransform(sz.Width / 2, sz.Height / 2);
+            //        //sz = e.Graphics.MeasureString(this.TabPages[e.Index].Text, this.Font);
+            //        ////e.Graphics.RotateTransform(90);
+            //        ////paddedBounds.Width += 100;
+            //        ////TextRenderer.DrawText(e.Graphics, this.TabPages[e.Index].Text, this.Font, paddedBounds, forecolor);
+            //        //e.Graphics.DrawString(this.TabPages[e.Index].Text, this.Font, new SolidBrush(forecolor), -(sz.Width / 2), -(sz.Height / 2));
+            //        ////e.Graphics.ResetTransform();
+            //        ////e.Graphics.DrawString(this.TabPages[e.Index].Text, this.Font, new SolidBrush(forecolor), paddedBounds);
+            //        break;
+            //    case TabAlignment.Right:
+            //        break;
+            //    default:
+            //        if (ShowClose) paddedBounds.X += 3;
+            //        if (selected)
+            //            e.Graphics.DrawString(text, this.Font, new SolidBrush(forecolor), paddedBounds.X + 2, paddedBounds.Y + 2);
+            //        else
+            //            e.Graphics.DrawString(text, this.Font, new SolidBrush(forecolor), paddedBounds.X - 1, paddedBounds.Y + 2);
+            //        break;
+            //}
+            ////e.Graphics.DrawString(this.TabPages[e.Index].Text, this.Font, new SolidBrush(forecolor), paddedBounds);
+            //e.Graphics.ResetTransform();
 
             //drawing close button to tab items
             if (ShowClose)
@@ -194,10 +220,19 @@ namespace TPR_ExampleView
                 {
                     e.Graphics.FillRectangle(br, rrr);
                 }
-                if (selected)
-                    e.Graphics.DrawString("X", new Font("Calibri", 9, FontStyle.Bold), Brushes.White, e.Bounds.Right + 1 - 18, e.Bounds.Top + 4);
-                else
-                    e.Graphics.DrawString("X", new Font("Calibri", 9, FontStyle.Bold), Brushes.White, e.Bounds.Right + 1 - 15, e.Bounds.Top + 4);
+                using (Pen pen = new Pen(Color.White,2))
+                {
+                    Point p1 = new Point(rrr.Left + 2, rrr.Top + 2),
+                        p2 = new Point(rrr.Right - 3, rrr.Bottom - 3), 
+                        p3 = new Point(rrr.Left + 2, rrr.Bottom - 3),
+                        p4 = new Point(rrr.Right - 3, rrr.Top + 2);
+                    e.Graphics.DrawLine(pen, p1, p2);
+                    e.Graphics.DrawLine(pen, p3, p4);
+                }
+                    //if (selected)
+                    //    e.Graphics.DrawString("X", new Font("Calibri", 9, FontStyle.Bold), Brushes.White, e.Bounds.Right + 1 - 18, e.Bounds.Top + 4);
+                    //else
+                    //    e.Graphics.DrawString("X", new Font("Calibri", 9, FontStyle.Bold), Brushes.White, e.Bounds.Right + 1 - 15, e.Bounds.Top + 4);
             }
             e.DrawFocusRectangle();
         }
@@ -232,21 +267,8 @@ namespace TPR_ExampleView
 
         public void UpdatePadding()
         {
-            if (ShowClose) Padding = new Point(15, 3);
+            if (ShowClose) Padding = new Point(16, 3);
             else Padding = new Point(6, 3);
-        }
-    }
-
-    static class Extensions
-    {
-        public static void DrawRotatedText(this Graphics g, int x, int y, float angle, string text, Font font, Brush brush)
-        {
-            g.TranslateTransform(x, y); // Set rotation point
-            g.RotateTransform(angle); // Rotate text
-            g.TranslateTransform(-x, -y); // Reset translate transform
-            SizeF size = g.MeasureString(text, font); // Get size of rotated text (bounding box)
-            g.DrawString(text, font, brush, new PointF(x + size.Width / 2.0f, y - size.Height / 2.0f)); // Draw string centered in x, y (x + size.Width / 2.0f, y - size.Height ))
-            g.ResetTransform(); // Only needed if you reuse the Graphics object for multiple calls to DrawString
         }
     }
 }

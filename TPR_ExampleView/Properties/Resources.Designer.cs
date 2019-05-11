@@ -73,9 +73,29 @@ namespace TPR_ExampleView.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap выбрать_все_32 {
+            get {
+                object obj = ResourceManager.GetObject("выбрать_все_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap закрыть_окно_32 {
             get {
                 object obj = ResourceManager.GetObject("закрыть_окно_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap открыть_папку_32 {
+            get {
+                object obj = ResourceManager.GetObject("открыть_папку_32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -116,6 +136,36 @@ namespace TPR_ExampleView.Properties {
         internal static System.Drawing.Bitmap сохранить_32 {
             get {
                 object obj = ResourceManager.GetObject("сохранить_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap удалить_все_32 {
+            get {
+                object obj = ResourceManager.GetObject("удалить_все_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap файл_изображения_32 {
+            get {
+                object obj = ResourceManager.GetObject("файл_изображения_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap форма_32 {
+            get {
+                object obj = ResourceManager.GetObject("форма_32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

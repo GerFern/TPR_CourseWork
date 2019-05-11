@@ -28,20 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.exceptionList1 = new TPR_ExampleView.ExceptionListControl();
+            this.imageList1 = new TPR_ExampleView.ImageList();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.открытьИзображениеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.выбратьПапкуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.скрытьГалереюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.отображатьПапкиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.отображатьФайлыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.добавитьФормуДляИзображенийToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.скрыватьБоковоеМенюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.отладкаИсключенийToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.библиотекиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.открытьПапкуСБиблиотекамиToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.addToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.скрытьГалереюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.отображатьПапкиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.отображатьФайлыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.скрыватьБоковоеМенюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.отладкаИсключенийToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.режимРаботыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.одноИзображениеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.несколькоИзображенийToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new TPR_ExampleView.Form1.ToolStripVerticalSeparator();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -68,6 +75,7 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -95,13 +103,35 @@
             this.splitContainer4.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // exceptionList1
+            // 
+            this.exceptionList1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.exceptionList1.Location = new System.Drawing.Point(3, 3);
+            this.exceptionList1.Name = "exceptionList1";
+            this.exceptionList1.Size = new System.Drawing.Size(173, 341);
+            this.exceptionList1.TabIndex = 0;
+            this.exceptionList1.AllClear += new System.EventHandler(this.ExceptionList1_AllClear);
+            this.exceptionList1.AddException += new System.EventHandler(this.ExceptionList1_AddException);
+            // 
+            // imageList1
+            // 
+            this.imageList1.AutoScroll = true;
+            this.imageList1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imageList1.Location = new System.Drawing.Point(3, 3);
+            this.imageList1.Name = "imageList1";
+            this.imageList1.Size = new System.Drawing.Size(171, 339);
+            this.imageList1.TabIndex = 0;
             // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.файлToolStripMenuItem,
             this.библиотекиToolStripMenuItem,
+            this.addToolStripMenuItem1,
             this.toolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -115,12 +145,7 @@
             this.открытьИзображениеToolStripMenuItem,
             this.toolStripSeparator2,
             this.выбратьПапкуToolStripMenuItem,
-            this.скрытьГалереюToolStripMenuItem,
-            this.отображатьПапкиToolStripMenuItem,
-            this.отображатьФайлыToolStripMenuItem,
-            this.добавитьФормуДляИзображенийToolStripMenuItem,
-            this.скрыватьБоковоеМенюToolStripMenuItem,
-            this.отладкаИсключенийToolStripMenuItem});
+            this.добавитьФормуДляИзображенийToolStripMenuItem});
             this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
             this.файлToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.файлToolStripMenuItem.Text = "Файл";
@@ -129,77 +154,31 @@
             // 
             this.открытьИзображениеToolStripMenuItem.Name = "открытьИзображениеToolStripMenuItem";
             this.открытьИзображениеToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.открытьИзображениеToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.открытьИзображениеToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.открытьИзображениеToolStripMenuItem.Text = "Открыть изображение";
             this.открытьИзображениеToolStripMenuItem.Click += new System.EventHandler(this.открытьИзображениеToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(279, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(264, 6);
             // 
             // выбратьПапкуToolStripMenuItem
             // 
             this.выбратьПапкуToolStripMenuItem.Name = "выбратьПапкуToolStripMenuItem";
             this.выбратьПапкуToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F4)));
-            this.выбратьПапкуToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.выбратьПапкуToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.выбратьПапкуToolStripMenuItem.Text = "Выбрать папку";
             this.выбратьПапкуToolStripMenuItem.Click += new System.EventHandler(this.ВыбратьПапкуToolStripMenuItem_Click);
-            // 
-            // скрытьГалереюToolStripMenuItem
-            // 
-            this.скрытьГалереюToolStripMenuItem.CheckOnClick = true;
-            this.скрытьГалереюToolStripMenuItem.Name = "скрытьГалереюToolStripMenuItem";
-            this.скрытьГалереюToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F5)));
-            this.скрытьГалереюToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
-            this.скрытьГалереюToolStripMenuItem.Text = "Скрыть галерею";
-            // 
-            // отображатьПапкиToolStripMenuItem
-            // 
-            this.отображатьПапкиToolStripMenuItem.Checked = true;
-            this.отображатьПапкиToolStripMenuItem.CheckOnClick = true;
-            this.отображатьПапкиToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.отображатьПапкиToolStripMenuItem.Name = "отображатьПапкиToolStripMenuItem";
-            this.отображатьПапкиToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F6)));
-            this.отображатьПапкиToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
-            this.отображатьПапкиToolStripMenuItem.Text = "Отображать папки";
-            // 
-            // отображатьФайлыToolStripMenuItem
-            // 
-            this.отображатьФайлыToolStripMenuItem.Checked = true;
-            this.отображатьФайлыToolStripMenuItem.CheckOnClick = true;
-            this.отображатьФайлыToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.отображатьФайлыToolStripMenuItem.Name = "отображатьФайлыToolStripMenuItem";
-            this.отображатьФайлыToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F7)));
-            this.отображатьФайлыToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
-            this.отображатьФайлыToolStripMenuItem.Text = "Отображать все файлы";
             // 
             // добавитьФормуДляИзображенийToolStripMenuItem
             // 
             this.добавитьФормуДляИзображенийToolStripMenuItem.Name = "добавитьФормуДляИзображенийToolStripMenuItem";
-            this.добавитьФормуДляИзображенийToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.добавитьФормуДляИзображенийToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.добавитьФормуДляИзображенийToolStripMenuItem.Text = "Добавить форму для изображений";
             this.добавитьФормуДляИзображенийToolStripMenuItem.ToolTipText = "На данной форме можно будет свободно разместить изображения. Все изображения можн" +
     "о перетягивать из вкладок с изображениями";
             this.добавитьФормуДляИзображенийToolStripMenuItem.Click += new System.EventHandler(this.ДобавитьФормуДляИзображенийToolStripMenuItem_Click);
-            // 
-            // скрыватьБоковоеМенюToolStripMenuItem
-            // 
-            this.скрыватьБоковоеМенюToolStripMenuItem.CheckOnClick = true;
-            this.скрыватьБоковоеМенюToolStripMenuItem.Name = "скрыватьБоковоеМенюToolStripMenuItem";
-            this.скрыватьБоковоеМенюToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F8)));
-            this.скрыватьБоковоеМенюToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
-            this.скрыватьБоковоеМенюToolStripMenuItem.Text = "Автоскрытие бокового меню";
-            this.скрыватьБоковоеМенюToolStripMenuItem.CheckedChanged += new System.EventHandler(this.СкрыватьБоковоеМенюToolStripMenuItem_CheckedChanged);
-            // 
-            // отладкаИсключенийToolStripMenuItem
-            // 
-            this.отладкаИсключенийToolStripMenuItem.CheckOnClick = true;
-            this.отладкаИсключенийToolStripMenuItem.Name = "отладкаИсключенийToolStripMenuItem";
-            this.отладкаИсключенийToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F9)));
-            this.отладкаИсключенийToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
-            this.отладкаИсключенийToolStripMenuItem.Text = "Отладка исключений";
-            this.отладкаИсключенийToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОтладкаИсключенийToolStripMenuItem_CheckedChanged);
             // 
             // библиотекиToolStripMenuItem
             // 
@@ -222,6 +201,101 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(246, 6);
             // 
+            // addToolStripMenuItem1
+            // 
+            this.addToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addToolStripMenuItem,
+            this.скрытьГалереюToolStripMenuItem,
+            this.отображатьПапкиToolStripMenuItem,
+            this.отображатьФайлыToolStripMenuItem,
+            this.скрыватьБоковоеМенюToolStripMenuItem,
+            this.отладкаИсключенийToolStripMenuItem,
+            this.режимРаботыToolStripMenuItem});
+            this.addToolStripMenuItem1.Name = "addToolStripMenuItem1";
+            this.addToolStripMenuItem1.Size = new System.Drawing.Size(79, 20);
+            this.addToolStripMenuItem1.Text = "Настройки";
+            // 
+            // addToolStripMenuItem
+            // 
+            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.addToolStripMenuItem.Text = "Add";
+            this.addToolStripMenuItem.Click += new System.EventHandler(this.AddToolStripMenuItem_Click);
+            // 
+            // скрытьГалереюToolStripMenuItem
+            // 
+            this.скрытьГалереюToolStripMenuItem.CheckOnClick = true;
+            this.скрытьГалереюToolStripMenuItem.Name = "скрытьГалереюToolStripMenuItem";
+            this.скрытьГалереюToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F5)));
+            this.скрытьГалереюToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.скрытьГалереюToolStripMenuItem.Text = "Скрыть галерею";
+            this.скрытьГалереюToolStripMenuItem.CheckedChanged += new System.EventHandler(this.СкрытьГалереюToolStripMenuItem_CheckedChanged);
+            // 
+            // отображатьПапкиToolStripMenuItem
+            // 
+            this.отображатьПапкиToolStripMenuItem.Checked = true;
+            this.отображатьПапкиToolStripMenuItem.CheckOnClick = true;
+            this.отображатьПапкиToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.отображатьПапкиToolStripMenuItem.Name = "отображатьПапкиToolStripMenuItem";
+            this.отображатьПапкиToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F6)));
+            this.отображатьПапкиToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.отображатьПапкиToolStripMenuItem.Text = "Отображать папки";
+            this.отображатьПапкиToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОтображатьПапкиToolStripMenuItem_CheckedChanged);
+            // 
+            // отображатьФайлыToolStripMenuItem
+            // 
+            this.отображатьФайлыToolStripMenuItem.Checked = true;
+            this.отображатьФайлыToolStripMenuItem.CheckOnClick = true;
+            this.отображатьФайлыToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.отображатьФайлыToolStripMenuItem.Name = "отображатьФайлыToolStripMenuItem";
+            this.отображатьФайлыToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F7)));
+            this.отображатьФайлыToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.отображатьФайлыToolStripMenuItem.Text = "Отображать все файлы";
+            this.отображатьФайлыToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОтображатьФайлыToolStripMenuItem_CheckedChanged);
+            // 
+            // скрыватьБоковоеМенюToolStripMenuItem
+            // 
+            this.скрыватьБоковоеМенюToolStripMenuItem.CheckOnClick = true;
+            this.скрыватьБоковоеМенюToolStripMenuItem.Name = "скрыватьБоковоеМенюToolStripMenuItem";
+            this.скрыватьБоковоеМенюToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F8)));
+            this.скрыватьБоковоеМенюToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.скрыватьБоковоеМенюToolStripMenuItem.Text = "Автоскрытие бокового меню";
+            this.скрыватьБоковоеМенюToolStripMenuItem.CheckedChanged += new System.EventHandler(this.СкрыватьБоковоеМенюToolStripMenuItem_CheckedChanged);
+            // 
+            // отладкаИсключенийToolStripMenuItem
+            // 
+            this.отладкаИсключенийToolStripMenuItem.CheckOnClick = true;
+            this.отладкаИсключенийToolStripMenuItem.Name = "отладкаИсключенийToolStripMenuItem";
+            this.отладкаИсключенийToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F9)));
+            this.отладкаИсключенийToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.отладкаИсключенийToolStripMenuItem.Text = "Отладка исключений";
+            this.отладкаИсключенийToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОтладкаИсключенийToolStripMenuItem_CheckedChanged);
+            // 
+            // режимРаботыToolStripMenuItem
+            // 
+            this.режимРаботыToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.одноИзображениеToolStripMenuItem,
+            this.несколькоИзображенийToolStripMenuItem});
+            this.режимРаботыToolStripMenuItem.Name = "режимРаботыToolStripMenuItem";
+            this.режимРаботыToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.режимРаботыToolStripMenuItem.Text = "Режим работы";
+            // 
+            // одноИзображениеToolStripMenuItem
+            // 
+            this.одноИзображениеToolStripMenuItem.CheckOnClick = true;
+            this.одноИзображениеToolStripMenuItem.Name = "одноИзображениеToolStripMenuItem";
+            this.одноИзображениеToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.одноИзображениеToolStripMenuItem.Text = "Одно изображение";
+            this.одноИзображениеToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОдноИзображениеToolStripMenuItem_CheckedChanged);
+            // 
+            // несколькоИзображенийToolStripMenuItem
+            // 
+            this.несколькоИзображенийToolStripMenuItem.CheckOnClick = true;
+            this.несколькоИзображенийToolStripMenuItem.Name = "несколькоИзображенийToolStripMenuItem";
+            this.несколькоИзображенийToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.несколькоИзображенийToolStripMenuItem.Text = "Несколько изображений";
+            this.несколькоИзображенийToolStripMenuItem.CheckedChanged += new System.EventHandler(this.НесколькоИзображенийToolStripMenuItem_CheckedChanged);
+            // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Enabled = false;
@@ -243,8 +317,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(435, 219);
-            this.splitContainer1.SplitterDistance = 312;
+            this.splitContainer1.Size = new System.Drawing.Size(409, 219);
+            this.splitContainer1.SplitterDistance = 258;
             this.splitContainer1.TabIndex = 1;
             // 
             // groupBox3
@@ -253,7 +327,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(312, 219);
+            this.groupBox3.Size = new System.Drawing.Size(258, 219);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Окно изображений";
@@ -269,10 +343,10 @@
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.NonActiveTabEndColor = System.Drawing.Color.DimGray;
             this.tabControl1.NonActiveTabStartColor = System.Drawing.Color.RoyalBlue;
-            this.tabControl1.Padding = new System.Drawing.Point(15, 3);
+            this.tabControl1.Padding = new System.Drawing.Point(16, 3);
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.ShowClose = true;
-            this.tabControl1.Size = new System.Drawing.Size(306, 200);
+            this.tabControl1.Size = new System.Drawing.Size(252, 200);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.TextColor = System.Drawing.Color.Navy;
             this.tabControl1.Transparent1 = 150;
@@ -294,7 +368,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.groupBox2);
             this.splitContainer2.Panel2Collapsed = true;
-            this.splitContainer2.Size = new System.Drawing.Size(119, 219);
+            this.splitContainer2.Size = new System.Drawing.Size(147, 219);
             this.splitContainer2.SplitterDistance = 58;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -305,7 +379,7 @@
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.groupBox1.Size = new System.Drawing.Size(119, 219);
+            this.groupBox1.Size = new System.Drawing.Size(147, 219);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Окно вывода";
@@ -316,7 +390,7 @@
             this.textBox1.Location = new System.Drawing.Point(3, 19);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(113, 194);
+            this.textBox1.Size = new System.Drawing.Size(141, 194);
             this.textBox1.TabIndex = 0;
             // 
             // groupBox2
@@ -424,7 +498,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.splitContainer1);
-            this.splitContainer3.Size = new System.Drawing.Size(435, 355);
+            this.splitContainer3.Size = new System.Drawing.Size(409, 355);
             this.splitContainer3.SplitterDistance = 132;
             this.splitContainer3.TabIndex = 2;
             // 
@@ -434,7 +508,7 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox4.Location = new System.Drawing.Point(0, 0);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(435, 132);
+            this.groupBox4.Size = new System.Drawing.Size(409, 132);
             this.groupBox4.TabIndex = 0;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Галерея";
@@ -445,7 +519,7 @@
             this.elementHost1.ForeColor = System.Drawing.SystemColors.InactiveCaption;
             this.elementHost1.Location = new System.Drawing.Point(3, 16);
             this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(429, 113);
+            this.elementHost1.Size = new System.Drawing.Size(403, 113);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.userControl1;
@@ -465,7 +539,7 @@
             // 
             this.splitContainer4.Panel2.Controls.Add(this.splitContainer3);
             this.splitContainer4.Size = new System.Drawing.Size(619, 355);
-            this.splitContainer4.SplitterDistance = 180;
+            this.splitContainer4.SplitterDistance = 206;
             this.splitContainer4.TabIndex = 4;
             // 
             // tabControl2
@@ -475,9 +549,11 @@
             this.tabControl2.Alignment = System.Windows.Forms.TabAlignment.Left;
             this.tabControl2.Controls.Add(this.tabPage1);
             this.tabControl2.Controls.Add(this.tabPage2);
+            this.tabControl2.Controls.Add(this.tabPage3);
             this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl2.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl2.GradientAngle = 0;
+            this.tabControl2.HotTrack = true;
             this.tabControl2.Location = new System.Drawing.Point(0, 0);
             this.tabControl2.Multiline = true;
             this.tabControl2.Name = "tabControl2";
@@ -485,7 +561,7 @@
             this.tabControl2.NonActiveTabStartColor = System.Drawing.Color.RoyalBlue;
             this.tabControl2.SelectedIndex = 0;
             this.tabControl2.ShowClose = false;
-            this.tabControl2.Size = new System.Drawing.Size(180, 355);
+            this.tabControl2.Size = new System.Drawing.Size(206, 355);
             this.tabControl2.TabIndex = 0;
             this.tabControl2.TextColor = System.Drawing.Color.Navy;
             this.tabControl2.Transparent1 = 150;
@@ -504,7 +580,7 @@
             this.tabPage1.Location = new System.Drawing.Point(23, 4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(153, 347);
+            this.tabPage1.Size = new System.Drawing.Size(179, 347);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Задачи";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -520,20 +596,32 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(145, 0);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(171, 0);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tabPage2
             // 
             this.tabPage2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tabPage2.Controls.Add(this.imageList1);
             this.tabPage2.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabPage2.Location = new System.Drawing.Point(23, 4);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(153, 347);
+            this.tabPage2.Size = new System.Drawing.Size(179, 347);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
+            this.tabPage2.Text = "Изображения";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.exceptionList1);
+            this.tabPage3.Location = new System.Drawing.Point(23, 4);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(179, 347);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Исключения";
+            this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -579,19 +667,23 @@
             this.tabControl2.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
+
+        private ExceptionListControl exceptionList1;
+        private ImageList imageList1;
         private ExplorerImage.UserControl1 userControl1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem открытьИзображениеToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem библиотекиToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem открытьПапкуСБиблиотекамиToolStripMenuItem1;
-        private ToolStripVerticalSeparator toolStripMenuItem1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.SplitContainer splitContainer2;
@@ -602,10 +694,7 @@
         private System.Windows.Forms.ToolStripMenuItem выбратьПапкуToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.ToolStripMenuItem скрытьГалереюToolStripMenuItem;
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private System.Windows.Forms.ToolStripMenuItem отображатьПапкиToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem отображатьФайлыToolStripMenuItem;
         private MyTabControl tabControl1;
         private System.Windows.Forms.ToolStripMenuItem добавитьФормуДляИзображенийToolStripMenuItem;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -622,9 +711,19 @@
         private MyTabControl tabControl2;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.ToolStripMenuItem скрыватьБоковоеМенюToolStripMenuItem;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem1;
+        private ToolStripVerticalSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem скрытьГалереюToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem отображатьПапкиToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem отображатьФайлыToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem скрыватьБоковоеМенюToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem отладкаИсключенийToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.ToolStripMenuItem режимРаботыToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem одноИзображениеToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem несколькоИзображенийToolStripMenuItem;
     }
 }
 

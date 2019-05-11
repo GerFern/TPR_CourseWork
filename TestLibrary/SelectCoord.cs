@@ -39,7 +39,7 @@ namespace TestLibrary
         {
             InitializeComponent();
             backup = (IImage)image.Clone();
-            Image = image;
+            Image = (IImage)image.Clone();
             rectImage = new Rectangle(Point.Empty, image.Size);
         }
 

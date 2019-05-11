@@ -14,6 +14,10 @@ namespace BaseLibrary
     public partial class ImageForm : Form
     {
         /// <summary>
+        /// Путь к файлу, если имеется
+        /// </summary>
+        public string FilePath { get; protected set; }
+        /// <summary>
         /// Цвет, который показывается при перетаскивании формы на панель вкладок
         /// </summary>
         [System.ComponentModel.DefaultValue(typeof(Color), "DeepSkyBlue")]
@@ -26,6 +30,12 @@ namespace BaseLibrary
         private bool _cast = false;
         private ImageForm _castForm;
         /// <summary>
+        /// Нужно ли регистрировать данную форму во вкладке с изображениями. 
+        /// Если <see langword="true"/>, то будет вызван <see cref="BaseMethods.NewImageForm"/>.
+        /// Значение устанавливается в конструкторе
+        /// </summary>
+        public bool NeedNewFormRegister { get; }
+        /// <summary>
         /// Основное изображение
         /// </summary>
         public IImage Image
@@ -34,7 +44,7 @@ namespace BaseLibrary
             set
             {
                 SetImage(_image = value);
-                ImageChanged?.Invoke(this, new EventArgs());
+                ImageChanged?.Invoke(this, new EventArgsImage(Image));
             }
         }
         public static ImageForm selected;
@@ -66,7 +76,7 @@ namespace BaseLibrary
         /// <summary>
         /// Если основное изображение изменено
         /// </summary>
-        public event EventHandler ImageChanged;
+        public event EventHandler<EventArgsImage> ImageChanged;
         /// <summary>
         /// Если основное изображение было выделено или наоборот
         /// </summary>
@@ -75,6 +85,47 @@ namespace BaseLibrary
         /// Если название формы изменено
         /// </summary>
         public event EventHandler NameFormChanged;
+
+        //Показать форму
+        public new void Show()
+        {
+            if (this.Parent is TabForm tabForm)
+            {
+                if (tabForm.WindowState == FormWindowState.Minimized) tabForm.WindowState = FormWindowState.Normal;
+                tabForm.Select();
+            }
+            else if (this.Parent is TabPage tabPage)
+            {
+                if (tabPage.Parent is TabControl tabControl)
+                    tabControl.SelectedTab = tabPage;
+            }
+            else ShowForm();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            if (_cast)
+            {
+                Control parent = this.Parent;
+                parent.Controls.Clear();
+                parent.Controls.Add(_castForm);
+            }
+            else if (this.Parent is TabForm tabForm)
+            {
+                tabForm.RestoreTabBeforeClosing = false;
+                tabForm.Close();
+            }
+            else if (this.Parent is TabPage tabPage)
+            {
+                tabPage.Dispose();
+            }
+            if (this.IsSelected)
+            {
+                _isSelectedChanged?.Invoke(this, new EventArgsWithImageForm());
+            }
+            if (Image != null && Image.Ptr != IntPtr.Zero) Image.Dispose();
+            base.OnClosed(e);
+        }
 
         static EventHandler<EventArgsWithImageForm> _isSelectedChanged;
         /// <summary>
@@ -133,6 +184,14 @@ namespace BaseLibrary
         public ImageForm()
         {
             InitializeComponent();
+            NeedNewFormRegister = true;
+            Worker = new BackgroundWorkerImg(this);
+        }
+
+        public ImageForm(bool NeedNewFormRegister)
+        {
+            InitializeComponent();
+            this.NeedNewFormRegister = NeedNewFormRegister;
             Worker = new BackgroundWorkerImg(this);
         }
 
@@ -160,34 +219,33 @@ namespace BaseLibrary
         {
             BaseMethods.ShowForm(this, formBorderStyle, dockStyle);
         }
-        private void ImageForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            if( _cast)
-            {
-                Control parent = this.Parent;
-                parent.Controls.Clear();
-                parent.Controls.Add(_castForm);
-            }
-            else if (this.Parent is TabForm tabForm)
-            {
-                tabForm.RestoreTabBeforeClosing = false;
-                tabForm.Close();
-            }
-            else if (this.Parent is TabPage tabPage)
-            {
-                tabPage.Dispose();
-            }
-            if (this.IsSelected)
-            {
-                _isSelectedChanged?.Invoke(this, new EventArgsWithImageForm());
-            }
-        }
     }
 
+    public class EventArgsImage : EventArgs
+    {
+        /// <summary>
+        /// Изображение
+        /// </summary>
+        public IImage Image { get; }
+        public EventArgsImage(IImage image) => Image = image;
+    }
+
+    /// <summary>
+    /// Выбрано новое изображение
+    /// </summary>
     public class EventArgsWithImageForm : EventArgs
     {
+        /// <summary>
+        /// Форма, к которому принадлежит выделенное изображение (при <see cref="Selected"/> == <see langword="null"/> значение будет <see langword="null"/>)
+        /// </summary>
         public ImageForm Form { get; }
+        /// <summary>
+        /// Изображение (при <see cref="Selected"/> == <see langword="null"/> значение будет <see langword="null"/>)
+        /// </summary>
         public IImage Image { get; }
+        /// <summary>
+        /// Выделено ли
+        /// </summary>
         public bool Selected { get; }
         public EventArgsWithImageForm()
         {
