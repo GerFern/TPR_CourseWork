@@ -261,3 +261,5 @@ __pycache__/
 *.pyc
 /ClassLibrary2
 /MyLab
+
+dll_load.conf
