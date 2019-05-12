@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using BaseLibrary;
 
 namespace ExplorerImage
 {
@@ -53,17 +54,8 @@ namespace ExplorerImage
             Vertical
         }
 
-        private string pathRoot;
         private string path;
-        public string PathRoot
-        {
-            get => pathRoot;
-            set
-            {
-                SetPath(value);
-            }
-        }
-
+        
         private ViewMode view;
         public ViewMode View
         {
@@ -115,7 +107,7 @@ namespace ExplorerImage
             //}
 
             string name = LoadPreview(path, showAll, showDir);
-            this.path = this.pathRoot = path;
+            this.path  = path;
             PathChanged?.Invoke(this, new EventArgsWithFilePath(path, name));
         }
 
@@ -136,7 +128,7 @@ namespace ExplorerImage
             previews.Clear();
             bitmaps.Clear();
 
-            if (/*path != pathRoot &&*/ shellContainer.Parent != null)
+            if (ShowDir && shellContainer.Parent != null)
             {
                 previews.Add(CreatePictureBoxWithLabel("..", shellContainer.Parent.ParsingName, true));
             }
@@ -260,6 +252,7 @@ namespace ExplorerImage
             try
             {
                 PathChanged?.Invoke(this, new EventArgsWithFilePath(path, LoadPreview(path, showAll, showDir)));
+                this.path = path;
                 //fileSystemWatcher1.Changed -= FileSystemWatcher1_Changed;
                 //fileSystemWatcher1.Path = path;
                 //fileSystemWatcher1.Changed += FileSystemWatcher1_Changed;
@@ -397,8 +390,9 @@ namespace ExplorerImage
     {
         public static bool IsImage(this ShellObject SO)
         {
-            string ext = System.IO.Path.GetExtension(SO.ParsingName).ToLower();
-            return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp";
+            return SO.ParsingName.PathIsImage();
+            //string ext = System.IO.Path.GetExtension(SO.ParsingName).ToLower();
+            //return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp";
         }
     }
 }

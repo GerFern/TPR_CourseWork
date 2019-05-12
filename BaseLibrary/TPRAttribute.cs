@@ -34,14 +34,14 @@ namespace BaseLibrary
     /// <para/>Следующие параметры можно определять как угодно
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
-    public class ImgMethod : TPRAttribute
+    public class ImgMethodAttribute : TPRAttribute
     {
         public string[] Hierarchy { get; }
         /// <summary>
         /// Отмечает, что данный метод участвует в обработке изображения и должен быть встроен в программу
         /// <para/> 
         /// <code>
-        /// Пример: [<see cref="ImgMethod"/>("FIO","Фильтр","ч/б")]
+        /// Пример: [<see cref="ImgMethodAttribute"/>("FIO","Фильтр","ч/б")]
         /// <para/>
         /// ImageHandler(IImage image) { ... }
         /// </code>
@@ -53,11 +53,18 @@ namespace BaseLibrary
         /// public ImageOutput(IImage input) {}
         /// </code>
         /// </example>
-        public ImgMethod(params string[] Hierarchy)
+        public ImgMethodAttribute(params string[] Hierarchy)
         {
             this.Hierarchy = Hierarchy;
         }
-        protected ImgMethod() { }
+        protected ImgMethodAttribute() { }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
+    public class MethodNameAttribute : TPRAttribute
+    {
+        public string Name { get; }
+        public MethodNameAttribute(string name) => Name = name ?? throw new ArgumentNullException(nameof(name));
     }
 
     public abstract class TPRFormAttribute : TPRAttribute
@@ -109,7 +116,7 @@ namespace BaseLibrary
         /// <param name="textBoxHeigth">Высота текстового поля, если свойство <paramref name="isMultiline"/> == <see langword="true"/></param>
         public AutoFormAttribute(int index, Type type, string labelText, bool isMultiline = false, int textBoxHeigth = 26) : base(labelText, index)
         {
-            this.Type = type;
+            this.Type = type ?? throw new ArgumentNullException(nameof(type));
             this.IsMultiline = isMultiline;
             this.TextBoxHeigth = textBoxHeigth;
         }
@@ -118,13 +125,10 @@ namespace BaseLibrary
     [System.AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
     public sealed class ControlFormAttribute : TPRFormAttribute
     {
-        public ControlFormAttribute(Type controlType, string propertyValue, int index, string labelText) : base(labelText, index)
+        public ControlFormAttribute(int index, Type controlType, string propertyValue, string labelText) : base(labelText, index)
         {
             if (string.IsNullOrEmpty(propertyValue))
                 throw new ArgumentNullException(nameof(propertyValue));
-            if (string.IsNullOrEmpty(labelText))
-                throw new ArgumentNullException(nameof(labelText));
-
             ControlType = controlType ?? throw new ArgumentNullException(nameof(controlType));
             Property = propertyValue;
         }
@@ -135,7 +139,7 @@ namespace BaseLibrary
     [System.AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
     public sealed class ControlPropertyAttribute : TPRAttribute
     {
-        public ControlPropertyAttribute(string propertyName, string propertyValue, int paramIndex)
+        public ControlPropertyAttribute(int paramIndex, string propertyName, string propertyValue)
         {
             PropertyName = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
             PropertyValue = propertyValue ?? throw new ArgumentNullException(nameof(propertyValue));
@@ -168,5 +172,13 @@ namespace BaseLibrary
         }
     }
 
- 
+    /// <summary>
+    /// Отмечает, что для данного метода не обязательно иметь изображение
+    /// </summary>
+    [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
+    public sealed class ImgCanBeDisposedOrNullAttribute : TPRAttribute { }
+    /// <summary>
+    /// Отмечает, что не следует обращать внимание на вызываемые исключения в этом методе
+    /// </summary>
+    public sealed class DontCatchException : TPRAttribute { }
 }

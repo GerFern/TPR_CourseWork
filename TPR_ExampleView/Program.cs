@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -7,7 +8,8 @@ namespace TPR_ExampleView
 {
     static class Program
     {
-        static Form1 form;
+        public static Form1 mainForm;
+        public static bool catchException = true;
         public static bool debugException = false;
         /// <summary>
         /// Главная точка входа для приложения.
@@ -19,30 +21,42 @@ namespace TPR_ExampleView
             Application.SetCompatibleTextRenderingDefault(false);
             Application.ThreadException +=
                 new System.Threading.ThreadExceptionEventHandler((object o, System.Threading.ThreadExceptionEventArgs e) => 
-                    { MessageBox.Show(e.Exception.Message, "Необработанное исключение"); form.SetExceptionError(e.Exception); Debugger.Launch(); Debugger.Break(); });
+                    { MessageBox.Show(e.Exception.Message, "Необработанное исключение"); mainForm.SetExceptionError(e.Exception); Debugger.Launch(); Debugger.Break(); });
 
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
-            form = new Form1();
-            Application.Run(form);
+            mainForm = new Form1();
+            Application.Run(mainForm);
         }
 
-        [DebuggerNonUserCode]
         private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         {
-            if (debugException)
+            StackFrame stackFrame = new StackFrame();
+            StackTrace stackTrace = new StackTrace();
+            if (!stackTrace.GetFrames().Any(a => a.GetMethod().GetCustomAttribute<BaseLibrary.DontCatchException>() != null))
             {
-                if (MessageBox.Show($"{e.Exception.ToString()}{Environment.NewLine}Приостановть выполнение кода?", "Исключение", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (catchException)
                 {
-                    if (Debugger.IsAttached)
-                        Debugger.Break();
-                    //Проверьте стек вызовов. Код остановлен до перехода в catch
-                    else Debugger.Launch();
+                    if (mainForm.InvokeRequired)
+                        mainForm.Invoke(new Action(() => Message(e)));
+                    else Message(e);
+
+                    //Уведомление об ошибке
+                    if (!(e.Exception is TargetInvocationException || mainForm == null || mainForm.IsDisposed))
+                        mainForm.AddException(e.Exception, false);
                 }
             }
+        }
 
-            //Уведомление об ошибке
-            if (!(e.Exception is TargetInvocationException||form==null||form.IsDisposed))
-                form.AddException(e.Exception, false);
+        private static void Message(System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
+        {
+            if (debugException && MessageBox.Show(mainForm, $"{e.Exception.ToString()}{Environment.NewLine}Приостановть выполнение кода?", "Исключение", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                if (Debugger.IsAttached)
+                    Debugger.Break();
+                //Проверьте стек вызовов. Код остановлен до перехода в catch
+                ///Чтобы не показывать сообщение об исключениях, пометьте метод атрибутом <see cref="BaseLibrary.DontCatchException"/>
+                else Debugger.Launch();
+            }
         }
     }
 }

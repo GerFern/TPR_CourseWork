@@ -16,7 +16,8 @@ namespace TestLibrary
     [ImgClass("Лялин М.С.")]//Тут можно указать свое имя, а также пометить, что в этом классе есть методы для обработки изображений
     public static class Class1
     {
-        [ImgMethod("Debug", "Exception")]
+        [ImgMethod("Test", "Debug", "Exception")]
+        [ImgCanBeDisposedOrNull]
         public static OutputImage TestException(IImage image)
         {
             try
@@ -33,21 +34,35 @@ namespace TestLibrary
         /// </summary>
         /// <param name="image">Оригинальное изображение</param>
         /// <returns>Обработаное изображение</returns>
-        [ImgMethod("Фильтр", "Конвертация", "Оттенки серого")]//Указывается иерархия вкладок в меню программы
+        [ImgMethod("Test", "Фильтр", "Конвертация", "Оттенки серого")]//Указывается иерархия вкладок в меню программы
         public static OutputImage TestGray(Image<Bgr, byte> image)
         {
             Image<Gray, byte> grayImage = image.Convert<Gray, byte>();
             return new OutputImage { Image = grayImage };
         }
 
+        [ImgMethod("Test", "Debug", "for")]
+        public static OutputImage TestFor(InputImage inputImage)
+        {
+            inputImage.Progress.Run(0, 1);
+            for (int i = 0; i < Int32.MaxValue; i++)
+            {
+                for (int j = 0; j < Int32.MaxValue; j++)
+                {
+
+                }
+            }
+            inputImage.Progress.Finish();
+            return null;
+        }
         /// <summary>
         /// Медианная филтрация изображения
         /// </summary>
         /// <param name="image">Оригинальное изображение</param>
         /// <param name="size">Размер фильтрации (число должно быть положительным и нечетным)</param>
         /// <returns>Обработаное изображение</returns>
-        [ImgMethod("Фильтр", "Медианая фильтрация")]
-        [ControlForm(typeof(NumericUpDown), "Value", 1, "Размер фильтрации")]//Автоматическое построение формы
+        [ImgMethod("Test", "Фильтр", "Медианая фильтрация")]
+        [ControlForm(1, typeof(NumericUpDown), "Value", "Размер фильтрации")]//Автоматическое построение формы
         public static OutputImage TestMedian(IImage image, int size)
         {
             dynamic img = image;//Простой обход проверки на тип, чтобы не определять универсальные параметры Image используя к рефлексию
@@ -61,16 +76,16 @@ namespace TestLibrary
         /// <param name="s1">Текст 1</param>
         /// <param name="s2">Текст 2</param>
         /// <returns></returns>
-        [ImgMethod("Анализ", "Тестовое сообщение")]
+        [ImgMethod("Test", "Анализ", "Тестовое сообщение")]
         //[AutoForm(1, typeof(string), "Текст 1")]
-        [ControlForm(typeof(TextBox), "Text", 1, "Текст_")]
+        [ControlForm(1, typeof(TextBox), "Text", "Текст_")]
         [AutoForm(2, typeof(string), "Текст 2", true, 100)]//Форма с несколькими параметрами
         public static OutputImage TestMessage(IImage image, string s1, string s2)
         {
             return new OutputImage { Info = $"Здесь могла быть любая информация для вывода{Environment.NewLine}{s1}{Environment.NewLine}{s2}" };
         }
 
-        [ImgMethod("Фильтр", "Гауссовое размытие")]
+        [ImgMethod("Test", "Фильтр", "Гауссовое размытие")]
         [CustomForm(typeof(Form1))]//Своя форма для метода
         public static OutputImage GausForm(InputImage inputImage, int iteration, int iterTime, int kernelSize, bool new_img)
         {
@@ -89,7 +104,7 @@ namespace TestLibrary
                 return new OutputImage { Image = img };
         }
 
-        [ImgMethod("Debug", "Point")]
+        [ImgMethod("Test", "Debug", "Point")]
         //[CustomForm(typeof(Debug))]
         public static OutputImage Debug(IImage image)
         {
@@ -103,7 +118,7 @@ namespace TestLibrary
         /// </summary>
         /// <param name="image"></param>
         /// <returns></returns>
-        [ImgMethod("Формы", "FloodFill (с координатами)")]
+        [ImgMethod("Test", "Формы", "FloodFill (с координатами)")]
         public static OutputImage TestCoord(IImage image)
         {
             SelectCoord form = new SelectCoord(image);
@@ -122,32 +137,54 @@ namespace TestLibrary
             return new OutputImage { Image = res, Name = "FloodFill" };
         }
 
-        [ImgMethod("Прогресс", "Без форм")]
+        [MethodName("Проверка прогресс бара 1")]
+        [ImgMethod("Test", "Прогресс", "Без формы")]
+        [ImgCanBeDisposedOrNull]
+
         public static OutputImage ProgressTest(InputImage inputImage)
         {
             //MessageBox.Show("Hello");
-            inputImage.Progress.Run(1, 20);
+            bool cancel = false;
+            inputImage.Progress.Run(1, 20, true);
             for (int i = 0; i < 20; i++)
             {
+                if (inputImage.Progress.Cancel)
+                {
+                    cancel = true;
+                    break;
+                }
                 Thread.Sleep(1000);
                 inputImage.Progress.PerformStep();
             }
-            inputImage.Progress.Finish();
+            inputImage.Progress.Finish(cancel);
             return new OutputImage();
         }
-        [ImgMethod("Прогресс", "Параметризированная форма")]
-        [AutoForm(1, typeof(int), "Итераций")]
-        [AutoForm(2, typeof(int), "Перерывы между итерациями")]
-        [AutoForm(3, typeof(bool), "Копировать изображение")]
+        [MethodName("Проверка прогресс бара 2")]
+        [ImgMethod("Test", "Прогресс", "Параметризированная форма")]
+        //[AutoForm(1, typeof(int), "Итераций")]
+        //[AutoForm(2, typeof(int), "Перерывы между итерациями")]
+        [ControlForm(1, typeof(NumericUpDown), "Value", "Итераций")]
+        [ControlProperty(1, "Maximum", "5000")]
+        [ControlForm(2, typeof(NumericUpDown), "Value", "Перерывы между итерациями")]
+        [ControlProperty(2, "Maximum", "5000")]
+        [ControlForm(3, typeof(CheckBox), "Checked", null)]
+        [ControlProperty(3, "Text", "Копировать изображение")]
+        [ImgCanBeDisposedOrNull]
         public static OutputImage ProgressTest(InputImage inputImage, int iteration, int timeIter, bool copy)
         {
-            inputImage.Progress.Run(1, iteration);
+            inputImage.Progress.Run(1, iteration, true);
+            bool cancel = false;
             for (int i = 0; i < iteration; i++)
             {
+                if (inputImage.Progress.Cancel)
+                {
+                    cancel = true;
+                    break;
+                }
                 Thread.Sleep(timeIter);
                 inputImage.Progress.PerformStep();
             }
-            inputImage.Progress.Finish();
+            inputImage.Progress.Finish(cancel);
             return copy ? new OutputImage { Image = inputImage.Image } : new OutputImage();
         }
     }

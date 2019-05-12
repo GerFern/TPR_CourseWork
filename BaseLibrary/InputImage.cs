@@ -6,52 +6,102 @@ namespace BaseLibrary
 {
     public class InputImage
     {
-        public int ID { get; }
+        int _id = -1;
+        public int ID
+        {
+            get => _id; set
+            {
+                if (_id < 0 && value >= 0)
+                {
+                    _id = value;
+                    Progress = new ProgressInfo(this, BaseMethods._getProgressBar.Invoke(this));
+                }
+            }
+        }
+        public string MethodName { get; }
         public IImage Image { get; }
         public Type ImageType { get; }
         public Type TColor { get; }
         public Type TDepth { get; }
-        public ProgressInfo Progress { get; }
+        public ProgressInfo Progress { get; private set; }
         public static IImage Convert<TColor, TDepth>(IImage image) where TColor : struct, IColor where TDepth : new()
         {
             dynamic t = image;
             return t.Convert<TColor, TDepth>();
         }
 
-        public InputImage(IImage image, int ID)
+        public InputImage(IImage image, int ID, string methodName)
         {
-            Image = image ?? throw new ArgumentNullException(nameof(image));
+            Image = image;
             this.ID = ID;
-            ImageType = image.GetType();
-            Type[] t = ImageType.GetGenericArguments();
-            if (t.Length == 2)
+            MethodName = methodName;
+            if (image != null)
             {
-                TColor = t[0];
-                TDepth = t[1];
+                ImageType = image.GetType();
+                Type[] t = ImageType.GetGenericArguments();
+                if (t.Length == 2)
+                {
+                    TColor = t[0];
+                    TDepth = t[1];
+                }
             }
-            Progress = new ProgressInfo(this);
+            //if (ID >= 0)
+            //    Progress = new ProgressInfo(this, BaseMethods._getProgressBar.Invoke(this));
         }
 
         public class ProgressInfo
         {
             //public void Show();
+            public string MethodName => _inputImage.MethodName;
             internal InputImage _inputImage;
+            private readonly InitProgress _initProgress;
+            public int ID { get => _inputImage.ID; }
+
             /// <summary>
-            /// Возвращает или задает наибольшее значение диапозона элемента управления <see cref="ProgressBar"/>
+            /// Можно ли отменять выполнение метода
+            /// </summary>
+            public bool CancelSupport { get; private set; }
+            /// <summary>
+            /// Требуется ли прервать выполнения метода
+            /// </summary>
+            public bool Cancel { get; private set; }
+            /// <summary>
+            /// Отменить выполнение метода извне (в пользовательских библиотеках это использовать не нужно)
+            /// </summary>
+            public void CancelExecute()
+            {
+                if (CancelSupport) Cancel = true;
+            }
+            /// <summary>
+            /// Возвращает или задает наибольшее значение диапозона элемента управления <see cref="System.Windows.Forms.ProgressBar"/>
             /// </summary>
             public int Maximum
             {
-                get => progressBar.Maximum;
-                set => progressBar.Invoke(new Action(() => { progressBar.Maximum = value; }));
+                get => ProgressBar.Maximum;
+                set
+                {
+                    if (ProgressBar.InvokeRequired)
+                        ProgressBar.Invoke(new Action(() => ProgressBar.Maximum = value));
+                    else
+                        ProgressBar.Maximum = value;
+                    ProgressMaximumChanged?.Invoke(this, new EventArgs());
+                }
             }
 
             /// <summary>
-            /// Возвращает или задает наименьшее значение диапозона элемента управления <see cref="ProgressBar"/>
+            /// Возвращает или задает наименьшее значение диапозона элемента управления <see cref="System.Windows.Forms.ProgressBar"/>
             /// </summary>
             public int Minimum
             {
-                get => progressBar.Minimum;
-                set => progressBar.Invoke(new Action(() => { progressBar.Minimum = value; }));
+                get => ProgressBar.Minimum;
+                set
+                {
+                    if (ProgressBar.InvokeRequired)
+                        ProgressBar.Invoke(new Action(() => ProgressBar.Minimum = value));
+                    else
+                        ProgressBar.Minimum = value;
+                    ProgressMinimumChanged?.Invoke(this, new EventArgs());
+                }
             }
 
             /// <summary>
@@ -59,8 +109,15 @@ namespace BaseLibrary
             /// </summary>
             public int Value
             {
-                get => progressBar.Value;
-                set => progressBar.Invoke(new Action(() => { progressBar.Value = value; }));
+                get => ProgressBar.Value;
+                set
+                {
+                    if (ProgressBar.InvokeRequired)
+                        ProgressBar.Invoke(new Action(() => ProgressBar.Value = value));
+                    else
+                        ProgressBar.Value = value;
+                    ProgressValueChanged?.Invoke(this, new EventArgs());
+                }
             }
 
             /// <summary>
@@ -68,8 +125,14 @@ namespace BaseLibrary
             /// </summary>
             public int Step
             {
-                get => progressBar.Step;
-                set => progressBar.Invoke(new Action(() => { progressBar.Step = value; }));
+                get => ProgressBar.Step;
+                set
+                {
+                    if (ProgressBar.InvokeRequired)
+                        ProgressBar.Invoke(new Action(() => ProgressBar.Step = value));
+                    else
+                        ProgressBar.Step = value;
+                }
             }
 
             /// <summary>
@@ -77,49 +140,114 @@ namespace BaseLibrary
             /// </summary>
             public ProgressBarStyle Style
             {
-                get => progressBar.Style;
-                set => progressBar.Invoke(new Action(() => progressBar.Style = value));
+                get => ProgressBar.Style;
+                set
+                {
+                    if (ProgressBar.InvokeRequired)
+                        ProgressBar.Invoke(new Action(() => ProgressBar.Style = value));
+                    else
+                    ProgressBar.Style = value;
+                }
             }
+            internal ProgressBar ProgressBar { get; set; }
 
             /// <summary>
             /// Увеличивает текущую позицию индикатора хода выполнения на объем <see cref="Step"/> свойство
             /// </summary>
             public void PerformStep()
             {
-                progressBar.Invoke(new Action(() => progressBar.PerformStep()));
+                if (ProgressBar.InvokeRequired)
+                    ProgressBar.Invoke(new Action(() => ProgressBar.PerformStep()));
+                else
+                    ProgressBar.PerformStep();
+                ProgressValueChanged?.Invoke(this, new EventArgs());
             }
 
             /// <summary>
             /// Инициализация прогресса
             /// </summary>
             /// <param name="step">Интервал, в котором вызов <see cref="PerformStep()"/> метод увеличивает текущее положение индикатора хода выполнения</param>
-            /// <param name="maximum">Наибольшее значение диапозона элемента управления <see cref="ProgressBar"/>
-            public void Run(int step, int maximum)
+            /// <param name="maximum">Наибольшее значение диапозона элемента управления <see cref="System.Windows.Forms.ProgressBar"/>
+            public void Run(int step, int maximum, bool canCancel = false)
             {
-                if (progressBar == null)
+                CancelSupport = canCancel;
+                if (ProgressBar == null)
                 {
-                    progressBar = BaseMethods._getProgressBar(_inputImage);
+                    ProgressBar = _initProgress.ProgressBar;
                     Step = step;
                     Maximum = maximum;
                 }
+                Started?.Invoke(this, new EventArgs());
             }
 
             /// <summary>
             /// Завершение выполнения операции
             /// </summary>
-            public void Finish()
+            public void Finish(bool cancel = false)
             {
-                if (progressBar != null)
+                if (ProgressBar != null)
                 {
-                    //Будут доработки, но метод уже можно (даже желательно) использовать
-                    Value = Maximum;
+                    if (cancel)
+                    {
+                        if (ProgressBar.InvokeRequired)
+                            ProgressBar.Invoke(new Action(() => { ProgressBar.Enabled = false; }));
+                        else
+                            ProgressBar.Enabled = false;
+                    }
+                    else
+                        Value = Maximum;
                 }
+                Finished?.Invoke(this, new CancelEventArgs(cancel));
             }
-            ProgressBar progressBar;
-            internal ProgressInfo(InputImage inputImage)
+
+            internal ProgressInfo(InputImage inputImage, InitProgress initProgress)
             {
                 _inputImage = inputImage;
+                _initProgress = initProgress;
+                initProgress.ProgressInfo = this;
+                initProgress.DoInit();
             }
+
+           
+            /// <summary>
+            /// Выполнение метода было завершено
+            /// </summary>
+            public event EventHandler<CancelEventArgs> Finished;
+            /// <summary>
+            /// Начало выполнения метода
+            /// </summary>
+            public event EventHandler Started;
+            /// <summary>
+            /// Текущее значение прогресса изменилось
+            /// </summary>
+            public event EventHandler ProgressValueChanged;
+            /// <summary>
+            /// Минимальное значение прогресса изменилось
+            /// </summary>
+            public event EventHandler ProgressMinimumChanged;
+            /// <summary>
+            /// Максимальное значение прогресса изменилось
+            /// </summary>
+            public event EventHandler ProgressMaximumChanged;
+
         }
+        public class InitProgress
+        {
+            public InitProgress(ProgressBar progressBar)
+            {
+                ProgressBar = progressBar;
+            }
+
+            public ProgressBar ProgressBar { get; }
+            public ProgressInfo ProgressInfo { get; internal set; }
+            public event EventHandler Init;
+            internal void DoInit() => Init?.Invoke(this, new EventArgs());
+        }
+    }
+
+    public class CancelEventArgs : EventArgs
+    {
+        public bool Cancel { get; }
+        public CancelEventArgs(bool cancel) => Cancel = cancel;
     }
 }

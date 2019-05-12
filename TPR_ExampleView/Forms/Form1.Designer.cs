@@ -119,7 +119,6 @@
             // 
             // imageList1
             // 
-            this.imageList1.AutoScroll = true;
             this.imageList1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imageList1.Location = new System.Drawing.Point(3, 3);
             this.imageList1.Name = "imageList1";
@@ -229,7 +228,6 @@
             this.скрытьГалереюToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F5)));
             this.скрытьГалереюToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.скрытьГалереюToolStripMenuItem.Text = "Скрыть галерею";
-            this.скрытьГалереюToolStripMenuItem.CheckedChanged += new System.EventHandler(this.СкрытьГалереюToolStripMenuItem_CheckedChanged);
             // 
             // отображатьПапкиToolStripMenuItem
             // 
@@ -240,7 +238,6 @@
             this.отображатьПапкиToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F6)));
             this.отображатьПапкиToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.отображатьПапкиToolStripMenuItem.Text = "Отображать папки";
-            this.отображатьПапкиToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОтображатьПапкиToolStripMenuItem_CheckedChanged);
             // 
             // отображатьФайлыToolStripMenuItem
             // 
@@ -251,7 +248,6 @@
             this.отображатьФайлыToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F7)));
             this.отображатьФайлыToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.отображатьФайлыToolStripMenuItem.Text = "Отображать все файлы";
-            this.отображатьФайлыToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОтображатьФайлыToolStripMenuItem_CheckedChanged);
             // 
             // скрыватьБоковоеМенюToolStripMenuItem
             // 

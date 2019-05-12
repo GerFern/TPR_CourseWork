@@ -26,9 +26,9 @@ namespace TPR_ExampleView
         IImage SelectedImage = MenuMethod.SelectedImage;
         TabDragger tabDragger;
         //UserControl1 userControl1 = new UserControl1();
+        public Dictionary<int, InputImage.InitProgress> ProgressDict { get; set; } = new Dictionary<int, InputImage.InitProgress>();
         IImage source = null;
         string imagePath = null;
-        Dictionary<int, ProgressBar> progressDict = new Dictionary<int, ProgressBar>();
         int id_gen = 0;
         int oldWidthTabs;
         int tabFirstIndex;
@@ -92,8 +92,8 @@ namespace TPR_ExampleView
             отображатьПапкиToolStripMenuItem.Checked = userControl1.showDir = Properties.Settings.Default.ShowDir;
             скрытьГалереюToolStripMenuItem.Checked = splitContainer3.Panel1Collapsed = Properties.Settings.Default.HideExplorer;
 
-            отображатьПапкиToolStripMenuItem.CheckedChanged += ОтображатьПапкиToolStripMenuItem_CheckedChanged;
             отображатьФайлыToolStripMenuItem.CheckedChanged += ОтображатьФайлыToolStripMenuItem_CheckedChanged;
+            отображатьПапкиToolStripMenuItem.CheckedChanged += ОтображатьПапкиToolStripMenuItem_CheckedChanged;
             скрытьГалереюToolStripMenuItem.CheckedChanged += СкрытьГалереюToolStripMenuItem_CheckedChanged;
 
            
@@ -120,13 +120,7 @@ namespace TPR_ExampleView
             new OutputImageInvoker((OutputImage img) =>
             {
                 if (!this.InvokeRequired) MessageBox.Show("AAA");
-                if(!img.ImageForm.InvokeRequired)
-                {
-                    //img.ImageForm.Show();
-                    //    img.ImageForm.CreateControl();
-                    //if (!img.ImageForm.IsHandleCreated)
-                }
-                this.BeginInvoke(new MethodInvoker(() =>
+                this.Invoke(new MethodInvoker(() =>
                     {
                         if (img != null)
                         {
@@ -150,7 +144,7 @@ namespace TPR_ExampleView
                 return imageForm;
             }),
             WriteToOutput,
-            new GetProgressBar((InputImage img) => progressDict.ContainsKey(img.ID) ? progressDict[img.ID] : null));
+            new GetProgressBar((InputImage img) => ProgressDict.ContainsKey(img.ID) ? ProgressDict[img.ID] : null));
             //BaseMethods.On_Writing += WriteToOutput;
             //DLL_Init.AssemblyInSolution = "myLab";
             DLL_Init.Init(menuStrip1); 
@@ -257,6 +251,7 @@ namespace TPR_ExampleView
 
         public IEnumerable<IImage> SelectedImages => imageList1.CheckedImages;
 
+
         public void SetExceptionError(Exception ex)
         {
             this.Invoke(new Action(() => exceptionList1.SetLastExceptionError(ex)));
@@ -301,17 +296,17 @@ namespace TPR_ExampleView
 
         private void СкрытьГалереюToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-
+            splitContainer3.Panel1Collapsed = Properties.Settings.Default.HideExplorer = ((ToolStripMenuItem)sender).Checked;
         }
 
         private void ОтображатьПапкиToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-
+            userControl1.ShowDir = Properties.Settings.Default.ShowDir = ((ToolStripMenuItem)sender).Checked;
         }
 
         private void ОтображатьФайлыToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-
+            userControl1.ShowAll = Properties.Settings.Default.ShowAll = ((ToolStripMenuItem)sender).Checked;
         }
 
         private void ДобавитьФормуДляИзображенийToolStripMenuItem_Click(object sender, EventArgs e)
@@ -425,26 +420,38 @@ namespace TPR_ExampleView
                 }
         }
 
-        internal int CreateTask(MyMethodInfo myMethodInfo)
+        internal int CreateTask(MyMethodInfo myMethodInfo, Thread thread)
         {
             this.Invoke(new Action(()=>{
                 tableLayoutPanel1.SuspendLayout();
                 ProgressBar progressBar = new ProgressBar();
-                progressDict.Add(id_gen, progressBar);
-                TableLayoutPanel tlp = new TableLayoutPanel();
-                tlp.RowCount = 2;
-                tlp.ColumnCount = 1;
-                tlp.Controls.Add(new Label { Text = DateTime.Now.ToString(), Dock = DockStyle.Fill }, 0, 0);
-                tlp.Controls.Add(progressBar, 0, 1);
-                if (id_gen != 0)
-                    tableLayoutPanel1.RowCount++;
-                else
-                    tableLayoutPanel1.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
-                for (int i = tableLayoutPanel1.RowCount - 2; i >= 0; i--)
+                InputImage.InitProgress initProgress = new InputImage.InitProgress(progressBar);
+                ProgressDict.Add(id_gen, initProgress);
+                initProgress.Init += new EventHandler((o, e) => 
                 {
-                    tableLayoutPanel1.SetRow(tableLayoutPanel1.GetControlFromPosition(0, i), i + 1);
-                }
-                tableLayoutPanel1.Controls.Add(tlp, 0, 0);
+                    if (o is InputImage.InitProgress ip)
+                    {
+                        tableLayoutPanel1.Invoke( new Action(() =>
+                        {
+                            tableLayoutPanel1.Controls.Add(
+                            new ProgressInfoControl(ip.ProgressInfo, thread));
+                        }));
+                    }
+                });
+                //TableLayoutPanel tlp = new TableLayoutPanel();
+                //tlp.RowCount = 2;
+                //tlp.ColumnCount = 1;
+                //tlp.Controls.Add(new Label { Text = DateTime.Now.ToString(), Dock = DockStyle.Fill }, 0, 0);
+                //tlp.Controls.Add(progressBar, 0, 1);
+                //if (id_gen != 0)
+                //    tableLayoutPanel1.RowCount++;
+                //else
+                //    tableLayoutPanel1.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
+                //for (int i = tableLayoutPanel1.RowCount - 2; i >= 0; i--)
+                //{
+                //    tableLayoutPanel1.SetRow(tableLayoutPanel1.GetControlFromPosition(0, i), i + 1);
+                //}
+                //tableLayoutPanel1.Controls.Add(tlp, 0, 0);
                 tableLayoutPanel1.ResumeLayout();
             }));
             return id_gen++;
@@ -457,7 +464,6 @@ namespace TPR_ExampleView
 
         private void AddToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            imageList1.Add(new ImageInfo());
         }
 
         private void ExceptionList1_AllClear(object sender, EventArgs e)

@@ -17,10 +17,12 @@ namespace TPR_ExampleView
 {
     public partial class ImageInfo : UserControl
     {
+        ImageList imageList;
         public ImageInfo()
         {
             InitializeComponent();
             lName.DoubleClick += ПереименоватьToolStripMenuItem_Click;
+            ParentChanged += new EventHandler((o, e) => { if (Parent is ImageList imageList) this.imageList = imageList; });
         }
         public ImageInfo(int ID, BaseLibrary.ImageForm imageForm = null, string imgFilePath = null) : this()
         {
@@ -35,8 +37,7 @@ namespace TPR_ExampleView
                 if (imageForm.Image == null)
                 {
                     if (ImgFilePath != null && System.IO.File.Exists(ImgFilePath))
-                        using (Bitmap source = new Bitmap(ImgFilePath))
-                            pictureBox1.Image = new Bitmap(source, new Size(64, 64));
+                        LoadBitmapFromStrPath();
                 }
                 else
                     Image = imageForm.Image;
@@ -44,13 +45,25 @@ namespace TPR_ExampleView
             }
             else
             {
-                using (Bitmap source = new Bitmap(ImgFilePath))
-                    pictureBox1.Image = new Bitmap(source, new Size(64, 64));
+                LoadBitmapFromStrPath();
                 lName.Text = System.IO.Path.GetFileName(ImgFilePath);
                 Status = ImgStatus.UnloadedFile;
                 Image = null;
             }
 
+        }
+
+        [DontCatchException]
+        private void LoadBitmapFromStrPath()
+        {
+            try
+            {
+                {
+                    using (Bitmap source = new Bitmap(ImgFilePath))
+                        pictureBox1.Image = new Bitmap(source, new Size(64, 64));
+                }
+            }
+            catch { }
         }
 
         public enum ImgStatus
@@ -80,6 +93,7 @@ namespace TPR_ExampleView
 
         public bool CanOpen => Status == ImgStatus.UnloadedFile && File.Exists(ImgFilePath);
         public bool FormExist => !(ImageForm == null || ImageForm.IsDisposed);
+        
         public bool CanSelectImage => !(ImageForm == null || ImageForm.IsDisposed || ImageForm.IsSelected);
         public bool IsFile { get; }
         public Type TColor { get; private set; }
@@ -233,12 +247,13 @@ namespace TPR_ExampleView
                 ImageForm.Show();
         }
 
-        private void ContextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        private void ContextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             открытьФайлToolStripMenuItem.Enabled = CanOpen;
             закрытьФормуToolStripMenuItem.Enabled = FormExist;
             показатьФормуToolStripMenuItem.Enabled = FormExist;
             выбратьТекущимИзображениемToolStripMenuItem.Enabled = CanSelectImage;
+            сохранитьИзображениеToolStripMenuItem.Enabled = !Image.IsDisposedOrNull();
         }
 
         private void PictureBox1_Click(object sender, EventArgs e)
@@ -255,6 +270,14 @@ namespace TPR_ExampleView
                 lName.Text = tb.Text;
                 if (ImageForm != null) ImageForm.Text = tb.Text;
             }
+        }
+
+        private void СохранитьИзображениеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(!Image.IsDisposedOrNull())
+                using (SaveFileDialog sfd = BaseMethods.GetSaveFileDialog())
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                        Image.Save(sfd.FileName);
         }
     }
 }

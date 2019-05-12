@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Emgu.CV;
 using System.IO;
+using BaseLibrary;
 
 namespace TPR_ExampleView
 {
@@ -93,7 +94,8 @@ namespace TPR_ExampleView
         private void ToolStripButton4_Click(object sender, EventArgs e)
         {
             SuspendLayout();
-            using (OpenFileDialog ofd = new OpenFileDialog() { Multiselect = true })
+            //using (OpenFileDialog ofd = new OpenFileDialog() { Multiselect = true })
+            using(OpenFileDialog ofd = BaseMethods.GetOpenFileDialog(true))
                 if (ofd.ShowDialog() == DialogResult.OK)
                     foreach (var item in ofd.FileNames)
                         Add(new ImageInfo(1, null, item));

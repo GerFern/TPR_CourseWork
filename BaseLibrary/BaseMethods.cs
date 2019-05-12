@@ -12,6 +12,21 @@ namespace BaseLibrary
         internal static OutputImageInvoker _loadOutputImage;
         internal static OutputImageInvoker _createFormFromOutputImage;
         internal static GetProgressBar _getProgressBar;
+        public static OpenFileDialog GetOpenFileDialog(bool multiselect = false)
+        {
+            var ofd = new OpenFileDialog();
+            ofd.Multiselect = multiselect;
+            ofd.Filter = Extensions.GetFilterOpenFileDialog(true);
+            return ofd;
+        }
+
+        public static SaveFileDialog GetSaveFileDialog()
+        {
+            var sfd = new SaveFileDialog();
+            sfd.Filter = Extensions.GetFilterSaveFileDialog();
+            return sfd;
+        }
+
         /// <summary>
         /// Выполняет делегат в главном потоке
         /// </summary>
@@ -177,7 +192,7 @@ namespace BaseLibrary
     }
 
     public delegate ImageForm OutputImageInvoker(OutputImage outputImage);
-    public delegate ProgressBar GetProgressBar(InputImage inputImage);
+    public delegate InputImage.InitProgress GetProgressBar(InputImage inputImage);
 
     public class EventArgsNewImageForm : EventArgs
     {
