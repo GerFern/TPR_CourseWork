@@ -5,8 +5,11 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BaseLibrary
 {
@@ -132,5 +135,33 @@ namespace BaseLibrary
         /// <param name="image">Изображение, которое нужно проверить</param>
         /// <returns></returns>
         public static bool IsDisposedOrNull(this IImage image) => image == null || image.Ptr == IntPtr.Zero;
+
+        /// <summary>
+        /// Вызывает метод <see cref="Control.Invoke(Delegate, object[])"/> тогда, когда это нужно
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="delegate"></param>
+        /// <param name="args"></param>
+        public static void InvokeFix(this Control control, Action @delegate, params object[] args)
+        {
+            if (control.InvokeRequired)
+                control.Invoke(@delegate, args);
+            else @delegate.Method.Invoke(@delegate.Target, args);
+        }
+
+        //public static void InvokeFix(this Control control)
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
+        static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr w, IntPtr l);
+        public static void SetState(this ProgressBar pBar, int state)
+        {
+            new Thread(() =>
+            {
+                Thread.Sleep(500);
+                pBar.InvokeFix(() => SendMessage(pBar.Handle, 1040, (IntPtr)state, IntPtr.Zero));
+                pBar.Invalidate();
+            })
+            { Name = $"StateChangeTo_{state.ToString()}" }.Start();
+        }
     }
 }

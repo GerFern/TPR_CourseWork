@@ -19,9 +19,9 @@ namespace TPR_ExampleView
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.ThreadException +=
-                new System.Threading.ThreadExceptionEventHandler((object o, System.Threading.ThreadExceptionEventArgs e) => 
-                    { MessageBox.Show(e.Exception.Message, "Необработанное исключение"); mainForm.SetExceptionError(e.Exception); Debugger.Launch(); Debugger.Break(); });
+            //Application.ThreadException +=
+            //    new System.Threading.ThreadExceptionEventHandler((object o, System.Threading.ThreadExceptionEventArgs e) =>
+            //        { MessageBox.Show(e.Exception.Message, "Необработанное исключение"); mainForm.SetExceptionError(e.Exception); Debugger.Launch(); Debugger.Break(); });
 
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
             mainForm = new Form1();
@@ -41,6 +41,7 @@ namespace TPR_ExampleView
                     else Message(e);
 
                     //Уведомление об ошибке
+                    if (e.Exception is System.Threading.ThreadAbortException) return;
                     if (!(e.Exception is TargetInvocationException || mainForm == null || mainForm.IsDisposed))
                         mainForm.AddException(e.Exception, false);
                 }
@@ -53,6 +54,7 @@ namespace TPR_ExampleView
             {
                 if (Debugger.IsAttached)
                     Debugger.Break();
+                //Выберите в отладчике поток с нужным именем
                 //Проверьте стек вызовов. Код остановлен до перехода в catch
                 ///Чтобы не показывать сообщение об исключениях, пометьте метод атрибутом <see cref="BaseLibrary.DontCatchException"/>
                 else Debugger.Launch();

@@ -80,6 +80,7 @@
       <DependentUpon>SelectCoord.cs</DependentUpon>
     </Compile>
     <Compile Include="TabDragger.cs" />
+    <Compile Include="Timer.cs" />
     <Compile Include="TPRAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

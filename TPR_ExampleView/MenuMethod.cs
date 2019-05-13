@@ -228,33 +228,111 @@ namespace TPR_ExampleView
                         }
                     }
                 else
-                    invParam = new InvParam { TypeInvoke = TypeInvoke.WithoutForm, MethodInfo = methodInfo };
+                    invParam = new InvParam { TypeInvoke = TypeInvoke.WithoutForm, MethodInfo = methodInfo, Vs = new object[1] };
                     //thread.Start(new InvParam { TypeInvoke = TypeInvoke.WithoutForm, MethodInfo = methodInfo });
             }
             if (invParam != null)
             {
-                Thread thread = new Thread(new ParameterizedThreadStart(InvMethod));
-                invParam.TaskID = MainForm.CreateTask(methodInfo, thread);
-                thread.Start(invParam);
+                if (MainForm.MultiImage)
+                {
+                    new Forms.FormInvokeProgress(MainForm.InvokeMethodImmediately, invParam, MainForm.imageList1.CheckedImgNames.ToArray()).Show();
+                }
+                else
+                {
+                    Thread thread = new Thread(new ParameterizedThreadStart(InvMethod)) { Name = methodInfo.MethodName };
+                    ProgressInfoControl pic;
+                    invParam.Image = SelectedImage;
+                    invParam.TaskID = MainForm.CreateTask(methodInfo.MethodName ,methodInfo, thread, invParam, out pic);
+                    MainForm.progressListControl.InvokeFix(() => MainForm.progressListControl.Add(pic));
+                    //MainForm.tableLayoutPanel1.Invoke(new Action(() =>
+                    //{
+                    //    MainForm.tableLayoutPanel1.Controls.Add(
+                    //    new ProgressInfoControl(ip.ProgressInfo, thread));
+                    //}));
+                    if (MainForm.InvokeMethodImmediately)
+                        pic.ThreadStart();
+                }
             }
             //SelectedForm?.UpdateImage();
         }
 
-        internal class InvParam
+        internal class InvParam : ICloneable
         {
-            public MyMethodInfo MethodInfo { get; set; }
-            public Form Form { get; set; }
-            public BaseForm BaseForm { get; set; }
-            public FormP FormP { get; set; }
-            public object[] Vs { get; set; }
-            public TypeInvoke TypeInvoke { get; set; }
-            public int TaskID { get; set; }
+            private ProgressInfoControl progressInfoControl;
+            private string imgFileString;
+            private IImage image;
+            private MyMethodInfo methodInfo;
+            private Form form;
+            private BaseForm baseForm;
+            private FormP formP;
+            private object[] vs;
+            private TypeInvoke typeInvoke;
+            private int taskID;
+
+            public InvParam()
+            {
+            }
+
+            public ProgressInfoControl ProgressInfoControl { get => progressInfoControl; set => progressInfoControl = value; }
+            public string ImgFileString { get => imgFileString; set => imgFileString = value; }
+            public IImage Image
+            {
+                get => image;
+                set
+                {
+                    image = value;
+                    //if (vs != null)
+                    //{
+                    //    if (MethodInfo.IsInputImage)
+                    //        vs[0] = InputImage;
+                    //    else vs[0] = image;
+                    //}
+                }
+            }
+            public MyMethodInfo MethodInfo { get => methodInfo; set => methodInfo = value; }
+            public Form Form { get => form; set => form = value; }
+            public BaseForm BaseForm { get => baseForm; set => baseForm = value; }
+            public FormP FormP { get => formP; set => formP = value; }
+            public object[] Vs { get => vs; set => vs = value; }
+            public TypeInvoke TypeInvoke { get => typeInvoke; set => typeInvoke = value; }
+            public int TaskID { get => taskID; set => taskID = value; }
+
+            //public InputImage InputImage => new InputImage(Image, TaskID, MethodInfo.MethodName);
+
+            public object Clone()
+            {
+                InvParam invParam = new InvParam();
+                invParam.baseForm = baseForm;
+                invParam.form = form;
+                invParam.formP = formP;
+                invParam.imgFileString = imgFileString;
+                invParam.methodInfo = methodInfo;
+                invParam.taskID = taskID;
+                invParam.typeInvoke = typeInvoke;
+                invParam.vs = new object[vs.Length];
+                vs.CopyTo(invParam.vs, 0);
+                return invParam;
+            }
+
+            //public InvParam Clone() => new InvParam
+            //{
+            //    ProgressInfoControl = progressInfoControl,
+            //    ImgFileString = imgFileString,
+            //    Image = image,
+            //    MethodInfo = methodInfo,
+            //    Form = form,
+            //    BaseForm = baseForm,
+            //    FormP = formP,
+            //    Vs = vs,
+            //    TypeInvoke = typeInvoke,
+            //    TaskID = taskID
+            //};
         }
         internal enum TypeInvoke
         {
             CustomForm, ParameterizedForm, WithoutForm
         }
-        private static void InvMethod(object param)
+        internal static void InvMethod(object param)
         {
             if (param is InvParam invParam)
             {
@@ -263,6 +341,11 @@ namespace TPR_ExampleView
                 try
                 {
 #endif
+                    if (invParam.Vs == null) invParam.Vs = new object[1];
+                    if (invParam.MethodInfo.IsInputImage)
+                    {
+                        invParam.Vs[0] = new InputImage(invParam.Image, invParam.TaskID, invParam.MethodInfo.MethodName);
+                    }
                     switch (invParam.TypeInvoke)
                     {
                         case TypeInvoke.CustomForm:
@@ -285,13 +368,15 @@ namespace TPR_ExampleView
                             outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, invParam.Vs) as OutputImage;
                             break;
                         case TypeInvoke.WithoutForm:
-                            if (invParam.MethodInfo.IsInputImage)
-                                outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { new InputImage(SelectedImage, invParam.TaskID, invParam.MethodInfo.MethodName) }) as OutputImage;
+                            outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, invParam.Vs) as OutputImage;
 
-                            //    MainForm.Invoke(new Action(()=>
-                            //   { outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { new InputImage(SelectedImage, MainForm.CreateTask(invParam.MethodInfo)) }) as OutputImage; }
-                            //));
-                            else outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { SelectedImage }) as OutputImage;
+                            //if (invParam.MethodInfo.IsInputImage)
+                            //    outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { invParam.InputImage }) as OutputImage;
+
+                            ////    MainForm.Invoke(new Action(()=>
+                            ////   { outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { new InputImage(SelectedImage, MainForm.CreateTask(invParam.MethodInfo)) }) as OutputImage; }
+                            ////));
+                            //else outputImage = invParam.MethodInfo.MethodInfo.Invoke(null, new object[] { invParam.V }) as OutputImage;
                             break;
                         default:
                             break;
@@ -301,6 +386,7 @@ namespace TPR_ExampleView
                 }
                 catch (TargetInvocationException ex)
                 {
+                    invParam.ProgressInfoControl.SetException(ex.InnerException);
                     MainForm.SetExceptionError(ex.InnerException);
                     //System.Windows.Forms.MessageBox.Show(ex.InnerException.Message);
                 }

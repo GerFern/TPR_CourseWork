@@ -137,6 +137,8 @@ namespace TPR_ExampleView
             }
         }
 
+        public string ImgName => lName.Text;
+
         private void LoadType()
         {
             if (_image == null)

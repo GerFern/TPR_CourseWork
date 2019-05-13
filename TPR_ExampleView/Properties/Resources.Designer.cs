@@ -63,6 +63,16 @@ namespace TPR_ExampleView.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap воспроизведение_32 {
+            get {
+                object obj = ResourceManager.GetObject("воспроизведение_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap восстановить_32 {
             get {
                 object obj = ResourceManager.GetObject("восстановить_32", resourceCulture);
@@ -113,6 +123,16 @@ namespace TPR_ExampleView.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap пауза_32 {
+            get {
+                object obj = ResourceManager.GetObject("пауза_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap пустой_чекбокс_32 {
             get {
                 object obj = ResourceManager.GetObject("пустой_чекбокс_32", resourceCulture);
@@ -136,6 +156,16 @@ namespace TPR_ExampleView.Properties {
         internal static System.Drawing.Bitmap сохранить_32 {
             get {
                 object obj = ResourceManager.GetObject("сохранить_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap стоп_32 {
+            get {
+                object obj = ResourceManager.GetObject("стоп_32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

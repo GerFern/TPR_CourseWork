@@ -85,7 +85,7 @@
             this.сохранитьИзображениеToolStripMenuItem,
             this.закрытьToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(261, 136);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(261, 158);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenuStrip1_Opening);
             // 
             // открытьФайлToolStripMenuItem
@@ -136,21 +136,21 @@
             // убратьЗаписьToolStripMenuItem
             // 
             this.убратьЗаписьToolStripMenuItem.Name = "убратьЗаписьToolStripMenuItem";
-            this.убратьЗаписьToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.убратьЗаписьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.убратьЗаписьToolStripMenuItem.Text = "Убрать запись";
             this.убратьЗаписьToolStripMenuItem.Click += new System.EventHandler(this.УбратьЗаписьToolStripMenuItem_Click);
             // 
             // закрытьФормуToolStripMenuItem
             // 
             this.закрытьФормуToolStripMenuItem.Name = "закрытьФормуToolStripMenuItem";
-            this.закрытьФормуToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.закрытьФормуToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.закрытьФормуToolStripMenuItem.Text = "Закрыть форму";
             this.закрытьФормуToolStripMenuItem.Click += new System.EventHandler(this.ЗакрытьФормуToolStripMenuItem_Click);
             // 
             // закрытьИУбратьToolStripMenuItem
             // 
             this.закрытьИУбратьToolStripMenuItem.Name = "закрытьИУбратьToolStripMenuItem";
-            this.закрытьИУбратьToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.закрытьИУбратьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.закрытьИУбратьToolStripMenuItem.Text = "Закрыть и убрать";
             this.закрытьИУбратьToolStripMenuItem.Click += new System.EventHandler(this.ЗакрытьИУбратьToolStripMenuItem_Click);
             // 

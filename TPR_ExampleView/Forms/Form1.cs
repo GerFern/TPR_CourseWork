@@ -25,8 +25,10 @@ namespace TPR_ExampleView
     {
         IImage SelectedImage = MenuMethod.SelectedImage;
         TabDragger tabDragger;
+        public bool AutoLoadImageForm { get; private set; }
         //UserControl1 userControl1 = new UserControl1();
-        public Dictionary<int, InputImage.InitProgress> ProgressDict { get; set; } = new Dictionary<int, InputImage.InitProgress>();
+        public Dictionary<int, InputImage.InitProgress> ProgressDict { get; } = new Dictionary<int, InputImage.InitProgress>();
+        public bool InvokeMethodImmediately { get; set; }
         IImage source = null;
         string imagePath = null;
         int id_gen = 0;
@@ -96,14 +98,12 @@ namespace TPR_ExampleView
             отображатьПапкиToolStripMenuItem.CheckedChanged += ОтображатьПапкиToolStripMenuItem_CheckedChanged;
             скрытьГалереюToolStripMenuItem.CheckedChanged += СкрытьГалереюToolStripMenuItem_CheckedChanged;
 
+            InvokeMethodImmediately = true;
+            выполнятьМетодыСразуToolStripMenuItem.Checked = true;
            
             BaseLibrary.ImageForm.SetIsSelectedChangedMethod(new EventHandler<EventArgsWithImageForm>(MenuMethod.ChangeSelected));
-            BaseLibrary.BaseMethods.NewImageForm += new EventHandler<EventArgsNewImageForm>((object _, EventArgsNewImageForm args) =>
-            {
-                imageList1.Invoke(new Action(() =>
-                    imageList1.Add(new ImageInfo(1, args.ImageForm, args.ImageForm.FilePath))));
-            });
-
+            BaseLibrary.BaseMethods.NewImageForm += new EventHandler<EventArgsNewImageForm>((_, args) =>
+                imageList1.InvokeFix(() => { if(AutoLoadImageForm) imageList1.Add(new ImageInfo(1, args.ImageForm, args.ImageForm.FilePath)); }));
             HideTabs = true;
             tabControl2.SelectedIndex = -1;
         }
@@ -254,10 +254,10 @@ namespace TPR_ExampleView
 
         public void SetExceptionError(Exception ex)
         {
-            this.Invoke(new Action(() => exceptionList1.SetLastExceptionError(ex)));
+            this.InvokeFix(() => exceptionList1.SetLastExceptionError(ex));
         }
         public void AddException(Exception exception, bool error) =>
-            this.Invoke(new Action(() =>
+            this.InvokeFix(() =>
             {
                 if (!tabControl2.TabPages.Contains(tabPage3))
                 {
@@ -265,7 +265,7 @@ namespace TPR_ExampleView
                     if (HideTabs) tabControl2.SelectedIndex = -1;
                 }
                 exceptionList1.Add(new ExceptionInfoControl(exception, error));
-            }));
+            });
 
         public void OpenImage(IImage image, string text)
         {
@@ -420,22 +420,29 @@ namespace TPR_ExampleView
                 }
         }
 
-        internal int CreateTask(MyMethodInfo myMethodInfo, Thread thread)
+        internal int CreateTask(string name, MyMethodInfo myMethodInfo, Thread thread, MenuMethod.InvParam invParam, out ProgressInfoControl progressInfoControl)
         {
-            this.Invoke(new Action(()=>{
-                tableLayoutPanel1.SuspendLayout();
+            ProgressInfoControl pic = null;
+            this.InvokeFix(()=>
+            {
+                //tableLayoutPanel1.SuspendLayout();
                 ProgressBar progressBar = new ProgressBar();
                 InputImage.InitProgress initProgress = new InputImage.InitProgress(progressBar);
                 ProgressDict.Add(id_gen, initProgress);
+                pic = new ProgressInfoControl(name, invParam, thread, progressBar);
                 initProgress.Init += new EventHandler((o, e) => 
                 {
                     if (o is InputImage.InitProgress ip)
                     {
-                        tableLayoutPanel1.Invoke( new Action(() =>
-                        {
-                            tableLayoutPanel1.Controls.Add(
-                            new ProgressInfoControl(ip.ProgressInfo, thread));
-                        }));
+                        pic.Start(ip.ProgressInfo);
+                        //new Thread(new ThreadStart(() =>
+                        //    
+                        //))
+                        //{ Name = "InitStart" }.Start();
+                        //tableLayoutPanel1.Invoke( new Action(() =>
+                        //{
+                        //    tableLayoutPanel1.Controls.Add(pic);
+                        //}));
                     }
                 });
                 //TableLayoutPanel tlp = new TableLayoutPanel();
@@ -452,8 +459,9 @@ namespace TPR_ExampleView
                 //    tableLayoutPanel1.SetRow(tableLayoutPanel1.GetControlFromPosition(0, i), i + 1);
                 //}
                 //tableLayoutPanel1.Controls.Add(tlp, 0, 0);
-                tableLayoutPanel1.ResumeLayout();
-            }));
+                //tableLayoutPanel1.ResumeLayout();
+            });
+            progressInfoControl = pic;
             return id_gen++;
         }
 
@@ -464,6 +472,7 @@ namespace TPR_ExampleView
 
         private void AddToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            new Forms.FormInvokeProgress().ShowDialog();
         }
 
         private void ExceptionList1_AllClear(object sender, EventArgs e)
@@ -496,6 +505,49 @@ namespace TPR_ExampleView
                 MultiImage = true;
                 if (t.Checked) одноИзображениеToolStripMenuItem.Checked = false;
             }
+        }
+
+        private void ВыполнятьМетодыСразуToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.InvokeMethodImmediately = ((ToolStripMenuItem)sender).Checked;
+        }
+
+        private void РедактироватьDllloadconfToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            const string Path = "dll_load.conf";
+            using (Form form = new Form() { Text = Path })
+            {
+                string str = null;
+                if (!File.Exists(Path))
+                {
+                    str = "TestLibrary";
+                    File.WriteAllText(Path, str);
+                }
+                else str = File.ReadAllText(Path);
+                TableLayoutPanel tlp = new TableLayoutPanel() { Dock = DockStyle.Fill, Parent = form };
+                TextBox tb = new TextBox { Multiline = true, Dock = DockStyle.Fill, Text = str };
+                FlowLayoutPanel flp = new FlowLayoutPanel();
+                Button bOK = new Button { Text = "OK", DialogResult = DialogResult.OK };
+                Button bCancel = new Button { Text = "Отмена", DialogResult = DialogResult.Cancel };
+                //form.AcceptButton = bOK;
+                form.CancelButton = bCancel;
+                flp.Controls.Add(bOK);
+                flp.Controls.Add(bCancel);
+                tlp.Controls.Add(tb, 0, 0);
+                tlp.Controls.Add(flp, 0, 1);
+                tlp.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+                tlp.RowStyles.Add(new RowStyle(SizeType.Absolute, 35));
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    str = tb.Text;
+                    File.WriteAllText(Path, str);
+                }
+            }
+        }
+
+        private void АвтоматическиДобавлятьНовыеИзображенияToolStripMenuItem_CheckStateChanged(object sender, EventArgs e)
+        {
+            AutoLoadImageForm = ((ToolStripMenuItem)sender).Checked;
         }
     }
 }

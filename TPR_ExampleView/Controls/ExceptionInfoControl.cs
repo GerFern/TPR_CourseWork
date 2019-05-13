@@ -41,7 +41,7 @@ namespace TPR_ExampleView
 
         private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            MessageBox.Show(Exception.StackTrace);
+            MessageBox.Show(Exception.StackTrace, Exception.GetType().Name);
         }
 
         private void ToolTip1_Popup(object sender, PopupEventArgs e)

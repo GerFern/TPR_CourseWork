@@ -1,4 +1,4 @@
-﻿namespace TPR_ExampleView.Controls
+﻿namespace TPR_ExampleView
 {
     partial class ProgressListControl
     {
@@ -35,13 +35,12 @@
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
             this.panel1.Controls.Add(this.tableLayoutPanel1);
-            this.panel1.Location = new System.Drawing.Point(0, 40);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(150, 110);
+            this.panel1.Size = new System.Drawing.Size(150, 150);
             this.panel1.TabIndex = 0;
             // 
             // tableLayoutPanel1

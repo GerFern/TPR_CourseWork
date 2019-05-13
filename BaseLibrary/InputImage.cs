@@ -80,10 +80,7 @@ namespace BaseLibrary
                 get => ProgressBar.Maximum;
                 set
                 {
-                    if (ProgressBar.InvokeRequired)
-                        ProgressBar.Invoke(new Action(() => ProgressBar.Maximum = value));
-                    else
-                        ProgressBar.Maximum = value;
+                    ProgressBar.InvokeFix(() => ProgressBar.Maximum = value);
                     ProgressMaximumChanged?.Invoke(this, new EventArgs());
                 }
             }
@@ -96,10 +93,7 @@ namespace BaseLibrary
                 get => ProgressBar.Minimum;
                 set
                 {
-                    if (ProgressBar.InvokeRequired)
-                        ProgressBar.Invoke(new Action(() => ProgressBar.Minimum = value));
-                    else
-                        ProgressBar.Minimum = value;
+                    ProgressBar.InvokeFix(() => ProgressBar.Minimum = value);
                     ProgressMinimumChanged?.Invoke(this, new EventArgs());
                 }
             }
@@ -112,10 +106,7 @@ namespace BaseLibrary
                 get => ProgressBar.Value;
                 set
                 {
-                    if (ProgressBar.InvokeRequired)
-                        ProgressBar.Invoke(new Action(() => ProgressBar.Value = value));
-                    else
-                        ProgressBar.Value = value;
+                    ProgressBar.InvokeFix(() => ProgressBar.Value = value);
                     ProgressValueChanged?.Invoke(this, new EventArgs());
                 }
             }
@@ -126,13 +117,7 @@ namespace BaseLibrary
             public int Step
             {
                 get => ProgressBar.Step;
-                set
-                {
-                    if (ProgressBar.InvokeRequired)
-                        ProgressBar.Invoke(new Action(() => ProgressBar.Step = value));
-                    else
-                        ProgressBar.Step = value;
-                }
+                set => ProgressBar.InvokeFix(() => ProgressBar.Step = value);
             }
 
             /// <summary>
@@ -156,10 +141,7 @@ namespace BaseLibrary
             /// </summary>
             public void PerformStep()
             {
-                if (ProgressBar.InvokeRequired)
-                    ProgressBar.Invoke(new Action(() => ProgressBar.PerformStep()));
-                else
-                    ProgressBar.PerformStep();
+                ProgressBar.InvokeFix(() => ProgressBar.PerformStep());
                 ProgressValueChanged?.Invoke(this, new EventArgs());
             }
 
@@ -174,10 +156,12 @@ namespace BaseLibrary
                 if (ProgressBar == null)
                 {
                     ProgressBar = _initProgress.ProgressBar;
+                    ProgressBar.InvokeFix(() => ProgressBar.Style = ProgressBarStyle.Continuous);
                     Step = step;
                     Maximum = maximum;
                 }
                 Started?.Invoke(this, new EventArgs());
+                _initProgress.DoInit();
             }
 
             /// <summary>
@@ -205,7 +189,6 @@ namespace BaseLibrary
                 _inputImage = inputImage;
                 _initProgress = initProgress;
                 initProgress.ProgressInfo = this;
-                initProgress.DoInit();
             }
 
            

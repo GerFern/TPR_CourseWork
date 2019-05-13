@@ -18,15 +18,19 @@ namespace TestLibrary
     {
         [ImgMethod("Test", "Debug", "Exception")]
         [ImgCanBeDisposedOrNull]
-        public static OutputImage TestException(IImage image)
+        public static OutputImage TestException(InputImage inputImage)
         {
+            inputImage.Progress.Run(1, 2);
             try
             {
                 throw new Exception("AAAA");
             }
             catch { }
+            inputImage.Progress.PerformStep();
+            //Thread.Sleep(10000);
             int zero = 0;
             int t = int.MaxValue / zero;
+            inputImage.Progress.Finish();
             return null;
         }
         /// <summary>
@@ -80,8 +84,11 @@ namespace TestLibrary
         //[AutoForm(1, typeof(string), "Текст 1")]
         [ControlForm(1, typeof(TextBox), "Text", "Текст_")]
         [AutoForm(2, typeof(string), "Текст 2", true, 100)]//Форма с несколькими параметрами
+        [BaseLibrary.ImgCanBeDisposedOrNull]
         public static OutputImage TestMessage(IImage image, string s1, string s2)
         {
+            if(new Random().Next(2)==1)
+            Thread.Sleep(1000);
             return new OutputImage { Info = $"Здесь могла быть любая информация для вывода{Environment.NewLine}{s1}{Environment.NewLine}{s2}" };
         }
 

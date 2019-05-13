@@ -40,15 +40,13 @@ namespace TPR_ExampleView
 
         public IEnumerable<IImage> CheckedImages => Items.Where(a => a.Checked).Select(a => a.Image);
 
+        public IEnumerable<Forms.FormInvokeProgress.ImgName> CheckedImgNames => Items.Where(a => a.Checked).Select(a => new Forms.FormInvokeProgress.ImgName(a.ImgFilePath, a.Image, a.ImgName)); 
+
         public ImageInfoCollection Items { get; }
 
         public class ImageInfoCollection : List<ImageInfo>
         {
             public List<IImage> CheckedImages => this.Where(a => a.Checked).Select(a => a.Image).ToList();
-            public void Add(ImageInfo imageInfo)
-            {
-                base.Add(imageInfo);
-            }
         }
 
         private void ToolStripButton1_Click(object sender, EventArgs e)
