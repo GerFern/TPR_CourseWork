@@ -29,16 +29,31 @@ namespace TPR_ExampleView
         public ProgressBar ProgressBar { get; private set; }
         int _max;
         int _value;
+        bool waitUpdate = false;
+        bool needUpdate = false;
+        Thread updateHadler;
+        EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
         int Max
         {
             get => _max;
             set
             {
                 _max = value;
-                if (lProgress.InvokeRequired)
-                    lProgress.Invoke(new Action(() =>
-                        lProgress.Text = $"{ThreadStatus.DescriptionAttr()} ({_value}/{_max})"));
+                ProgressUpdate();
             }
+        }
+        int Value
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+                ProgressUpdate();
+            }
+        }
+        private void ProgressUpdate()
+        {
+            waitHandle.Set();
         }
 
         Exception Exception { get; set; }
@@ -56,17 +71,7 @@ namespace TPR_ExampleView
             ThreadStatus = Status.Exception;
         }
 
-        int Value
-        {
-            get => _value;
-            set
-            {
-                _value = value;
-                if (lProgress.InvokeRequired)
-                    lProgress.Invoke(new Action(() =>
-                        lProgress.Text = $"{ThreadStatus.DescriptionAttr()} ({_value}/{_max})"));
-            }
-        }
+    
         Status _status;
         Status ThreadStatus
         {
@@ -105,7 +110,7 @@ namespace TPR_ExampleView
                     default:
                         break;
                 }
-                lProgress.InvokeFix(() => lProgress.Text = $"{value.DescriptionAttr()} ({Value}/{Max})");
+                ProgressUpdate();
             }
         }
         public void Start(InputImage.ProgressInfo progressInfo)
@@ -146,6 +151,7 @@ namespace TPR_ExampleView
             ThreadStatus = Status.Started;
             Timer.Start();
             Thread.Start(InvParam);
+            updateHadler.Start();
             lTimeStart.InvokeFix(() =>
             {
                 lTimeStart.Text = $"Начало: {startTime.ToLongTimeString()}";
@@ -155,7 +161,7 @@ namespace TPR_ExampleView
             {
                 ThreadStarted?.Invoke(this, EventArgs.Empty);
             })
-            { Name = "ThreadStartInvoker" }.Start();
+            { Name = "ThreadStartInvoker", IsBackground = true }.Start();
             new Thread(() =>
             {
                 Thread.Join();
@@ -170,11 +176,23 @@ namespace TPR_ExampleView
                 TimeText();
                 ThreadFinished?.Invoke(this, EventArgs.Empty);
             })
-            { Name = "ThreadWaitHandler" }.Start();
+            { Name = "ThreadWaitHandler", IsBackground = true }.Start();
         }
 
         internal ProgressInfoControl(string name, MenuMethod.InvParam invParam, Thread thread, ProgressBar progressBar)
         {
+            updateHadler = new Thread(() =>
+            {
+                while (true)
+                {
+                    waitHandle.WaitOne();
+                    Thread.Sleep(100);
+                    lProgress.InvokeFix(() =>
+                                      lProgress.Text = $"{ThreadStatus.DescriptionAttr()} ({_value}/{_max})");
+                    Thread.Sleep(100);
+                }
+            })
+            { Name = "UpdateProgressHandler", IsBackground = true };
             InitializeComponent();
             const string empty = "___";
             lTimeStart.Text = empty;
@@ -194,6 +212,7 @@ namespace TPR_ExampleView
                 ProgressBar.Invoke(new Action(() => { tableLayoutPanel1.Controls.Add(ProgressBar, 0, 4); }));
             else
             tableLayoutPanel1.Controls.Add(ProgressBar, 0, 4);
+            this.Closed += new EventHandler((o, e) => { updateHadler.Abort(); waitHandle.Close(); });
             //tableLayoutPanel1.SetColumnSpan(ProgressBar, 3);
             //if(!progressInfo.CancelSupport)
             //{

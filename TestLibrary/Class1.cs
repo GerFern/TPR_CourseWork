@@ -48,13 +48,14 @@ namespace TestLibrary
         [ImgMethod("Test", "Debug", "for")]
         public static OutputImage TestFor(InputImage inputImage)
         {
-            inputImage.Progress.Run(0, 1);
-            for (int i = 0; i < Int32.MaxValue; i++)
+            inputImage.Progress.Run(1, 100000);
+            for (int i = 0; i < 100000; i++)
             {
-                for (int j = 0; j < Int32.MaxValue; j++)
+                for (int j = 0; j < 100000; j++)
                 {
 
                 }
+                inputImage.Progress.PerformStep();
             }
             inputImage.Progress.Finish();
             return null;

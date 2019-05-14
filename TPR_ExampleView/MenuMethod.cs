@@ -235,7 +235,8 @@ namespace TPR_ExampleView
             {
                 if (MainForm.MultiImage)
                 {
-                    new Forms.FormInvokeProgress(MainForm.InvokeMethodImmediately, invParam, MainForm.imageList1.CheckedImgNames.ToArray()).Show();
+                    var f = new Forms.FormInvokeProgress(MainForm.InvokeMethodImmediately, invParam, MainForm.imageList1.CheckedImgNames.ToArray());
+                    f.InvokeFix(() => f.ShowDialog());
                 }
                 else
                 {
