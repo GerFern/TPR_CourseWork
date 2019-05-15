@@ -35,6 +35,7 @@
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -63,7 +64,8 @@
             this.toolStripButton2,
             this.toolStripButton3,
             this.toolStripButton4,
-            this.toolStripButton5});
+            this.toolStripButton5,
+            this.toolStripButton6});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(297, 25);
@@ -120,6 +122,16 @@
             this.toolStripButton5.Text = "Выбрать папку";
             this.toolStripButton5.Click += new System.EventHandler(this.ToolStripButton5_Click);
             // 
+            // toolStripButton6
+            // 
+            this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton6.Image = global::TPR_ExampleView.Properties.Resources.настройки_32;
+            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton6.Name = "toolStripButton6";
+            this.toolStripButton6.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton6.Text = "Настройки (не работает)";
+            this.toolStripButton6.Click += new System.EventHandler(this.ToolStripButton6_Click);
+            // 
             // panel1
             // 
             this.panel1.AutoScroll = true;
@@ -157,5 +169,6 @@
         private System.Windows.Forms.ToolStripButton toolStripButton4;
         private System.Windows.Forms.ToolStripButton toolStripButton5;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolStripButton toolStripButton6;
     }
 }

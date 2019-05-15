@@ -302,7 +302,8 @@
             // 
             this.одноИзображениеToolStripMenuItem.CheckOnClick = true;
             this.одноИзображениеToolStripMenuItem.Name = "одноИзображениеToolStripMenuItem";
-            this.одноИзображениеToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.одноИзображениеToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
+            this.одноИзображениеToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.одноИзображениеToolStripMenuItem.Text = "Одно изображение";
             this.одноИзображениеToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОдноИзображениеToolStripMenuItem_CheckedChanged);
             // 
@@ -310,7 +311,8 @@
             // 
             this.несколькоИзображенийToolStripMenuItem.CheckOnClick = true;
             this.несколькоИзображенийToolStripMenuItem.Name = "несколькоИзображенийToolStripMenuItem";
-            this.несколькоИзображенийToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.несколькоИзображенийToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
+            this.несколькоИзображенийToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.несколькоИзображенийToolStripMenuItem.Text = "Несколько изображений";
             this.несколькоИзображенийToolStripMenuItem.CheckedChanged += new System.EventHandler(this.НесколькоИзображенийToolStripMenuItem_CheckedChanged);
             // 

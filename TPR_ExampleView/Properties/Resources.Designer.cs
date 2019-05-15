@@ -103,6 +103,16 @@ namespace TPR_ExampleView.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap настройки_32 {
+            get {
+                object obj = ResourceManager.GetObject("настройки-32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap открыть_папку_32 {
             get {
                 object obj = ResourceManager.GetObject("открыть_папку_32", resourceCulture);
@@ -116,6 +126,16 @@ namespace TPR_ExampleView.Properties {
         internal static System.Drawing.Bitmap отмеченный_чекбокс_32 {
             get {
                 object obj = ResourceManager.GetObject("отмеченный_чекбокс_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap панель_дополнительной_информаиции_32 {
+            get {
+                object obj = ResourceManager.GetObject("панель-дополнительной-информаиции-32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -153,15 +153,29 @@ namespace BaseLibrary
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
         static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr w, IntPtr l);
-        public static void SetState(this ProgressBar pBar, int state)
+
+        public enum ProgressBarState
+        {
+            Green = 1,
+            Red,
+            Yellow
+        }
+        public static void SetState(this ProgressBar pBar, ProgressBarState state, EventWaitHandle waitHandle, int value = -1)
         {
             new Thread(() =>
             {
+                //waitHandle?.WaitOne();
                 Thread.Sleep(500);
-                pBar.InvokeFix(() => SendMessage(pBar.Handle, 1040, (IntPtr)state, IntPtr.Zero));
+                pBar.InvokeFix(() =>
+                {
+                    if (value >= 0)
+                        pBar.Value = value;
+                    SendMessage(pBar.Handle, 1040, (IntPtr)state, IntPtr.Zero);
+                });
                 pBar.Invalidate();
+                waitHandle?.Set();
             })
-            { Name = $"StateChangeTo_{state.ToString()}" }.Start();
+            { Name = $"StateChangeTo{state.ToString()}" }.Start();
         }
     }
 }

@@ -28,18 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Drawing.StringFormat stringFormat1 = new System.Drawing.StringFormat();
+            System.Drawing.StringFormat stringFormat3 = new System.Drawing.StringFormat();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
+            this.lProgressBar = new TPR_ExampleView.LabeledProgressBar();
+            this.plc = new TPR_ExampleView.ProgressListControl();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.lProgressBar = new TPR_ExampleView.LabeledProgressBar();
-            this.plc = new TPR_ExampleView.ProgressListControl();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -97,6 +97,27 @@
             this.label2.TabIndex = 0;
             this.label2.Text = "Прогресс";
             // 
+            // lProgressBar
+            // 
+            this.lProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lProgressBar.Location = new System.Drawing.Point(65, 3);
+            this.lProgressBar.Name = "lProgressBar";
+            this.lProgressBar.Size = new System.Drawing.Size(178, 24);
+            stringFormat3.Alignment = System.Drawing.StringAlignment.Near;
+            stringFormat3.HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.None;
+            stringFormat3.LineAlignment = System.Drawing.StringAlignment.Near;
+            stringFormat3.Trimming = System.Drawing.StringTrimming.Character;
+            this.lProgressBar.StringFormat = stringFormat3;
+            this.lProgressBar.TabIndex = 1;
+            // 
+            // plc
+            // 
+            this.plc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.plc.Location = new System.Drawing.Point(3, 33);
+            this.plc.Name = "plc";
+            this.plc.Size = new System.Drawing.Size(240, 147);
+            this.plc.TabIndex = 2;
+            // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 2;
@@ -131,16 +152,11 @@
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(140, 20);
             this.numericUpDown1.TabIndex = 1;
-            this.numericUpDown1.Value = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-            this.numericUpDown1.ValueChanged += new System.EventHandler(this.NumericUpDown1_ValueChanged);
             // 
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button3.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button3.Location = new System.Drawing.Point(3, 276);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(240, 23);
@@ -167,27 +183,6 @@
             this.button1.TabIndex = 4;
             this.button1.Text = "Отменить незавершенные";
             this.button1.UseVisualStyleBackColor = true;
-            // 
-            // lProgressBar
-            // 
-            this.lProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.lProgressBar.Location = new System.Drawing.Point(65, 3);
-            this.lProgressBar.Name = "lProgressBar";
-            this.lProgressBar.Size = new System.Drawing.Size(178, 24);
-            stringFormat1.Alignment = System.Drawing.StringAlignment.Near;
-            stringFormat1.HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.None;
-            stringFormat1.LineAlignment = System.Drawing.StringAlignment.Near;
-            stringFormat1.Trimming = System.Drawing.StringTrimming.Character;
-            this.lProgressBar.StringFormat = stringFormat1;
-            this.lProgressBar.TabIndex = 1;
-            // 
-            // plc
-            // 
-            this.plc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.plc.Location = new System.Drawing.Point(3, 33);
-            this.plc.Name = "plc";
-            this.plc.Size = new System.Drawing.Size(240, 147);
-            this.plc.TabIndex = 2;
             // 
             // FormInvokeProgress
             // 

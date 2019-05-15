@@ -52,6 +52,7 @@ namespace BaseLibrary
         public class ProgressInfo
         {
             //public void Show();
+            public bool IsRun { get; private set; }
             public string MethodName => _inputImage.MethodName;
             internal InputImage _inputImage;
             private readonly InitProgress _initProgress;
@@ -72,77 +73,78 @@ namespace BaseLibrary
             {
                 if (CancelSupport) Cancel = true;
             }
+            int _maximum;
             /// <summary>
             /// Возвращает или задает наибольшее значение диапозона элемента управления <see cref="System.Windows.Forms.ProgressBar"/>
             /// </summary>
             public int Maximum
             {
-                get => ProgressBar.Maximum;
+                get => _maximum;
                 set
                 {
-                    ProgressBar.InvokeFix(() => ProgressBar.Maximum = value);
+                    _maximum = value;
+                    //ProgressBar.InvokeFix(() => ProgressBar.Maximum = value);
                     ProgressMaximumChanged?.Invoke(this, new EventArgs());
                 }
             }
 
-            /// <summary>
-            /// Возвращает или задает наименьшее значение диапозона элемента управления <see cref="System.Windows.Forms.ProgressBar"/>
-            /// </summary>
-            public int Minimum
-            {
-                get => ProgressBar.Minimum;
-                set
-                {
-                    ProgressBar.InvokeFix(() => ProgressBar.Minimum = value);
-                    ProgressMinimumChanged?.Invoke(this, new EventArgs());
-                }
-            }
+            //int _minimum;
+            ///// <summary>
+            ///// Возвращает или задает наименьшее значение диапозона элемента управления <see cref="System.Windows.Forms.ProgressBar"/>
+            ///// </summary>
+            //public int Minimum
+            //{
+            //    get => _maximum;
+            //    set
+            //    {
+            //        _minimum = value;
+            //        //ProgressBar.InvokeFix(() => ProgressBar.Minimum = value);
+            //        //ProgressMinimumChanged?.Invoke(this, new EventArgs());
+            //    }
+            //}
+
+            int _value;
 
             /// <summary>
             /// Возвращает или задает текущее положение индикатора выполнения
             /// </summary>
             public int Value
             {
-                get => ProgressBar.Value;
+                get => _value;
                 set
                 {
-                    ProgressBar.InvokeFix(() => ProgressBar.Value = value);
+                    _value = value;
+                    //ProgressBar.InvokeFix(() => ProgressBar.Value = value);
                     ProgressValueChanged?.Invoke(this, new EventArgs());
                 }
             }
+
+            int _step;
 
             /// <summary>
             /// Возвращает или задает интервал, в котором вызов <see cref="PerformStep()"/> метод увеличивает текущее положение индикатора хода выполнения
             /// </summary>
             public int Step
             {
-                get => ProgressBar.Step;
-                set => ProgressBar.InvokeFix(() => ProgressBar.Step = value);
+                get => _step;
+                set => _step = value;
             }
 
-            /// <summary>
-            /// Возвращает или задает способ отображения выполнения в индикаторе выполнения
-            /// </summary>
-            public ProgressBarStyle Style
-            {
-                get => ProgressBar.Style;
-                set
-                {
-                    if (ProgressBar.InvokeRequired)
-                        ProgressBar.Invoke(new Action(() => ProgressBar.Style = value));
-                    else
-                    ProgressBar.Style = value;
-                }
-            }
-            internal ProgressBar ProgressBar { get; set; }
+            //internal ProgressBar ProgressBar { get; set; }
 
             /// <summary>
             /// Увеличивает текущую позицию индикатора хода выполнения на объем <see cref="Step"/> свойство
             /// </summary>
             public void PerformStep()
             {
-                ProgressBar.InvokeFix(() => ProgressBar.PerformStep());
-                ProgressValueChanged?.Invoke(this, new EventArgs());
+                //try
+                //{
+                //System.Threading.Thread.Yield();
+                Value += _step;
+                //ProgressBar.InvokeFix(() => ProgressBar.PerformStep());
+                //ProgressValueChanged?.Invoke(this, new EventArgs());
+                //}
+                //catch(Exception ex) { System.Diagnostics.Debugger.Break(); }
             }
 
             /// <summary>
@@ -153,14 +155,15 @@ namespace BaseLibrary
             public void Run(int step, int maximum, bool canCancel = false)
             {
                 CancelSupport = canCancel;
-                if (ProgressBar == null)
-                {
-                    ProgressBar = _initProgress.ProgressBar;
-                    ProgressBar.InvokeFix(() => ProgressBar.Style = ProgressBarStyle.Continuous);
+                //if (ProgressBar == null)
+                //{
+                    //ProgressBar = _initProgress.ProgressBar;
+                    //ProgressBar.InvokeFix(() => ProgressBar.Style = ProgressBarStyle.Continuous);
                     Step = step;
                     Maximum = maximum;
-                }
+                //}
                 Started?.Invoke(this, new EventArgs());
+                IsRun = true;
                 _initProgress.DoInit();
             }
 
@@ -169,18 +172,18 @@ namespace BaseLibrary
             /// </summary>
             public void Finish(bool cancel = false)
             {
-                if (ProgressBar != null)
-                {
+                //if (ProgressBar != null)
+                //{
                     if (cancel)
                     {
-                        if (ProgressBar.InvokeRequired)
-                            ProgressBar.Invoke(new Action(() => { ProgressBar.Enabled = false; }));
-                        else
-                            ProgressBar.Enabled = false;
+                        //if (ProgressBar.InvokeRequired)
+                        //    ProgressBar.Invoke(new Action(() => { ProgressBar.Enabled = false; }));
+                        //else
+                        //    ProgressBar.Enabled = false;
                     }
                     else
                         Value = Maximum;
-                }
+                //}
                 Finished?.Invoke(this, new CancelEventArgs(cancel));
             }
 

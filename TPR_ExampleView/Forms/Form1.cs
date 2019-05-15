@@ -225,7 +225,11 @@ namespace TPR_ExampleView
         {
             //try
             //{
-            OpenImage(e.Path);
+            try
+            {
+                OpenImage(e.Path);
+            }
+            catch { }
             //}
             //catch (Exception ex)
             //{
@@ -420,31 +424,17 @@ namespace TPR_ExampleView
                 }
         }
 
-        internal int CreateTask(string name, MyMethodInfo myMethodInfo, Thread thread, MenuMethod.InvParam invParam, out ProgressInfoControl progressInfoControl)
+        internal void CreateTask(string name, MyMethodInfo myMethodInfo, Thread thread, MenuMethod.InvParam invParam, out ProgressInfoControl progressInfoControl)
         {
             ProgressInfoControl pic = null;
             this.InvokeFix(()=>
             {
                 //tableLayoutPanel1.SuspendLayout();
-                ProgressBar progressBar = new ProgressBar();
-                InputImage.InitProgress initProgress = new InputImage.InitProgress(progressBar);
-                ProgressDict.Add(id_gen, initProgress);
-                pic = new ProgressInfoControl(name, invParam, thread, progressBar);
-                initProgress.Init += new EventHandler((o, e) => 
-                {
-                    if (o is InputImage.InitProgress ip)
-                    {
-                        pic.Start(ip.ProgressInfo);
-                        //new Thread(new ThreadStart(() =>
-                        //    
-                        //))
-                        //{ Name = "InitStart" }.Start();
-                        //tableLayoutPanel1.Invoke( new Action(() =>
-                        //{
-                        //    tableLayoutPanel1.Controls.Add(pic);
-                        //}));
-                    }
-                });
+                //ProgressBar progressBar = new ProgressBar();
+                invParam.TaskID = id_gen;
+                pic = new ProgressInfoControl(name, invParam, thread);
+                pic.tableLayoutPanel1.Dock = DockStyle.Fill;
+                //pic.tableLayoutPanel1.AutoSize = true;
                 //TableLayoutPanel tlp = new TableLayoutPanel();
                 //tlp.RowCount = 2;
                 //tlp.ColumnCount = 1;
@@ -462,7 +452,7 @@ namespace TPR_ExampleView
                 //tableLayoutPanel1.ResumeLayout();
             });
             progressInfoControl = pic;
-            return id_gen++;
+            id_gen++;
         }
 
         private void ОтладкаИсключенийToolStripMenuItem_CheckedChanged(object sender, EventArgs e)

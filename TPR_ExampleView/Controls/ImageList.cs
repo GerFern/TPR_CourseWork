@@ -67,17 +67,20 @@ namespace TPR_ExampleView
         private void ToolStripButton2_Click(object sender, EventArgs e)
         {
             SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
             while(Items.Count>0)
             {
                 Items.First().Close();
             }
             //Items.ForEach(new Action<ImageInfo>(a => a.Close()));
             ResumeLayout();
+            tableLayoutPanel1.ResumeLayout();
         }
 
         private void ToolStripButton3_Click(object sender, EventArgs e)
         {
             SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
             var forms = Application.OpenForms.OfType<BaseLibrary.ImageForm>();
             foreach (var item in forms)
             {
@@ -87,28 +90,38 @@ namespace TPR_ExampleView
                 }
             }
             ResumeLayout();
+            tableLayoutPanel1.ResumeLayout();
         }
 
         private void ToolStripButton4_Click(object sender, EventArgs e)
         {
             SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
             //using (OpenFileDialog ofd = new OpenFileDialog() { Multiselect = true })
-            using(OpenFileDialog ofd = BaseMethods.GetOpenFileDialog(true))
+            using (OpenFileDialog ofd = BaseMethods.GetOpenFileDialog(true))
                 if (ofd.ShowDialog() == DialogResult.OK)
                     foreach (var item in ofd.FileNames)
                         Add(new ImageInfo(1, null, item));
             ResumeLayout();
+            tableLayoutPanel1.ResumeLayout();
         }
 
         private void ToolStripButton5_Click(object sender, EventArgs e)
         {
             SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
             using (FolderBrowserDialog fbd = new FolderBrowserDialog())
                 if (fbd.ShowDialog() == DialogResult.OK)
                     if (Directory.Exists(fbd.SelectedPath))
                         foreach (var item in Directory.GetFiles(fbd.SelectedPath).Where(a => a.PathIsImage()))
                             Add(new ImageInfo(1, null, item));
             ResumeLayout();
+            tableLayoutPanel1.ResumeLayout();
+        }
+
+        private void ToolStripButton6_Click(object sender, EventArgs e)
+        {
+            new Forms.FormSettings().ShowDialog();
         }
     }
 }

@@ -17,6 +17,7 @@ namespace TPR_ExampleView
         [STAThread]
         static void Main()
         {
+            Environment.ProcessorCount.ToString();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.ThreadException +=

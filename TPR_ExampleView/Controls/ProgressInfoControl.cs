@@ -22,38 +22,77 @@ namespace TPR_ExampleView
         //DateTime resumeTime;
         //TimeSpan deltaTime;
         DateTime endTime;
+        public bool MinimalStile
+        {
+            get => _minimalStile;
+            set 
+            {
+                if (_minimalStile != value)
+                {
+                    _minimalStile = value;
+                    //this.InvokeFix(() =>
+                    //{
+                    if (ProgressBar != null)
+                    {
+                        if (value)
+                        {
+                            //ProgressBar.InvokeFix(() =>
+                            //ProgressBar.Parent = null);
+                            //ProgressBar.InvokeFix(() =>
+                            //ProgressBar.Size = labeledProgressBar1.Size);
+                            //ProgressBar.Size = labeledProgressBar1.Size;
+                           
+                        }
+                        else
+                        {
+                            //ProgressBar.InvokeFix(() =>
+                            //MaxPanel.Controls.Add(ProgressBar, 0, 4));
+                            //ProgressBar.Parent = null;
+                            //MaxPanel.Controls.Add(ProgressBar, 0, 4);
+                           
+                           
+                            //ProgressBar.InvokeFix(() =>
+                            //MaxPanel.Parent = Panel);
+                        }
+                    }
+                    //});
+                }
+            }
+        }
 
         BaseLibrary.Timer Timer = new BaseLibrary.Timer();
         TimeSpan TimeSpent => Timer.TimeSpent;
         internal Thread Thread { get; }
-        public ProgressBar ProgressBar { get; private set; }
+        public ProgressBar ProgressBar => progressBar1;
         int _max;
         int _value;
-        bool waitUpdate = false;
-        bool needUpdate = false;
-        Thread updateHadler;
-        EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+        //Thread updateHadler;
+        //EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
         int Max
         {
-            get => _max;
+            get => ProgressInfo != null ? ProgressInfo.Maximum : 100;
             set
             {
                 _max = value;
-                ProgressUpdate();
+                //ProgressUpdate();
             }
         }
         int Value
         {
-            get => _value;
+            get => ProgressInfo != null ? ProgressInfo.Value : 0;
             set
             {
                 _value = value;
-                ProgressUpdate();
+                //ProgressUpdate();
+
             }
         }
         private void ProgressUpdate()
         {
-            waitHandle.Set();
+            lProgress.InvokeFix(() =>
+            {
+                lProgress.Text = $"{ThreadStatus.DescriptionAttr()} ({Value}/{Max})";
+            });
         }
 
         Exception Exception { get; set; }
@@ -65,14 +104,27 @@ namespace TPR_ExampleView
                 tableLayoutPanel2.Invoke(new Action(() =>
                 {
                     LinkLabel linkLabel = new LinkLabel() { Text = "Стек вызовов...", Dock = DockStyle.Bottom };
-                    linkLabel.Click += new EventHandler((o, e) => MessageBox.Show(Exception.StackTrace, Exception.GetType().Name));
+                    linkLabel.Click += new EventHandler((o, e) => MessageBox.Show(Exception.Message + Environment.NewLine + Exception.StackTrace, Exception.GetType().Name));
+                    tableLayoutPanel2.RowCount = 2;
+                    tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 16));
                     tableLayoutPanel2.Controls.Add(linkLabel, 0, 1);
+                    tableLayoutPanel1.Height += 16;
                 }));
             ThreadStatus = Status.Exception;
         }
 
-    
+        public bool Finished => _status == Status.Finished ||
+                                _status == Status.Cancel ||
+                                _status == Status.Aborted ||
+                                _status == Status.Exception;
+
         Status _status;
+        private bool _minimalStile;
+        private TimeSpan _oldTimeSpent;
+        private int _oldValue;
+        private int _oldMax;
+        private int _oldLabelNameHeigth;
+        EventWaitHandle waitHandle = new EventWaitHandle(true, EventResetMode.AutoReset);
         Status ThreadStatus
         {
             get => _status;
@@ -86,13 +138,13 @@ namespace TPR_ExampleView
                         break;
                     case Status.Started:
                         bPause.BackgroundImage = Properties.Resources.пауза_32;
-                        ProgressBar.SetState(1);
+                        ProgressBar.SetState(Extensions.ProgressBarState.Green, waitHandle);
                         timer1.Start();
                         break;
                     case Status.Paused:
                         timer1.Stop();
                         bPause.BackgroundImage = Properties.Resources.воспроизведение_32;
-                        ProgressBar.SetState(3);
+                        ProgressBar.SetState(Extensions.ProgressBarState.Yellow, waitHandle);
                         break;
                     case Status.Aborted:
                         timer1.Stop();
@@ -105,39 +157,40 @@ namespace TPR_ExampleView
                         break;
                     case Status.Exception:
                         //ProgressBar.InvokeFix(()=>ForeColor = Color.Red);
-                        ProgressBar.SetState(2);
+                        ProgressBar.SetState(Extensions.ProgressBarState.Red, waitHandle);
                         break;
                     default:
                         break;
                 }
+                
                 ProgressUpdate();
             }
         }
         public void Start(InputImage.ProgressInfo progressInfo)
         {
             ProgressInfo = progressInfo;
-            Max = ProgressInfo.Maximum;
-            Value = ProgressInfo.Value;
-            progressInfo.ProgressMaximumChanged += new EventHandler((o, e) =>
-            {
-                Max = ProgressInfo.Maximum;
-            });
-            progressInfo.ProgressValueChanged += new EventHandler((o, e) =>
-            {
-                Value = ProgressInfo.Value;
-            });
+            //Max = ProgressInfo.Maximum;
+            //Value = ProgressInfo.Value;
+            progressInfo.Started += new EventHandler((o, e) => ProgressBar.Style = ProgressBarStyle.Continuous);
+            if (progressInfo.IsRun) ProgressBar.InvokeFix(() => ProgressBar.Style = ProgressBarStyle.Continuous);
+            //progressInfo.ProgressMaximumChanged += new EventHandler((o, e) =>
+            //{
+            //    Max = progressInfo.Maximum;
+            //});
+            //progressInfo.ProgressValueChanged += new EventHandler((o, e) =>
+            //{
+            //    Value = progressInfo.Value;
+            //});
             progressInfo.Finished += new EventHandler<BaseLibrary.CancelEventArgs>((o, e) =>
             {
                 timer1.Stop();
                 endTime = DateTime.Now;
-                if (InvokeRequired)
-                {
-                    lDuratuin.Invoke(new Action(() => { FinishM(e); }));
-                }
-                else FinishM(e);
+                lDuratuin.InvokeFix(() => { FinishM(e); });
+                lProgress.InvokeFix(() => ProgressUpdate());
+                ProgressBar.InvokeFix(() => { ProgressBar.Maximum = Max; ProgressBar.Value = Value; });
             });
 
-           
+
             //MessageBox.Show(Thread.ThreadState.ToString());
 
         }
@@ -147,11 +200,12 @@ namespace TPR_ExampleView
             if (Started) return;
             Started = true;
             startTime = DateTime.Now;
-            ProgressBar.Style = ProgressBarStyle.Marquee;
+            //ProgressBar.Style = ProgressBarStyle.Marquee;
             ThreadStatus = Status.Started;
             Timer.Start();
+            //Thread.Priority = ThreadPriority.Highest;
             Thread.Start(InvParam);
-            updateHadler.Start();
+            //updateHadler.Start();
             lTimeStart.InvokeFix(() =>
             {
                 lTimeStart.Text = $"Начало: {startTime.ToLongTimeString()}";
@@ -166,6 +220,9 @@ namespace TPR_ExampleView
             {
                 Thread.Join();
                 timer1.Stop();
+                //this.InvokeFix(() =>
+                ProgressBar.InvokeFix(() => { ProgressBar.Maximum = Max; ProgressBar.Value = Value; });
+                //{
                 if (ThreadStatus != Status.Finished && ThreadStatus != Status.Cancel && ThreadStatus != Status.Exception)
                 {
                     if (Thread.ThreadState.HasFlag(ThreadState.Stopped))
@@ -173,30 +230,65 @@ namespace TPR_ExampleView
                     if (Thread.ThreadState.HasFlag(ThreadState.Aborted))
                         ThreadStatus = Status.Aborted;
                 }
-                TimeText();
+                tableLayoutPanel1.InvokeFix(() =>
+                {
+                    
+                    tableLayoutPanel3.Parent = null;
+                    tableLayoutPanel3.Dispose();
+                    tableLayoutPanel1.RowCount = 5;
+                    tableLayoutPanel1.Height -= 24;
+                    //HeigthUpdate();
+                });
+                //TimeText();
+                //});
+                //this.InvokeFix(() => TimeText());
                 ThreadFinished?.Invoke(this, EventArgs.Empty);
             })
-            { Name = "ThreadWaitHandler", IsBackground = true }.Start();
+            { Name = "ThreadWaitHandler", Priority = ThreadPriority.BelowNormal , IsBackground = true }.Start();
         }
 
-        internal ProgressInfoControl(string name, MenuMethod.InvParam invParam, Thread thread, ProgressBar progressBar)
+        private void HeigthUpdate()
         {
-            updateHadler = new Thread(() =>
-            {
-                while (true)
-                {
-                    waitHandle.WaitOne();
-                    Thread.Sleep(100);
-                    lProgress.InvokeFix(() =>
-                                      lProgress.Text = $"{ThreadStatus.DescriptionAttr()} ({_value}/{_max})");
-                    Thread.Sleep(100);
-                }
-            })
-            { Name = "UpdateProgressHandler", IsBackground = true };
+            float h = 0;
+            foreach (RowStyle item in tableLayoutPanel1.RowStyles)
+                h += item.Height;
+            if (h != tableLayoutPanel1.Height) tableLayoutPanel1.Height = (int)h;
+        }
+
+        internal ProgressInfoControl()
+        {
             InitializeComponent();
+        }
+
+        internal ProgressInfoControl(string name, MenuMethod.InvParam invParam, Thread thread) : this()
+        {
+            //ProgressBar = progressBar = new ProgressBar();
+            InputImage.InitProgress initProgress = new InputImage.InitProgress(progressBar1);
+            initProgress.Init += new EventHandler((o, e) =>
+            {
+                if (o is InputImage.InitProgress ip)
+                {
+                    Start(ip.ProgressInfo);
+                }
+            });
+            Program.mainForm.ProgressDict.Add(invParam.TaskID, initProgress);
+            //updateHadler = new Thread(() =>
+            //{
+            //    Thread.Sleep(1000);
+            //    while (true)
+            //    {
+            //        waitHandle.WaitOne();
+            //        Thread.Sleep(100);
+            //        Thread.Yield();
+            //        lProgress.InvokeFix(() =>
+            //                          lProgress.Text = $"{ThreadStatus.DescriptionAttr()} ({_value}/{_max})");
+            //        Thread.Sleep(100);
+            //        if (Finished) break;
+            //    }
+            //})
+            //{ Name = "UpdateProgressHandler", IsBackground = true };
             const string empty = "___";
             lTimeStart.Text = empty;
-            lName.Text = empty;
             lDuratuin.Text = empty;
             lTimeStart.Text = empty;
             InvParam = invParam;
@@ -204,15 +296,14 @@ namespace TPR_ExampleView
             Thread = thread;
             if (Thread.ThreadState.HasFlag(ThreadState.Unstarted)) ThreadStatus = Status.Unstarted;
             else ThreadStatus = Status.Started;
+            toolTip1.SetToolTip(lName, name);
             lName.Text = name;
 
-            ProgressBar = progressBar;
-            ProgressBar.Dock = DockStyle.Fill;
-            if (tableLayoutPanel1.InvokeRequired||ProgressBar.InvokeRequired)
-                ProgressBar.Invoke(new Action(() => { tableLayoutPanel1.Controls.Add(ProgressBar, 0, 4); }));
-            else
-            tableLayoutPanel1.Controls.Add(ProgressBar, 0, 4);
-            this.Closed += new EventHandler((o, e) => { updateHadler.Abort(); waitHandle.Close(); });
+            //if (tableLayoutPanel1.InvokeRequired || ProgressBar.InvokeRequired)
+            //    ProgressBar.Invoke(new Action(() => { tableLayoutPanel1.Controls.Add(ProgressBar, 0, 4); }));
+            //else
+            //    tableLayoutPanel1.Controls.Add(ProgressBar, 0, 4);
+            //this.Closed += new EventHandler((o, e) => { updateHadler.Abort(); waitHandle.Close(); });
             //tableLayoutPanel1.SetColumnSpan(ProgressBar, 3);
             //if(!progressInfo.CancelSupport)
             //{
@@ -235,7 +326,33 @@ namespace TPR_ExampleView
 
         private void TimeText()
         {
-            lDuratuin.InvokeFix(() => lDuratuin.Text = $"Прошло {TimeSpent.TotalSeconds.ToString("F")} c.");
+            this.InvokeFix(() =>
+            {
+                var TimeSpent = this.TimeSpent;
+                if (_oldTimeSpent != TimeSpent)
+                {
+                    _oldTimeSpent = TimeSpent;
+                    lDuratuin.InvokeFix(() => lDuratuin.Text = $"Прошло {TimeSpent.TotalSeconds.ToString("F")} c.");
+                }
+                bool val_changed = false;
+                int max = Max, val = Value;
+                if (_oldMax != max)
+                {
+                    ProgressBar.Maximum = max;
+                    val_changed = true;
+                }
+                if (_oldValue != val)
+                {
+                    ProgressBar.Value = val;
+                    val_changed = true;
+                }
+                if (val_changed)
+                {
+                    _oldValue = val;
+                    _oldMax = max;
+                    ProgressUpdate();
+                }
+            });
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -311,5 +428,4 @@ namespace TPR_ExampleView
         public event EventHandler ThreadFinished;
         public event EventHandler ThreadStarted;
     }
-    
 }

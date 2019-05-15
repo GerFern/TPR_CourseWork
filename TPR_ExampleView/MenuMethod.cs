@@ -235,15 +235,18 @@ namespace TPR_ExampleView
             {
                 if (MainForm.MultiImage)
                 {
-                    var f = new Forms.FormInvokeProgress(MainForm.InvokeMethodImmediately, invParam, MainForm.imageList1.CheckedImgNames.ToArray());
-                    f.InvokeFix(() => f.ShowDialog());
+                    new Thread(() =>
+                    {
+                        var f = new Forms.FormInvokeProgress(MainForm.InvokeMethodImmediately, invParam, MainForm.imageList1.CheckedImgNames.ToArray());
+                        f.ShowDialog();
+                    }) { Name = "ProgressForm", Priority = ThreadPriority.Highest }.Start();
                 }
                 else
                 {
                     Thread thread = new Thread(new ParameterizedThreadStart(InvMethod)) { Name = methodInfo.MethodName };
                     ProgressInfoControl pic;
                     invParam.Image = SelectedImage;
-                    invParam.TaskID = MainForm.CreateTask(methodInfo.MethodName ,methodInfo, thread, invParam, out pic);
+                    /*invParam.TaskID =*/ MainForm.CreateTask(methodInfo.MethodName, methodInfo, thread, invParam, out pic);
                     MainForm.progressListControl.InvokeFix(() => MainForm.progressListControl.Add(pic));
                     //MainForm.tableLayoutPanel1.Invoke(new Action(() =>
                     //{
@@ -259,59 +262,37 @@ namespace TPR_ExampleView
 
         internal class InvParam : ICloneable
         {
-            private ProgressInfoControl progressInfoControl;
-            private string imgFileString;
-            private IImage image;
-            private MyMethodInfo methodInfo;
-            private Form form;
-            private BaseForm baseForm;
-            private FormP formP;
-            private object[] vs;
-            private TypeInvoke typeInvoke;
-            private int taskID;
-
             public InvParam()
             {
             }
 
-            public ProgressInfoControl ProgressInfoControl { get => progressInfoControl; set => progressInfoControl = value; }
-            public string ImgFileString { get => imgFileString; set => imgFileString = value; }
-            public IImage Image
-            {
-                get => image;
-                set
-                {
-                    image = value;
-                    //if (vs != null)
-                    //{
-                    //    if (MethodInfo.IsInputImage)
-                    //        vs[0] = InputImage;
-                    //    else vs[0] = image;
-                    //}
-                }
-            }
-            public MyMethodInfo MethodInfo { get => methodInfo; set => methodInfo = value; }
-            public Form Form { get => form; set => form = value; }
-            public BaseForm BaseForm { get => baseForm; set => baseForm = value; }
-            public FormP FormP { get => formP; set => formP = value; }
-            public object[] Vs { get => vs; set => vs = value; }
-            public TypeInvoke TypeInvoke { get => typeInvoke; set => typeInvoke = value; }
-            public int TaskID { get => taskID; set => taskID = value; }
+            public ProgressInfoControl ProgressInfoControl { get; set; }
+            public string ImgFileString { get; set; }
+            public IImage Image { get; set; }
+            public MyMethodInfo MethodInfo { get; set; }
+            public Form Form { get; set; }
+            public BaseForm BaseForm { get; set; }
+            public FormP FormP { get; set; }
+            public object[] Vs { get; set; }
+            public TypeInvoke TypeInvoke { get; set; }
+            public int TaskID { get; set; }
+            public bool NeedDisposeImage { get; set; }
 
             //public InputImage InputImage => new InputImage(Image, TaskID, MethodInfo.MethodName);
 
             public object Clone()
             {
                 InvParam invParam = new InvParam();
-                invParam.baseForm = baseForm;
-                invParam.form = form;
-                invParam.formP = formP;
-                invParam.imgFileString = imgFileString;
-                invParam.methodInfo = methodInfo;
-                invParam.taskID = taskID;
-                invParam.typeInvoke = typeInvoke;
-                invParam.vs = new object[vs.Length];
-                vs.CopyTo(invParam.vs, 0);
+                invParam.BaseForm = BaseForm;
+                invParam.Form = Form;
+                invParam.FormP = FormP;
+                invParam.ImgFileString = ImgFileString;
+                invParam.MethodInfo = MethodInfo;
+                invParam.NeedDisposeImage = NeedDisposeImage;
+                invParam.TaskID = TaskID;
+                invParam.TypeInvoke = TypeInvoke;
+                invParam.Vs = new object[Vs.Length];
+                Vs.CopyTo(invParam.Vs, 0);
                 return invParam;
             }
 
@@ -342,11 +323,24 @@ namespace TPR_ExampleView
                 try
                 {
 #endif
+                    if (invParam.Image.IsDisposedOrNull())
+                    {
+                        try
+                        {
+                            if (invParam.ImgFileString.PathIsImage())
+                            {
+                                invParam.Image = new Image<Bgr, byte>(invParam.ImgFileString);
+                                invParam.NeedDisposeImage = true;
+                            }
+                        }
+                        catch { }
+                    }
                     if (invParam.Vs == null) invParam.Vs = new object[1];
                     if (invParam.MethodInfo.IsInputImage)
                     {
                         invParam.Vs[0] = new InputImage(invParam.Image, invParam.TaskID, invParam.MethodInfo.MethodName);
                     }
+                    else if (invParam.Vs[0] == null) invParam.Vs[0] = invParam.Image;
                     switch (invParam.TypeInvoke)
                     {
                         case TypeInvoke.CustomForm:
@@ -397,6 +391,10 @@ namespace TPR_ExampleView
                 catch (Exception ex)
                 {
                     System.Windows.Forms.MessageBox.Show(ex.Message);
+                }
+                finally
+                {
+                    if (invParam.NeedDisposeImage) invParam.Image?.Dispose();
                 }
 #endif
                 if (outputImage != null)

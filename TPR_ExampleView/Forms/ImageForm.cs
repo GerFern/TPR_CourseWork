@@ -74,7 +74,7 @@ namespace TPR_ExampleView
 
         private void ToolStripButton2_Click(object sender, EventArgs e)
         {
-            SaveFileDialog sfd = new SaveFileDialog();
+            SaveFileDialog sfd = BaseMethods.GetSaveFileDialog();
             if(sfd.ShowDialog()==DialogResult.OK)
             {
                 try
