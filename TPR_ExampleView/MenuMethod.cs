@@ -212,7 +212,7 @@ namespace TPR_ExampleView
                 using (form)
                 {
                     if (form.ShowDialog() == DialogResult.OK)
-                        invParam = new InvParam { TypeInvoke = TypeInvoke.CustomForm, BaseForm = form };
+                        invParam = new InvParam { TypeInvoke = TypeInvoke.CustomForm, BaseForm = form, MethodInfo = methodInfo };
                         //thread.Start(new InvParam { TypeInvoke = TypeInvoke.CustomForm, BaseForm = form });
                 }
             }
