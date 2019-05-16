@@ -14,6 +14,36 @@ namespace BaseLibrary
 {
     public partial class Form1 : BaseForm
     {
+        [SaveParam]
+        public int Vs1
+        {
+            get => (int)numericUpDown2.Value;
+            set
+            {
+                numericUpDown2.Value = value;
+            }
+        }
+
+        [SaveParam]
+        public int Vs2
+        {
+            get => (int)numericUpDown3.Value;
+            set
+            {
+                numericUpDown3.Value = value;
+            }
+        }
+
+        [SaveParam]
+        public int Vs3
+        {
+            get => (int)numericUpDown1.Value;
+            set
+            {
+                numericUpDown1.Value = value;
+            }
+        }
+
         public Form1(InputImage inputImage, System.Reflection.MethodInfo methodInfo) : base(inputImage, methodInfo)
         {
             InitializeComponent();

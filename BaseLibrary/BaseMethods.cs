@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace BaseLibrary
 {
@@ -16,7 +17,7 @@ namespace BaseLibrary
         internal static GetProgressBar _getProgressBar;
         public static Dictionary<string, string> settings;
 
-
+       
         /// <summary>
         /// Добовляйте уникальный префикс
         /// </summary>

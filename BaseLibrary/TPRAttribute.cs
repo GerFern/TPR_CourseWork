@@ -180,5 +180,11 @@ namespace BaseLibrary
     /// <summary>
     /// Отмечает, что не следует обращать внимание на вызываемые исключения в этом методе
     /// </summary>
-    public sealed class DontCatchException : TPRAttribute { }
+    public sealed class DontCatchExceptionAttribute : TPRAttribute { }
+
+    /// <summary>
+    /// Отмечает, что данное свойство или поле будет сохраняться
+    /// </summary>
+    [System.AttributeUsage(AttributeTargets.Property|AttributeTargets.Field)]
+    public sealed class SaveParamAttribute : TPRAttribute { }
 }

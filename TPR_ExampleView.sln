@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExplorerImage", "ExplorerIm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary2", "ClassLibrary2\ClassLibrary2.csproj", "{B8DB105D-E712-4EDF-BC74-18804EC2CCF1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myLab", "myLab\myLab.csproj", "{4B9D67FD-B4C2-4BC8-BDCB-129E00C0C778}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CodeAnalysisDebug|Any CPU = CodeAnalysisDebug|Any CPU
@@ -104,6 +106,18 @@ Global
 		{B8DB105D-E712-4EDF-BC74-18804EC2CCF1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B8DB105D-E712-4EDF-BC74-18804EC2CCF1}.Release|x64.ActiveCfg = Release|Any CPU
 		{B8DB105D-E712-4EDF-BC74-18804EC2CCF1}.Release|x64.Build.0 = Release|Any CPU
+		{4B9D67FD-B4C2-4BC8-BDCB-129E00C0C778}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B9D67FD-B4C2-4BC8-BDCB-129E00C0C778}.CodeAnalysisDebug|Any CPU.Build.0 = Debug|Any CPU
+		{4B9D67FD-B4C2-4BC8-BDCB-129E00C0C778}.CodeAnalysisDebug|x64.ActiveCfg = Debug|Any CPU
+		{4B9D67FD-B4C2-4BC8-BDCB-129E00C0C778}.CodeAnalysisDebug|x64.Build.0 = Debug|Any CPU
+		{4B9D67FD-B4C2-4BC8-BDCB-129E00C0C778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B9D67FD-B4C2-4BC8-BDCB-129E00C0C778}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B9D67FD-B4C2-4BC8-BDCB-129E00C0C778}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4B9D67FD-B4C2-4BC8-BDCB-129E00C0C778}.Debug|x64.Build.0 = Debug|Any CPU
+		{4B9D67FD-B4C2-4BC8-BDCB-129E00C0C778}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B9D67FD-B4C2-4BC8-BDCB-129E00C0C778}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B9D67FD-B4C2-4BC8-BDCB-129E00C0C778}.Release|x64.ActiveCfg = Release|Any CPU
+		{4B9D67FD-B4C2-4BC8-BDCB-129E00C0C778}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

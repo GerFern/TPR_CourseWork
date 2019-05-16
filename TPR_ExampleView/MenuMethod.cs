@@ -211,9 +211,11 @@ namespace TPR_ExampleView
                 else form = Activator.CreateInstance(formType, SelectedImage, methodInfo.MethodInfo) as BaseForm;
                 using (form)
                 {
+                    form.LoadSettings(methodInfo.MethodName);
                     if (form.ShowDialog() == DialogResult.OK)
                         invParam = new InvParam { TypeInvoke = TypeInvoke.CustomForm, BaseForm = form, MethodInfo = methodInfo };
                         //thread.Start(new InvParam { TypeInvoke = TypeInvoke.CustomForm, BaseForm = form });
+                    form.SaveSetting(methodInfo.MethodName);
                 }
             }
             else

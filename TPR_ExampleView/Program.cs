@@ -33,7 +33,7 @@ namespace TPR_ExampleView
         {
             StackFrame stackFrame = new StackFrame();
             StackTrace stackTrace = new StackTrace();
-            if (!stackTrace.GetFrames().Any(a => a.GetMethod().GetCustomAttribute<BaseLibrary.DontCatchException>() != null))
+            if (!stackTrace.GetFrames().Any(a => a.GetMethod().GetCustomAttribute<BaseLibrary.DontCatchExceptionAttribute>() != null))
             {
                 if (catchException)
                 {
@@ -57,7 +57,7 @@ namespace TPR_ExampleView
                     Debugger.Break();
                 //Выберите в отладчике поток с нужным именем
                 //Проверьте стек вызовов. Код остановлен до перехода в catch
-                ///Чтобы не показывать сообщение об исключениях, пометьте метод атрибутом <see cref="BaseLibrary.DontCatchException"/>
+                ///Чтобы не показывать сообщение об исключениях, пометьте метод атрибутом <see cref="BaseLibrary.DontCatchExceptionAttribute"/>
                 else Debugger.Launch();
             }
         }

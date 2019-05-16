@@ -177,5 +177,90 @@ namespace BaseLibrary
             })
             { Name = $"StateChangeTo{state.ToString()}" }.Start();
         }
+
+        public static bool LoadSettings<T>(this T sender, string ID)
+        {
+            Type typeAttribute = typeof(SaveParamAttribute);
+            Type type = sender.GetType();
+            const string paramsdir = "Params";
+            if (!Directory.Exists(paramsdir))
+                Directory.CreateDirectory(paramsdir);
+            string path = $"{paramsdir}\\{type.Module.Name}";
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            path += $"\\{ID}.json";
+            //Если файл существует
+            if (File.Exists(path))
+            {
+                //Список свойств
+                var properties = type.GetProperties().Where(a => a.GetCustomAttributes(typeAttribute, false).Length != 0);
+                //Список полей
+                var fields = type.GetFields().Where(a => a.GetCustomAttributes(typeAttribute, false).Length != 0);
+                Dictionary<string, string> dict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(path));
+                foreach (var item in dict)
+                {
+                    object nVal;
+                    var property = properties.FirstOrDefault(a => a.Name == item.Key);
+                    if (property != null)
+                    {
+                        //Если свойство найдено
+                        //Конвертация строки в правильный тип
+                        nVal = ((IConvertible)item.Value).ToType(property.PropertyType, System.Globalization.CultureInfo.CurrentCulture);
+                        //Установить свойство для sender
+                        property.SetValue(sender, nVal);
+                    }
+                    else
+                    {
+                        //Если поле найдено
+                        //Конвертация строки в правильный тип
+                        var field = fields.FirstOrDefault(a => a.Name == item.Key);
+                        if (field != null)
+                        {
+                            nVal = ((IConvertible)item.Value).ToType(field.FieldType, System.Globalization.CultureInfo.CurrentCulture);
+                            //Установить поле для sender
+                            field.SetValue(sender, nVal);
+                        }
+                    }
+                }
+                return true;
+            }
+            else return false;
+
+        }
+
+        public static void SaveSetting<T>(this T sender, string ID)
+        {
+            Type typeAttribute = typeof(SaveParamAttribute);
+            Type type = sender.GetType();
+            const string paramsdir = "Params";
+            if (!Directory.Exists(paramsdir))
+                Directory.CreateDirectory(paramsdir);
+            string path = $"{paramsdir}\\{type.Module.Name}";
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            path += $"\\{ID}.json";
+
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+
+            //Список свойств
+            var properties = type.GetProperties().Where(a => a.GetCustomAttributes(typeAttribute, false).Length != 0);
+            //Список полей
+            var fields = type.GetFields().Where(a => a.GetCustomAttributes(typeAttribute, false).Length != 0);
+
+            foreach (var item in properties)
+            {
+                string value = Convert.ToString(item.GetValue(sender));
+                dict.Add(item.Name, value);
+            }
+
+            foreach (var item in fields)
+            {
+                string value = Convert.ToString(item.GetValue(sender));
+                dict.Add(item.Name, value);
+            }
+
+            File.WriteAllText(path, Newtonsoft.Json.JsonConvert.SerializeObject(dict));
+        }
+
     }
 }
