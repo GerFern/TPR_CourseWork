@@ -106,6 +106,7 @@ namespace TPR_ExampleView
                 imageList1.InvokeFix(() => { if(AutoLoadImageForm) imageList1.Add(new ImageInfo(1, args.ImageForm, args.ImageForm.FilePath)); }));
             HideTabs = true;
             tabControl2.SelectedIndex = -1;
+      
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -119,8 +120,8 @@ namespace TPR_ExampleView
             //
             new OutputImageInvoker((OutputImage img) =>
             {
-                if (!this.InvokeRequired) MessageBox.Show("AAA");
-                this.Invoke(new MethodInvoker(() =>
+                //if (!this.InvokeRequired) MessageBox.Show("AAA");
+                this.InvokeFix(() =>
                     {
                         if (img != null)
                         {
@@ -134,7 +135,7 @@ namespace TPR_ExampleView
                             if (img.UpdateSelectedImage != null)
                                 MenuMethod.SelectedForm.UpdateImage();
                         }
-                    }));
+                    });
                 return null;
             }),
             new OutputImageInvoker((OutputImage img) =>
@@ -147,7 +148,8 @@ namespace TPR_ExampleView
             new GetProgressBar((InputImage img) => ProgressDict.ContainsKey(img.ID) ? ProgressDict[img.ID] : null));
             //BaseMethods.On_Writing += WriteToOutput;
             //DLL_Init.AssemblyInSolution = "myLab";
-            DLL_Init.Init(menuStrip1); 
+            DLL_Init.Init(menuStrip1);
+            BaseMethods.loadSetting();
         }
 
         void WriteToOutput(string s)

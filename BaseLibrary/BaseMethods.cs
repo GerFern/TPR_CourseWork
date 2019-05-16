@@ -2,6 +2,8 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.IO;
 
 namespace BaseLibrary
 {
@@ -12,6 +14,60 @@ namespace BaseLibrary
         internal static OutputImageInvoker _loadOutputImage;
         internal static OutputImageInvoker _createFormFromOutputImage;
         internal static GetProgressBar _getProgressBar;
+        public static Dictionary<string, string> settings;
+
+
+        /// <summary>
+        /// Добовляйте уникальный префикс
+        /// </summary>
+        /// <param name="param"></param>
+        public static string getSetting(object sender, string param, string value)
+        {
+            return settings[sender.GetType().FullName];
+        }
+
+        public static void deleteSetting(object sender, string param)
+        {
+            settings.Remove(sender.GetType().FullName);
+        }
+
+        public static void saveSetting(object sender, string param)
+        {
+            if (!Directory.Exists("Params"))
+                Directory.CreateDirectory("Params");
+            StreamWriter sr = new StreamWriter("setts.ixi");
+            foreach (var item in settings)
+            {
+                sr.WriteLine(item.Key + ":::" + item.Value);
+            }
+            sr.Close();
+        }
+        public static void loadSetting()
+        {
+            if (!Directory.Exists("Params"))
+                Directory.CreateDirectory("Params");
+            else
+            {
+                StreamReader sw = new StreamReader("setts.ixi");
+                string s;
+                while ((s = sw.ReadLine())!=null)
+                {
+                    int c= s.LastIndexOf(":::");
+                    settings[s.Substring(0, c)] = s.Substring(c + 3);
+                }
+                sw.Close();
+            }
+        }
+
+        /// <summary>
+        /// Добовляйте уникальный префикс
+        /// </summary>
+        /// <param name="param"></param>
+        public static void addSetting(object sender, string param, string value)
+        {
+            settings.Add(sender.GetType().FullName + param, value);
+        }
+
         public static OpenFileDialog GetOpenFileDialog(bool multiselect = false)
         {
             var ofd = new OpenFileDialog();
@@ -171,7 +227,7 @@ namespace BaseLibrary
         }
 
         public static event EventHandler<EventArgsNewImageForm> NewImageForm;
-        
+
 
         //public static void LoadOutputImage(OutputImage outputImage)
         //{
