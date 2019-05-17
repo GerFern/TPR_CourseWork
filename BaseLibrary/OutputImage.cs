@@ -17,6 +17,14 @@ namespace BaseLibrary
         /// </summary>
         public Emgu.CV.IImage Image { get; set; }
         /// <summary>
+        /// Установить новое глобальное изображение, которое будет отображаться в отдельной форме. Подойдет в качестве предпросмотра
+        /// </summary>
+        public Emgu.CV.IImage GlobalImage { get; set; }
+        /// <summary>
+        /// Установить новую глобальную форму. Подойдет в качестве предпросмотра
+        /// </summary>
+        public ImageForm GlobalForm { get; set; }
+        /// <summary>
         /// Название нового изображения
         /// </summary>
         public string Name { get; set; }

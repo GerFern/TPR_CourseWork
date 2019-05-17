@@ -122,9 +122,21 @@ namespace BaseLibrary
         }
     }
 
+    /// <summary>
+    /// Отмечает, что для данного метода будет автоматически сконструирована простая форма выбора параметров.
+    /// Если нужно несколько параметров, то необходимо определить несколько таких атрибутов
+    /// </summary>
     [System.AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
     public sealed class ControlFormAttribute : TPRFormAttribute
     {
+        /// <summary>
+        /// Отмечает, что для данного метода будет автоматически сконструирована простая форма выбора параметров.
+        /// Если нужно несколько параметров, то необходимо определить несколько таких атрибутов
+        /// </summary>
+        /// <param name="index">Индекс параметра метода, начинающийся с 1</param>
+        /// <param name="controlType">Тип элемента управления, производный от <see cref="Control"/>, который будет управлять параметром</param>
+        /// <param name="propertyValue">Свойство элемента управления, которое будет связано с параметром метода</param>
+        /// <param name="labelText">Надпись над элементом управления. Если <see langword="null"/>, то надпись не будет показана</param>
         public ControlFormAttribute(int index, Type controlType, string propertyValue, string labelText) : base(labelText, index)
         {
             if (string.IsNullOrEmpty(propertyValue))
@@ -136,9 +148,19 @@ namespace BaseLibrary
         public Type ControlType { get; }
         public string Property { get; }
     }
+
+    /// <summary>
+    /// Позволяет задать свойство для элемента управления
+    /// </summary>
     [System.AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
     public sealed class ControlPropertyAttribute : TPRAttribute
     {
+        /// <summary>
+        /// Позволяет задать свойство для элемента управления
+        /// </summary>
+        /// <param name="paramIndex">Индекс параметра метода, к которому привязан элемент управления</param>
+        /// <param name="propertyName">Название свойства</param>
+        /// <param name="propertyValue">Значение свойства</param>
         public ControlPropertyAttribute(int paramIndex, string propertyName, string propertyValue)
         {
             PropertyName = propertyName ?? throw new ArgumentNullException(nameof(propertyName));

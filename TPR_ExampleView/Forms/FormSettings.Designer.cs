@@ -31,14 +31,14 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSettings));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.rbMultiImageOn = new System.Windows.Forms.RadioButton();
+            this.rbMultiImageOff = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.rbSaveFileImageOff = new System.Windows.Forms.RadioButton();
+            this.rbSaveFileImageOn = new System.Windows.Forms.RadioButton();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
@@ -48,14 +48,14 @@
             this.button1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -82,43 +82,6 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(295, 360);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.ColumnCount = 1;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Controls.Add(this.radioButton2, 0, 1);
-            this.tableLayoutPanel2.Controls.Add(this.radioButton1, 0, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 2;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(283, 45);
-            this.tableLayoutPanel2.TabIndex = 0;
-            // 
-            // radioButton1
-            // 
-            this.radioButton1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(3, 3);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(122, 16);
-            this.radioButton1.TabIndex = 0;
-            this.radioButton1.Text = "Одно изображение";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            // 
-            // radioButton2
-            // 
-            this.radioButton2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(3, 25);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(152, 17);
-            this.radioButton2.TabIndex = 1;
-            this.radioButton2.Text = "Несколько изображений";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.tableLayoutPanel2);
@@ -129,6 +92,43 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Режим работы";
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Controls.Add(this.rbMultiImageOn, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.rbMultiImageOff, 0, 0);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(283, 45);
+            this.tableLayoutPanel2.TabIndex = 0;
+            // 
+            // rbMultiImageOn
+            // 
+            this.rbMultiImageOn.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.rbMultiImageOn.AutoSize = true;
+            this.rbMultiImageOn.Location = new System.Drawing.Point(3, 25);
+            this.rbMultiImageOn.Name = "rbMultiImageOn";
+            this.rbMultiImageOn.Size = new System.Drawing.Size(152, 17);
+            this.rbMultiImageOn.TabIndex = 1;
+            this.rbMultiImageOn.Text = "Несколько изображений";
+            this.rbMultiImageOn.UseVisualStyleBackColor = true;
+            // 
+            // rbMultiImageOff
+            // 
+            this.rbMultiImageOff.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.rbMultiImageOff.AutoSize = true;
+            this.rbMultiImageOff.Location = new System.Drawing.Point(3, 3);
+            this.rbMultiImageOff.Name = "rbMultiImageOff";
+            this.rbMultiImageOff.Size = new System.Drawing.Size(122, 16);
+            this.rbMultiImageOff.TabIndex = 0;
+            this.rbMultiImageOff.Text = "Одно изображение";
+            this.rbMultiImageOff.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
@@ -145,8 +145,8 @@
             // 
             this.tableLayoutPanel3.ColumnCount = 1;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Controls.Add(this.radioButton3, 0, 0);
-            this.tableLayoutPanel3.Controls.Add(this.radioButton4, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.rbSaveFileImageOff, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.rbSaveFileImageOn, 0, 1);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 16);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -156,27 +156,27 @@
             this.tableLayoutPanel3.Size = new System.Drawing.Size(283, 45);
             this.tableLayoutPanel3.TabIndex = 0;
             // 
-            // radioButton3
+            // rbSaveFileImageOff
             // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.radioButton3.Location = new System.Drawing.Point(3, 3);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(277, 16);
-            this.radioButton3.TabIndex = 0;
-            this.radioButton3.Text = "Открывать как новое изображение";
-            this.radioButton3.UseVisualStyleBackColor = true;
+            this.rbSaveFileImageOff.AutoSize = true;
+            this.rbSaveFileImageOff.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rbSaveFileImageOff.Location = new System.Drawing.Point(3, 3);
+            this.rbSaveFileImageOff.Name = "rbSaveFileImageOff";
+            this.rbSaveFileImageOff.Size = new System.Drawing.Size(277, 16);
+            this.rbSaveFileImageOff.TabIndex = 0;
+            this.rbSaveFileImageOff.Text = "Открывать как новое изображение";
+            this.rbSaveFileImageOff.UseVisualStyleBackColor = true;
             // 
-            // radioButton4
+            // rbSaveFileImageOn
             // 
-            this.radioButton4.AutoSize = true;
-            this.radioButton4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.radioButton4.Location = new System.Drawing.Point(3, 25);
-            this.radioButton4.Name = "radioButton4";
-            this.radioButton4.Size = new System.Drawing.Size(277, 17);
-            this.radioButton4.TabIndex = 0;
-            this.radioButton4.Text = "Сохранять файл с изображением в папку";
-            this.radioButton4.UseVisualStyleBackColor = true;
+            this.rbSaveFileImageOn.AutoSize = true;
+            this.rbSaveFileImageOn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rbSaveFileImageOn.Location = new System.Drawing.Point(3, 25);
+            this.rbSaveFileImageOn.Name = "rbSaveFileImageOn";
+            this.rbSaveFileImageOn.Size = new System.Drawing.Size(277, 17);
+            this.rbSaveFileImageOn.TabIndex = 0;
+            this.rbSaveFileImageOn.Text = "Сохранять файл с изображением в папку";
+            this.rbSaveFileImageOn.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
@@ -196,12 +196,12 @@
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel4.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.textBox1, 0, 1);
-            this.tableLayoutPanel4.Controls.Add(this.label2, 0, 2);
             this.tableLayoutPanel4.Controls.Add(this.textBox2, 0, 3);
-            this.tableLayoutPanel4.Controls.Add(this.button1, 1, 1);
-            this.tableLayoutPanel4.Controls.Add(this.label3, 0, 4);
             this.tableLayoutPanel4.Controls.Add(this.comboBox1, 0, 5);
             this.tableLayoutPanel4.Controls.Add(this.checkBox1, 0, 6);
+            this.tableLayoutPanel4.Controls.Add(this.button1, 1, 1);
+            this.tableLayoutPanel4.Controls.Add(this.label2, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.label3, 0, 4);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 16);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
@@ -212,6 +212,7 @@
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel4.Size = new System.Drawing.Size(283, 151);
             this.tableLayoutPanel4.TabIndex = 0;
@@ -280,11 +281,24 @@
             // 
             this.tableLayoutPanel4.SetColumnSpan(this.comboBox1, 2);
             this.comboBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(3, 103);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(277, 21);
             this.comboBox1.TabIndex = 5;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.tableLayoutPanel4.SetColumnSpan(this.checkBox1, 2);
+            this.checkBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkBox1.Location = new System.Drawing.Point(3, 129);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(277, 19);
+            this.checkBox1.TabIndex = 6;
+            this.checkBox1.Text = "Заменять существующие файлы";
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // flowLayoutPanel1
             // 
@@ -318,18 +332,6 @@
             this.button3.Text = "Применить";
             this.button3.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.tableLayoutPanel4.SetColumnSpan(this.checkBox1, 2);
-            this.checkBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkBox1.Location = new System.Drawing.Point(3, 129);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(277, 19);
-            this.checkBox1.TabIndex = 6;
-            this.checkBox1.Text = "Заменять существующие файлы";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
             // FormSettings
             // 
             this.AcceptButton = this.button3;
@@ -340,10 +342,12 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "FormSettings";
             this.Text = "Настройки";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormSettings_FormClosed);
+            this.Load += new System.EventHandler(this.FormSettings_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
@@ -360,12 +364,12 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton rbMultiImageOn;
+        private System.Windows.Forms.RadioButton rbMultiImageOff;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
-        private System.Windows.Forms.RadioButton radioButton3;
-        private System.Windows.Forms.RadioButton radioButton4;
+        private System.Windows.Forms.RadioButton rbSaveFileImageOff;
+        private System.Windows.Forms.RadioButton rbSaveFileImageOn;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.Label label1;

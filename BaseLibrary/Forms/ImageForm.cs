@@ -109,6 +109,14 @@ namespace BaseLibrary
                 Control parent = this.Parent;
                 parent.Controls.Clear();
                 parent.Controls.Add(_castForm);
+                return;
+            }
+            else if (_replaceForm!=null)
+            {
+                Control parent = this.Parent;
+                parent.Controls.Clear();
+                parent.Controls.Add(_replaceForm);
+                return;
             }
             else if (this.Parent is TabForm tabForm)
             {
@@ -128,6 +136,8 @@ namespace BaseLibrary
         }
 
         static EventHandler<EventArgsWithImageForm> _isSelectedChanged;
+        private ImageForm _replaceForm;
+
         /// <summary>
         /// Использовать не нужно
         /// </summary>
@@ -154,6 +164,21 @@ namespace BaseLibrary
                 }
             }
         }
+
+        /// <summary>
+        /// Заменяет эту форму другой
+        /// </summary>
+        /// <param name="imageForm"></param>
+        public void CastToOtherForm(ImageForm imageForm)
+        {
+            if (imageForm!=null)
+            {
+                _replaceForm = imageForm;
+                Close();
+            }
+        }
+
+
         /// <summary>
         /// Загружает <see cref="OutputImage"/> объект на главную форму
         /// </summary>

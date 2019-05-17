@@ -48,10 +48,8 @@
             this.скрыватьБоковоеМенюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.отладкаИсключенийToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.выполнятьМетодыСразуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.режимРаботыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.одноИзображениеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.несколькоИзображенийToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.автоматическиДобавлятьНовыеИзображенияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.работаСИзображениямиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new TPR_ExampleView.Form1.ToolStripVerticalSeparator();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -221,8 +219,8 @@
             this.скрыватьБоковоеМенюToolStripMenuItem,
             this.отладкаИсключенийToolStripMenuItem,
             this.выполнятьМетодыСразуToolStripMenuItem,
-            this.режимРаботыToolStripMenuItem,
-            this.автоматическиДобавлятьНовыеИзображенияToolStripMenuItem});
+            this.автоматическиДобавлятьНовыеИзображенияToolStripMenuItem,
+            this.работаСИзображениямиToolStripMenuItem});
             this.addToolStripMenuItem1.Name = "addToolStripMenuItem1";
             this.addToolStripMenuItem1.Size = new System.Drawing.Size(79, 20);
             this.addToolStripMenuItem1.Text = "Настройки";
@@ -289,33 +287,6 @@
             this.выполнятьМетодыСразуToolStripMenuItem.Text = "Выполнять методы сразу";
             this.выполнятьМетодыСразуToolStripMenuItem.Click += new System.EventHandler(this.ВыполнятьМетодыСразуToolStripMenuItem_Click);
             // 
-            // режимРаботыToolStripMenuItem
-            // 
-            this.режимРаботыToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.одноИзображениеToolStripMenuItem,
-            this.несколькоИзображенийToolStripMenuItem});
-            this.режимРаботыToolStripMenuItem.Name = "режимРаботыToolStripMenuItem";
-            this.режимРаботыToolStripMenuItem.Size = new System.Drawing.Size(385, 22);
-            this.режимРаботыToolStripMenuItem.Text = "Режим работы";
-            // 
-            // одноИзображениеToolStripMenuItem
-            // 
-            this.одноИзображениеToolStripMenuItem.CheckOnClick = true;
-            this.одноИзображениеToolStripMenuItem.Name = "одноИзображениеToolStripMenuItem";
-            this.одноИзображениеToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
-            this.одноИзображениеToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.одноИзображениеToolStripMenuItem.Text = "Одно изображение";
-            this.одноИзображениеToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ОдноИзображениеToolStripMenuItem_CheckedChanged);
-            // 
-            // несколькоИзображенийToolStripMenuItem
-            // 
-            this.несколькоИзображенийToolStripMenuItem.CheckOnClick = true;
-            this.несколькоИзображенийToolStripMenuItem.Name = "несколькоИзображенийToolStripMenuItem";
-            this.несколькоИзображенийToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
-            this.несколькоИзображенийToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.несколькоИзображенийToolStripMenuItem.Text = "Несколько изображений";
-            this.несколькоИзображенийToolStripMenuItem.CheckedChanged += new System.EventHandler(this.НесколькоИзображенийToolStripMenuItem_CheckedChanged);
-            // 
             // автоматическиДобавлятьНовыеИзображенияToolStripMenuItem
             // 
             this.автоматическиДобавлятьНовыеИзображенияToolStripMenuItem.CheckOnClick = true;
@@ -324,6 +295,13 @@
             this.автоматическиДобавлятьНовыеИзображенияToolStripMenuItem.Size = new System.Drawing.Size(385, 22);
             this.автоматическиДобавлятьНовыеИзображенияToolStripMenuItem.Text = "Автоматически добавлять новые изображения";
             this.автоматическиДобавлятьНовыеИзображенияToolStripMenuItem.CheckStateChanged += new System.EventHandler(this.АвтоматическиДобавлятьНовыеИзображенияToolStripMenuItem_CheckStateChanged);
+            // 
+            // работаСИзображениямиToolStripMenuItem
+            // 
+            this.работаСИзображениямиToolStripMenuItem.Name = "работаСИзображениямиToolStripMenuItem";
+            this.работаСИзображениямиToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F12)));
+            this.работаСИзображениямиToolStripMenuItem.Size = new System.Drawing.Size(385, 22);
+            this.работаСИзображениямиToolStripMenuItem.Text = "Работа с изображениями...";
             // 
             // toolStripMenuItem1
             // 
@@ -743,15 +721,13 @@
         private System.Windows.Forms.ToolStripMenuItem отладкаИсключенийToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
         private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.ToolStripMenuItem режимРаботыToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem одноИзображениеToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem несколькоИзображенийToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem выполнятьМетодыСразуToolStripMenuItem;
         internal System.Windows.Forms.TabPage tabPage1;
         internal ProgressListControl progressListControl;
         private System.Windows.Forms.ToolStripMenuItem редактироватьDllloadconfToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem автоматическиДобавлятьНовыеИзображенияToolStripMenuItem;
         internal ImageList imageList1;
+        private System.Windows.Forms.ToolStripMenuItem работаСИзображениямиToolStripMenuItem;
     }
 }
 

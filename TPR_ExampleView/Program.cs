@@ -11,6 +11,7 @@ namespace TPR_ExampleView
         public static Form1 mainForm;
         public static bool catchException = true;
         public static bool debugException = false;
+        public static BaseLibrary.ImageForm GlobalForm;
         /// <summary>
         /// Главная точка входа для приложения.
         /// </summary>

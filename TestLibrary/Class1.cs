@@ -56,6 +56,13 @@ namespace TestLibrary
             return new OutputImage { Image = grayImage };
         }
 
+        [ImgCanBeDisposedOrNull]
+        [ImgMethod("Test", "Debug", "for")]
+        [MethodName("KHH")]
+        public static OutputImage TestFor1(InputImage inputImage)
+        {
+            return null;
+        }
         [ImgMethod("Test", "Debug", "for")]
         public static OutputImage TestFor(InputImage inputImage)
         {

@@ -183,7 +183,7 @@ namespace TPR_ExampleView
             LoadParams();
             this.Height = heigth;
             this.ResumeLayout();
-            FormClosing += delegate (object sender, System.Windows.Forms.FormClosingEventArgs e)
+            FormClosing += delegate (object sender, FormClosingEventArgs e)
             {
                 if (DialogResult == System.Windows.Forms.DialogResult.OK)
                 {
@@ -191,15 +191,26 @@ namespace TPR_ExampleView
                     vs[0] = methodInfo.IsInputImage ? new InputImage(image, -1, methodInfo.MethodName) : (object)image;
                     for (int i = 0; i < controls.Length; i++)
                     {
+                        object val = null;
                         TPRFormAttribute pFormAttribute = methodInfo.AutoAndControlForms[i];
                         try
                         {
-                            object p = propertyInfos[i].GetValue(controls[i]);
-                            vs[pFormAttribute.Index] = Convert.ChangeType(p, unsortParams[pFormAttribute.Index].ParameterType);
+                            val = propertyInfos[i].GetValue(controls[i]);
+                            vs[pFormAttribute.Index] = Convert.ChangeType(val, unsortParams[pFormAttribute.Index].ParameterType);
                             //vs[i + 1] = ((IConvertible)controls[i].Text).ToType(Types[i], System.Globalization.CultureInfo.CurrentCulture);
                         }
                         catch (Exception ex)
                         {
+                            if (val is string str && str.Contains("."))
+                            {
+                                str.Replace('.', ',');
+                                try
+                                {
+                                    vs[pFormAttribute.Index] = Convert.ChangeType(str, unsortParams[pFormAttribute.Index].ParameterType);
+                                    continue;
+                                }
+                                catch { }
+                            }
                             e.Cancel = true;
                             MessageBox.Show($"Неверный параметр {pFormAttribute.LabelText} ({i})\r\n{ex.Message}");
                         }

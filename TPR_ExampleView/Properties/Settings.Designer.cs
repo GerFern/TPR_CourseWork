@@ -70,5 +70,77 @@ namespace TPR_ExampleView.Properties {
                 this["ExplorerPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MultiImage {
+            get {
+                return ((bool)(this["MultiImage"]));
+            }
+            set {
+                this["MultiImage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SaveNewImageToFile {
+            get {
+                return ((bool)(this["SaveNewImageToFile"]));
+            }
+            set {
+                this["SaveNewImageToFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SaveImageDir {
+            get {
+                return ((string)(this["SaveImageDir"]));
+            }
+            set {
+                this["SaveImageDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SaveFileNameMask {
+            get {
+                return ((string)(this["SaveFileNameMask"]));
+            }
+            set {
+                this["SaveFileNameMask"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte SaveFileFormatIndex {
+            get {
+                return ((byte)(this["SaveFileFormatIndex"]));
+            }
+            set {
+                this["SaveFileFormatIndex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SaveFileReplace {
+            get {
+                return ((bool)(this["SaveFileReplace"]));
+            }
+            set {
+                this["SaveFileReplace"] = value;
+            }
+        }
     }
 }

@@ -65,21 +65,6 @@ namespace TPR_ExampleView
                 }
             }
         }
-        bool _multiImage;
-        bool _multiImageChange = false;
-        public bool MultiImage
-        {
-            get => _multiImage;
-            set
-            {
-                _multiImageChange = true;
-                _multiImage = value;
-                одноИзображениеToolStripMenuItem.Checked = !value;
-                несколькоИзображенийToolStripMenuItem.Checked = value;
-                _multiImageChange = false;
-            }
-        }
-
 
         public Form1()
         {
@@ -113,31 +98,11 @@ namespace TPR_ExampleView
         {
             try { userControl1.SetPath(Properties.Settings.Default.ExplorerPath); }
             catch { userControl1.SetPath(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)); }
-            MultiImage = false;
             MenuMethod.textBox = textBox1;
-            //Инициализация для открытия форм
+            
             BaseMethods.Init(tabControl1,
             //
-            new OutputImageInvoker((OutputImage img) =>
-            {
-                //if (!this.InvokeRequired) MessageBox.Show("AAA");
-                this.InvokeFix(() =>
-                    {
-                        if (img != null)
-                        {
-                            if (img.Image != null)
-                                this.OpenImage(img.Image, img.Name);
-                            MenuMethod.CreateImage(img.Image);
-                            if (img.Info != null)
-                                textBox1.Text = img.Info;
-                            if (img.ImageForm != null)
-                                img.ImageForm.ShowForm();
-                            if (img.UpdateSelectedImage != null)
-                                MenuMethod.SelectedForm.UpdateImage();
-                        }
-                    });
-                return null;
-            }),
+            LoadOutputImage,
             new OutputImageInvoker((OutputImage img) =>
             {
                 ImageForm imageForm = new ImageForm(img.Image, img.Name);
@@ -150,6 +115,121 @@ namespace TPR_ExampleView
             //DLL_Init.AssemblyInSolution = "myLab";
             DLL_Init.Init(menuStrip1);
             BaseMethods.loadSetting();
+        }
+
+        internal ImageForm LoadOutputImage(OutputImage img)
+        {
+            this.InvokeFix(() =>
+            {
+                if (img != null)
+                {
+                    if (img.Image != null)
+                        this.OpenImage(img.Image, img.Name);
+                    //MenuMethod.CreateImage(img.Image);
+                    if (img.Info != null)
+                        textBox1.Text = img.Info;
+                    if (img.ImageForm != null)
+                        img.ImageForm.ShowForm();
+                    if (img.UpdateSelectedImage != null)
+                        MenuMethod.SelectedForm.UpdateImage();
+                    if (img.GlobalForm != null)
+                    {
+                        var GlobalForm = img.GlobalForm;
+                        if (Program.GlobalForm == null)
+                        {
+                            GlobalForm.ShowForm();
+                        }
+                        else
+                        {
+                            if (Program.GlobalForm.IsDisposed)
+                            {
+                                GlobalForm.ShowForm();
+                            }
+                            else Program.GlobalForm.CastToOtherForm(GlobalForm);
+                        }
+                        Program.GlobalForm = GlobalForm;
+                    }
+                    else if (img.GlobalImage != null)
+                    {
+                        if (Program.GlobalForm == null || Program.GlobalForm.IsDisposed)
+                            (Program.GlobalForm = new ImageForm(img.GlobalImage, img.Name)).ShowForm();
+                        else
+                            Program.GlobalForm.Image = img.GlobalImage;
+                    }
+                }
+            });
+            return null;
+        }
+
+        internal void LoadOutputImage(OutputImage img, MenuMethod.InvParam invParam)
+        {
+            this.InvokeFix(() =>
+            {
+                if (img != null)
+                {
+                    if (img.Image != null)
+                    {
+                        if(invParam.ImageSetting.SaveToFile)
+                        {
+                            if (invParam.ImageSetting.ReplaceFile)
+                            {
+                                img.Image.Save(invParam.GetFilePath(out _));
+                            }
+                            else
+                            {
+                                int counter = 1;
+                                int uIndex;
+                                string file = invParam.GetFilePath(out uIndex);
+                                if (File.Exists(file))
+                                {
+                                    string fileu;
+                                    do
+                                    {
+                                        fileu = file.Insert(uIndex, counter.ToString());
+                                        counter++;
+                                    } while (File.Exists(fileu));
+                                    img.Image.Save(fileu);
+                                }
+                                else img.Image.Save(file);
+                            }
+                            img.Image.Dispose();
+                        }
+                        else
+                        this.OpenImage(img.Image, img.Name);
+                    }
+                    //MenuMethod.CreateImage(img.Image);
+                    if (img.Info != null)
+                        textBox1.Text = img.Info;
+                    if (img.ImageForm != null)
+                        img.ImageForm.ShowForm();
+                    if (img.UpdateSelectedImage != null)
+                        MenuMethod.SelectedForm.UpdateImage();
+                    if (img.GlobalForm != null)
+                    {
+                        var GlobalForm = img.GlobalForm;
+                        if (Program.GlobalForm == null)
+                        {
+                            GlobalForm.ShowForm();
+                        }
+                        else
+                        {
+                            if (Program.GlobalForm.IsDisposed)
+                            {
+                                GlobalForm.ShowForm();
+                            }
+                            else Program.GlobalForm.CastToOtherForm(GlobalForm);
+                        }
+                        Program.GlobalForm = GlobalForm;
+                    }
+                    else if(img.GlobalImage != null)
+                    {
+                        if (Program.GlobalForm == null || Program.GlobalForm.IsDisposed)
+                            (Program.GlobalForm = new ImageForm(img.GlobalImage, img.Name)).ShowForm();
+                        else
+                            Program.GlobalForm.Image = img.GlobalImage;
+                    }
+                }
+            });
         }
 
         void WriteToOutput(string s)
@@ -479,25 +559,6 @@ namespace TPR_ExampleView
             tabPage3.Text = $"Исключения ({exceptionList1.ExceptionCount})";
         }
 
-        private void ОдноИзображениеToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!_multiImageChange)
-            {
-                var t = ((ToolStripMenuItem)sender);
-                MultiImage = false;
-                if (t.Checked) несколькоИзображенийToolStripMenuItem.Checked = false;
-            }
-        }
-
-        private void НесколькоИзображенийToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!_multiImageChange)
-            {
-                var t = ((ToolStripMenuItem)sender);
-                MultiImage = true;
-                if (t.Checked) одноИзображениеToolStripMenuItem.Checked = false;
-            }
-        }
 
         private void ВыполнятьМетодыСразуToolStripMenuItem_Click(object sender, EventArgs e)
         {

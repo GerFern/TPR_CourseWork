@@ -24,6 +24,7 @@ namespace TPR_ExampleView
         public Assembly Assembly { get => MethodInfo.Module.Assembly; }
         public Module Module { get => MethodInfo.Module; }
         public string MethodName { get; }
+        public string FullName => $"{Module.Name}_{MethodName}";
         public MyMethodInfo(MethodInfo methodInfo, bool isInputImage)
         {
             MethodInfo = methodInfo;

@@ -81,6 +81,25 @@ namespace BaseLibrary
             return str;
         }
 
+        public static List<string> GetExtList(bool showName, bool showExt)
+        {
+            if ((showName == false) && (showExt == false)) throw new Exception("showName и showExt не могут быть вместе равны null");
+            List<string> vs = new List<string>();
+            foreach (var item in ExtToNameSupport)
+            {
+                string str;
+                if (showName)
+                {
+                    if (showExt)
+                        str = $"{item.Value} (.{item.Key})";
+                    else str = item.Value;
+                }
+                else str = item.Key;
+                vs.Add(str);
+            }
+            return vs;
+        }
+
         public static Dictionary<string, string[]> NameToExtSupport => new Dictionary<string, string[]>
         {
             { bmpName, new string[] { bmpExt , dibExt } },
@@ -112,7 +131,7 @@ namespace BaseLibrary
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static bool PathIsImage(this string s) => ExtToNameSupport.ContainsKey(Path.GetExtension(s).ToUpper());
+        public static bool PathIsImage(this string s) => s == null ? false : ExtToNameSupport.ContainsKey(Path.GetExtension(s).ToUpper());
         /// <summary>
         /// Получить описание [<see cref="DescriptionAttribute"/>]. Если описание остутсвует, то вернет результат <typeparamref name="T"/>.ToString(). Подойдет для перечислений
         /// </summary>
@@ -205,18 +224,20 @@ namespace BaseLibrary
                     {
                         //Если свойство найдено
                         //Конвертация строки в правильный тип
-                        nVal = ((IConvertible)item.Value).ToType(property.PropertyType, System.Globalization.CultureInfo.CurrentCulture);
+                        nVal = Newtonsoft.Json.JsonConvert.DeserializeObject(item.Value, property.PropertyType);
+                        //nVal = ((IConvertible)item.Value).ToType(property.PropertyType, System.Globalization.CultureInfo.CurrentCulture);
                         //Установить свойство для sender
                         property.SetValue(sender, nVal);
                     }
                     else
                     {
-                        //Если поле найдено
-                        //Конвертация строки в правильный тип
                         var field = fields.FirstOrDefault(a => a.Name == item.Key);
                         if (field != null)
                         {
-                            nVal = ((IConvertible)item.Value).ToType(field.FieldType, System.Globalization.CultureInfo.CurrentCulture);
+                            //Если поле найдено
+                            //Конвертация строки в правильный тип
+                            nVal = Newtonsoft.Json.JsonConvert.DeserializeObject(item.Value, field.FieldType);
+                            //nVal = ((IConvertible)item.Value).ToType(field.FieldType, System.Globalization.CultureInfo.CurrentCulture);
                             //Установить поле для sender
                             field.SetValue(sender, nVal);
                         }
@@ -249,13 +270,15 @@ namespace BaseLibrary
 
             foreach (var item in properties)
             {
-                string value = Convert.ToString(item.GetValue(sender));
+                string value = Newtonsoft.Json.JsonConvert.SerializeObject(item.GetValue(sender));
+                //string value = Convert.ToString(item.GetValue(sender));
                 dict.Add(item.Name, value);
             }
 
             foreach (var item in fields)
             {
-                string value = Convert.ToString(item.GetValue(sender));
+                string value = Newtonsoft.Json.JsonConvert.SerializeObject(item.GetValue(sender));
+                //string value = Convert.ToString(item.GetValue(sender));
                 dict.Add(item.Name, value);
             }
 

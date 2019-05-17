@@ -149,21 +149,28 @@ namespace TPR_ExampleView
             }
             if (butTag.Methods.Count > 1)
             {
-                using (Form f = new Form())
+                using (Form f = new Form { Text = "Выберите метод", Size = new System.Drawing.Size(250, 100),
+                    FormBorderStyle = FormBorderStyle.FixedDialog, MaximizeBox = false, MinimizeBox = false,
+                    StartPosition = FormStartPosition.CenterParent })
                 {
-                    TableLayoutPanel tlp = new TableLayoutPanel { RowCount = 1, ColumnCount = 3, Parent = f, Dock = DockStyle.Fill };
-                    FlowLayoutPanel flp = new FlowLayoutPanel();
+                    TableLayoutPanel tlp = new TableLayoutPanel { RowCount = 2, ColumnCount = 1, Parent = f, Dock = DockStyle.Fill };
+                    FlowLayoutPanel flp = new FlowLayoutPanel { Anchor = AnchorStyles.Left | AnchorStyles.Right };
                     Button bOK = new Button { Text = "OK", DialogResult = DialogResult.OK, Parent = flp };
                     Button bCancel = new Button { Text = "Отмена", DialogResult = DialogResult.Cancel, Parent = flp };
-                    ComboBox comboBox = new ComboBox();
-                    comboBox.DataSource = butTag.Methods;
+                    ComboBox comboBox = new ComboBox
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        DataSource = butTag.Methods,
+                        DisplayMember = "FullName"
+                    };
                     f.AcceptButton = bOK;
                     f.CancelButton = bCancel;
 
-                    tlp.Controls.Add(new Label { Dock = DockStyle.Bottom, Text = "Выберите метод" }, 0, 0);
-                    tlp.Controls.Add(comboBox, 0, 1);
-                    tlp.Controls.Add(flp, 0, 2);
+                    tlp.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
+                    tlp.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
 
+                    tlp.Controls.Add(comboBox, 0, 0);
+                    tlp.Controls.Add(flp, 0, 1);
                     if (f.ShowDialog() == DialogResult.OK)
                         methodInfo = (MyMethodInfo)comboBox.SelectedItem;
                 }
@@ -176,19 +183,19 @@ namespace TPR_ExampleView
             {
                 if (!methodInfo.CanBeDisposedOrNull)
                 {
-                    const string err = "В ходе выполнения метода могут произойти ошибки. " +
-                       "Чтобы не показывать такое сообщение пометьте метод атрибутом [ImgCanBeDisposedOrNull]. " +
-                       "Проверяйте IImage.IsDisposedOrNull(). Продолжить?";
+                    //const string err = "В ходе выполнения метода могут произойти ошибки. " +
+                    //   "Чтобы не показывать такое сообщение пометьте метод атрибутом [ImgCanBeDisposedOrNull]. " +
+                    //   "Проверяйте IImage.IsDisposedOrNull(). Продолжить?";
                     if (SelectedImage == null)
                     {
-                        if (MessageBox.Show($"Входное изображение не выбрано. {err}", "", MessageBoxButtons.YesNo) != DialogResult.Yes)
-                            return;
+                        MessageBox.Show("Входное изображение не выбрано", "");
+                        return;
                     }
                     else if (SelectedImage.IsDisposedOrNull())
                     {
-                        if (MessageBox.Show("Входное изображение было удалено. Это могло произойти из-за того, " +
+                        MessageBox.Show("Входное изображение было удалено. Это могло произойти из-за того, " +
                             "что несколько форм ссылалось на это изображение и одна из них была закрыта или по другим причинам, " +
-                            $"что привело к вызову метода IImage.Dispose(). {err}", "", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                            "что привело к вызову метода IImage.Dispose()", "");
                             return;
                     }
                 }
@@ -235,8 +242,19 @@ namespace TPR_ExampleView
             }
             if (invParam != null)
             {
-                if (MainForm.MultiImage)
+                if (Properties.Settings.Default.MultiImage)
                 {
+                    var ImageSetting = invParam.ImageSetting;
+                    if (Properties.Settings.Default.SaveNewImageToFile)
+                    {
+                        ImageSetting.SaveToFile = true;
+                        ImageSetting.RootDirectory = Properties.Settings.Default.SaveImageDir;
+                        ImageSetting.MaskFile = Properties.Settings.Default.SaveFileNameMask;
+                        ImageSetting.ReplaceFile = Properties.Settings.Default.SaveFileReplace;
+                        ImageSetting.ExtFile = Extensions.ExtToNameSupport.Keys.ToList()[Properties.Settings.Default.SaveFileFormatIndex];
+                        ImageSetting.ProcessMask(methodInfo.MethodInfo.Name, methodInfo.Hierarchy.LastOrDefault(), methodInfo.MethodName, DateTime.Now.ToString());
+                    }
+                    else ImageSetting.SaveToFile = false;
                     new Thread(() =>
                     {
                         var f = new Forms.FormInvokeProgress(MainForm.InvokeMethodImmediately, invParam, MainForm.imageList1.CheckedImgNames.ToArray());
@@ -262,13 +280,65 @@ namespace TPR_ExampleView
             //SelectedForm?.UpdateImage();
         }
 
-        internal class InvParam : ICloneable
+        /// <summary>
+        /// Общие настройки
+        /// </summary>
+        internal class OverallLoadImageSetting
         {
-            public InvParam()
+            public bool SaveToFile { get; set; }
+            public string RootDirectory { get; set; }
+            public string MaskFile { get; set; }
+            public string ProcessedMask { get; set; }
+            public bool ReplaceFile { get; set; }
+            public string ExtFile { get; set; }
+
+            public void ProcessMask(string mName, string bName, string aName, string dateTimeStart)
             {
+                string res = string.Empty;
+                CharEnumerator vs = MaskFile.GetEnumerator();
+                while (vs.MoveNext())
+                {
+                    char c = vs.Current;
+                    if (c == '%')
+                    {
+                        if (vs.MoveNext())
+                        {
+                            switch (vs.Current)
+                            {
+                                case 'm':
+                                    res += mName;
+                                    break;
+                                case 'n':
+                                    res += bName;
+                                    break;
+                                case 'N':
+                                    res += aName;
+                                    break;
+                                case 't':
+                                    res += dateTimeStart;
+                                    break;
+                                default:
+                                    res += c.ToString() + vs.Current;
+                                    break;
+                            }
+                        }
+                    }
+                    else res += c;
+                }
+                ProcessedMask = res;
             }
 
+        }
+
+
+        /// <summary>
+        /// Настройки выполнения методов
+        /// </summary>
+        internal class InvParam : ICloneable
+        {
             public ProgressInfoControl ProgressInfoControl { get; set; }
+            public OverallLoadImageSetting ImageSetting { get; set; } = new OverallLoadImageSetting();
+            public bool NeedDisposeImage { get; set; }
             public string ImgFileString { get; set; }
             public IImage Image { get; set; }
             public MyMethodInfo MethodInfo { get; set; }
@@ -278,9 +348,92 @@ namespace TPR_ExampleView
             public object[] Vs { get; set; }
             public TypeInvoke TypeInvoke { get; set; }
             public int TaskID { get; set; }
-            public bool NeedDisposeImage { get; set; }
-
+            /// <summary>
+            /// Не копируется
+            /// </summary>
+            public int LocalID { get; set; }
+            public DateTime DateTimeStart { get; set; }
+            public DateTime DateTimeEnd { get; set; }
+            public string ImageName { get; set; }
             //public InputImage InputImage => new InputImage(Image, TaskID, MethodInfo.MethodName);
+
+            public string GetFilePath(out int uSeparatorIndex)
+            {
+                string mask = ImageSetting.ProcessedMask;
+
+                //%f - Имя изображения
+                //%m - Название метода (оригинальное название)
+                //%n - Название метода (кнопка меню)
+                //%N - Название метода (через атрибут)
+                //%t - Дата начала выполнения всех задач
+                //%d - Дата начала выполнения задачи
+                //%D - Дата конца выполнения задачи
+                //%i - Номер задачи
+                //%u - Инкрементное значение, для избежания совпадений имен. Используется, если выключен параметр перезаписывать существующие файлы
+                string startTime = DateTimeStart.ToString();
+                string endTime = DateTimeEnd.ToString();
+                string res = string.Empty;
+                bool uSeparator = false;
+                uSeparatorIndex = -1;
+                CharEnumerator vs = mask.GetEnumerator();
+                int index = 0;
+                while (vs.MoveNext())
+                {
+                    char c = vs.Current;
+                    if (c == '%')
+                    {
+                        if (vs.MoveNext())
+                        {
+                            switch (vs.Current)
+                            {
+                                case 'f':
+                                    if (ImageName != null)
+                                    {
+                                        res += ImageName;
+                                        index += ImageName.Length;
+                                    }
+                                    break;
+                                case 'd':
+                                    res += startTime;
+                                    index += startTime.Length;
+                                    break;
+                                case 'D':
+                                    res += endTime;
+                                    index += endTime.Length;
+                                    break;
+                                case 'i':
+                                    res += LocalID.ToString();
+                                    index += LocalID.ToString().Length;
+                                    break;
+                                case 'u':
+                                    if (!uSeparator)
+                                    {
+                                        uSeparatorIndex = index;
+                                        uSeparator = true;
+                                    }
+                                    break;
+                                default:
+                                    res += c + vs.Current;
+                                    index += 2;
+                                    break;
+                            }
+                        }
+                        else res += c;
+                    }
+                    else
+                    {
+                        res += c;
+                        index++;
+                    }
+                }
+                if(uSeparatorIndex >= 0)
+                {
+                    uSeparatorIndex += ImageSetting.RootDirectory.Length + 1;
+                }
+                return ImageSetting.RootDirectory + '\\' + res + ImageSetting.ExtFile;
+            }
+
+            
 
             public object Clone()
             {
@@ -288,13 +441,16 @@ namespace TPR_ExampleView
                 invParam.BaseForm = BaseForm;
                 invParam.Form = Form;
                 invParam.FormP = FormP;
+                invParam.ImageSetting = ImageSetting;
                 invParam.ImgFileString = ImgFileString;
                 invParam.MethodInfo = MethodInfo;
-                invParam.NeedDisposeImage = NeedDisposeImage;
                 invParam.TaskID = TaskID;
                 invParam.TypeInvoke = TypeInvoke;
-                invParam.Vs = new object[Vs.Length];
-                Vs.CopyTo(invParam.Vs, 0);
+                if (Vs != null)
+                {
+                    invParam.Vs = new object[Vs.Length];
+                    Vs.CopyTo(invParam.Vs, 0);
+                }
                 return invParam;
             }
 
@@ -316,6 +472,11 @@ namespace TPR_ExampleView
         {
             CustomForm, ParameterizedForm, WithoutForm
         }
+
+        /// <summary>
+        /// Выполнения метода
+        /// </summary>
+        /// <param name="param"></param>
         internal static void InvMethod(object param)
         {
             if (param is InvParam invParam)
@@ -378,7 +539,7 @@ namespace TPR_ExampleView
                         default:
                             break;
                     }
-                    SelectedForm?.Invoke(new MethodInvoker(() => SelectedForm.Update()));
+                    //SelectedForm?.InvokeFix(() => SelectedForm.Update());
 #if !test
                 }
                 catch (TargetInvocationException ex)
@@ -401,7 +562,7 @@ namespace TPR_ExampleView
 #endif
                 if (outputImage != null)
                 {
-                    BaseLibrary.BaseMethods.LoadOutputImage(outputImage);
+                    MainForm.LoadOutputImage(outputImage, invParam);
                     //    MainForm.Invoke(new MethodInvoker(() =>
                     //    {
                     //        BaseLibrary.BaseMethods.LoadOutputImage(outputImage);
