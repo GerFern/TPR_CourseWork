@@ -13,6 +13,7 @@ namespace BaseLibrary
         private static bool _init = false;
         private static TabControl tabControl;
         internal static OutputImageInvoker _loadOutputImage;
+        internal static GetImageForm _selectedForm;
         internal static OutputImageInvoker _createFormFromOutputImage;
         internal static GetProgressBar _getProgressBar;
         public static Dictionary<string, string> settings;
@@ -106,13 +107,15 @@ namespace BaseLibrary
         /// <summary>
         /// Не нужно использовать. Требуется для инициализации некоторых методов
         /// </summary>
-        public static void Init(TabControl tabControl, OutputImageInvoker load, OutputImageInvoker create, MesWrites writes, GetProgressBar progress)
+        /// <param name="load"><see cref="LoadOutputImage(OutputImage)"/></param>
+        public static void Init(TabControl tabControl, OutputImageInvoker load, GetImageForm selectedForm, MesWrites writes, GetProgressBar progress)
         {
             if (!_init)
             {
                 _init = true;
                 BaseMethods.tabControl = tabControl;
                 _loadOutputImage = load;
+                _selectedForm = selectedForm;
                 On_Writing = writes;
                 _getProgressBar = progress;
             }
@@ -126,6 +129,14 @@ namespace BaseLibrary
         {
             _loadOutputImage?.Invoke(outputImage);
         }
+
+        public static ImageForm SelectedImageForm => _selectedForm.Invoke();
+        public static IImage SelectedImage => 
+            SelectedImageForm == null
+                ? null 
+                : SelectedImageForm.Image.IsDisposedOrNull()
+                    ? null
+                    : SelectedImageForm.Image;
 
         public static ImageForm CreateFormFromOutputImage(OutputImage outputImage)
         {
@@ -248,6 +259,7 @@ namespace BaseLibrary
 
     }
 
+    public delegate ImageForm GetImageForm();
     public delegate ImageForm OutputImageInvoker(OutputImage outputImage);
     public delegate InputImage.InitProgress GetProgressBar(InputImage inputImage);
 

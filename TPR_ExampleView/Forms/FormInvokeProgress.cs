@@ -116,5 +116,12 @@ namespace TPR_ExampleView.Forms
         {
             Next();
         }
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            if (!AllFinished)
+                if (MessageBox.Show("Завершить работу?", "", MessageBoxButtons.YesNo) == DialogResult.No)
+                    e.Cancel = false;
+            base.OnClosing(e);
+        }
     }
 }

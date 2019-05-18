@@ -18,9 +18,12 @@ namespace BaseLibrary
         /// <summary>
         /// Пройденное время (во время отладки таймер продолжает работать!)
         /// </summary>
-        public TimeSpan TimeSpent => IsInit ? IsResume ? DateTime.Now - resumeTime + deltaTime :
-                                                     deltaTime :
-                                            TimeSpan.Zero;
+        public TimeSpan TimeSpent =>
+            IsInit
+                ? IsResume
+                    ? DateTime.Now - resumeTime + deltaTime
+                    : deltaTime 
+                : TimeSpan.Zero;
 
         /// <summary>
         /// Инициализирован ли таймер

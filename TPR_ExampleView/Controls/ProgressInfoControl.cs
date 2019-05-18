@@ -361,10 +361,15 @@ namespace TPR_ExampleView
         }
 
 #pragma warning disable CS0618 // Тип или член устарел
-        private void BAbort_Click(object sender, EventArgs e)
+
+        public void Abort()
         {
             if (Thread.ThreadState.HasFlag(ThreadState.Suspended)) Thread.Resume();
             Thread.Abort();
+        }
+        private void BAbort_Click(object sender, EventArgs e)
+        {
+            Abort();
         }
         private void BPause_Click(object sender, EventArgs e)
         {

@@ -99,24 +99,21 @@ namespace TPR_ExampleView
             try { userControl1.SetPath(Properties.Settings.Default.ExplorerPath); }
             catch { userControl1.SetPath(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)); }
             MenuMethod.textBox = textBox1;
-            
-            BaseMethods.Init(tabControl1,
-            //
-            LoadOutputImage,
-            new OutputImageInvoker((OutputImage img) =>
-            {
-                ImageForm imageForm = new ImageForm(img.Image, img.Name);
-                if (img.Info != null) textBox1.Text = img.Info;
-                return imageForm;
-            }),
-            WriteToOutput,
-            new GetProgressBar((InputImage img) => ProgressDict.ContainsKey(img.ID) ? ProgressDict[img.ID] : null));
+
+            BaseMethods.Init(
+                tabControl1,
+                LoadOutputImage,
+                SelectedImageForm,
+                WriteToOutput,
+                new GetProgressBar((InputImage img) => ProgressDict.ContainsKey(img.ID) ? ProgressDict[img.ID] : null)
+            );
             //BaseMethods.On_Writing += WriteToOutput;
             //DLL_Init.AssemblyInSolution = "myLab";
             DLL_Init.Init(menuStrip1);
             BaseMethods.loadSetting();
         }
 
+        internal BaseLibrary.ImageForm SelectedImageForm() => MenuMethod.SelectedForm;
         internal ImageForm LoadOutputImage(OutputImage img)
         {
             this.InvokeFix(() =>
