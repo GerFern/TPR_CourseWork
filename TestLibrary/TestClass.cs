@@ -14,19 +14,8 @@ using Emgu.CV.Structure;
 namespace TestLibrary
 {
     [ImgClass("Лялин М.С.")]//Тут можно указать свое имя, а также пометить, что в этом классе есть методы для обработки изображений
-    public static class Class1
+    public static class TestClass
     {
-        //[ImgMethod("Сегментация", "Сегментация с настройками")]//Указывается иерархия вкладок в меню программы 
-        //                                                       // [CustomForm(typeof(Segment))]//Своя форма для метода 
-        //public static OutputImage TestCoord1(IImage image)
-        //{
-        //    //return null; 
-        //    // return new OutputImage { ImageForm = form }; 
-        //    return new OutputImage { Image = image };
-        //}
-
-
-
         [ImgMethod("Test", "Debug", "Exception")]
         [ImgCanBeDisposedOrNull]
         public static OutputImage TestException(InputImage inputImage)
@@ -44,6 +33,7 @@ namespace TestLibrary
             inputImage.Progress.Finish();
             return null;
         }
+
         /// <summary>
         /// Преобразование в оттенки серого
         /// </summary>
@@ -78,6 +68,7 @@ namespace TestLibrary
             inputImage.Progress.Finish();
             return null;
         }
+
         /// <summary>
         /// Медианная филтрация изображения
         /// </summary>

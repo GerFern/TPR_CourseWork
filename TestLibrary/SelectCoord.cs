@@ -59,7 +59,7 @@ namespace TestLibrary
             {
                 Point = t;
                 if (auto)
-                    Image = Class1.FloodFill(
+                    Image = TestClass.FloodFill(
                     backup,
                     Point,
                     (int)numericUpDown1.Value,
@@ -88,7 +88,7 @@ namespace TestLibrary
 
         private void Button3_Click(object sender, EventArgs e)
         {
-            Image = Class1.FloodFill(
+            Image = TestClass.FloodFill(
                 backup,
                 Point,
                 (int)numericUpDown1.Value,
@@ -99,7 +99,7 @@ namespace TestLibrary
         private void NumericUpDown_ValueChanged(object sender, EventArgs e)
         {
             if(auto)
-                Image = Class1.FloodFill(
+                Image = TestClass.FloodFill(
                 backup,
                 Point,
                 (int)numericUpDown1.Value,

@@ -35,6 +35,11 @@ namespace BaseLibrary
         public const string tiffExt = ".TIFF";
         public const string tifExt = ".TIF";
 
+        /// <summary>
+        /// Получить фильтр для <see cref="OpenFileDialog"/>
+        /// </summary>
+        /// <param name="includeAllFiles"></param>
+        /// <returns></returns>
         public static string GetFilterOpenFileDialog(bool includeAllFiles)
         {
             string str = string.Empty;
@@ -156,7 +161,7 @@ namespace BaseLibrary
         public static bool IsDisposedOrNull(this IImage image) => image == null || image.Ptr == IntPtr.Zero;
 
         /// <summary>
-        /// Вызывает метод <see cref="Control.Invoke(Delegate, object[])"/> тогда, когда это нужно
+        /// Вызывает метод <see cref="Control.Invoke(Delegate, object[])"/> в нужном потоке
         /// </summary>
         /// <param name="control"></param>
         /// <param name="delegate"></param>
@@ -179,7 +184,7 @@ namespace BaseLibrary
             Red,
             Yellow
         }
-        public static void SetState(this ProgressBar pBar, ProgressBarState state, EventWaitHandle waitHandle, int value = -1)
+        public static void SetState(this ProgressBar pBar, ProgressBarState state,/* EventWaitHandle waitHandle,*/ int value = -1)
         {
             new Thread(() =>
             {
@@ -192,11 +197,18 @@ namespace BaseLibrary
                     SendMessage(pBar.Handle, 1040, (IntPtr)state, IntPtr.Zero);
                 });
                 pBar.Invalidate();
-                waitHandle?.Set();
+                //waitHandle?.Set();
             })
             { Name = $"StateChangeTo{state.ToString()}" }.Start();
         }
 
+        /// <summary>
+        /// Восстановить значения всех полей и свойств, отмеченных атрибутом <see cref="SaveParamAttribute"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sender"></param>
+        /// <param name="ID"></param>
+        /// <returns>Было ли произведенно восстановление</returns>
         public static bool LoadSettings<T>(this T sender, string ID)
         {
             Type typeAttribute = typeof(SaveParamAttribute);
@@ -249,6 +261,10 @@ namespace BaseLibrary
 
         }
 
+        /// <summary>
+        /// Сохранить значения всех полей и свойств, отмеченных атрибутом <see cref="SaveParamAttribute"/>
+        /// </summary>
+        /// <param name="ID">Уникальный идентификатор</param>
         public static void SaveSetting<T>(this T sender, string ID)
         {
             Type typeAttribute = typeof(SaveParamAttribute);

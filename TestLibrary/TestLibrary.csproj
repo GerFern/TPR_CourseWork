@@ -57,7 +57,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Debug.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,6 +76,7 @@
     <Compile Include="SelectCoord.Designer.cs">
       <DependentUpon>SelectCoord.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

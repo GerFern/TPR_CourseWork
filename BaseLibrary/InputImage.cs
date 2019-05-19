@@ -4,6 +4,9 @@ using System.Windows.Forms;
 
 namespace BaseLibrary
 {
+    /// <summary>
+    /// Входное изображение
+    /// </summary>
     public class InputImage
     {
         int _id = -1;
@@ -18,12 +21,40 @@ namespace BaseLibrary
                 }
             }
         }
+
+        /// <summary>
+        /// Название метода
+        /// </summary>
         public string MethodName { get; }
+
+        /// <summary>
+        /// Входное изображение
+        /// </summary>
         public IImage Image { get; }
+
+        /// <summary>
+        /// Тип изображения
+        /// </summary>
         public Type ImageType { get; }
+
+        /// <summary>
+        /// Тип TColor. Например <see cref="Emgu.CV.Structure.Bgr"/>, <see cref="Emgu.CV.Structure.Gray"/>
+        /// </summary>
         public Type TColor { get; }
+
+        /// <summary>
+        /// Тип TDepth. Например <see cref="byte"/>, <see cref="float"/>
+        /// </summary>
         public Type TDepth { get; }
         public ProgressInfo Progress { get; private set; }
+
+        /// <summary>
+        /// Создать новое изображение, конвертированный в другой тип
+        /// </summary>
+        /// <typeparam name="TColor"></typeparam>
+        /// <typeparam name="TDepth"></typeparam>
+        /// <param name="image"></param>
+        /// <returns></returns>
         public static IImage Convert<TColor, TDepth>(IImage image) where TColor : struct, IColor where TDepth : new()
         {
             dynamic t = image;
@@ -51,15 +82,23 @@ namespace BaseLibrary
 
         public class ProgressInfo
         {
-            //public void Show();
+            /// <summary>
+            /// Является ли запущеным
+            /// </summary>
             public bool IsRun { get; private set; }
+            /// <summary>
+            /// Название метода
+            /// </summary>
             public string MethodName => _inputImage.MethodName;
             internal InputImage _inputImage;
             private readonly InitProgress _initProgress;
+            /// <summary>
+            /// Идентификатор прогресса
+            /// </summary>
             public int ID { get => _inputImage.ID; }
 
             /// <summary>
-            /// Можно ли отменять выполнение метода
+            /// Можно ли отменять выполнение метода (Это не защитит метод от принудительного прерывания потока)
             /// </summary>
             public bool CancelSupport { get; private set; }
             /// <summary>
@@ -67,7 +106,7 @@ namespace BaseLibrary
             /// </summary>
             public bool Cancel { get; private set; }
             /// <summary>
-            /// Отменить выполнение метода извне (в пользовательских библиотеках это использовать не нужно)
+            /// Отменить выполнение метода извне. Выставляет свойство <see cref="Cancel"/> в <see langword="true"/>. В пользовательских библиотеках это использовать не имеет смысла
             /// </summary>
             public void CancelExecute()
             {
@@ -75,7 +114,7 @@ namespace BaseLibrary
             }
             int _maximum;
             /// <summary>
-            /// Возвращает или задает наибольшее значение диапозона элемента управления <see cref="System.Windows.Forms.ProgressBar"/>
+            /// Возвращает или задает наибольшее значение диапозона элемента управления <see cref="ProgressBar"/>
             /// </summary>
             public int Maximum
             {
@@ -151,7 +190,12 @@ namespace BaseLibrary
             /// Инициализация прогресса
             /// </summary>
             /// <param name="step">Интервал, в котором вызов <see cref="PerformStep()"/> метод увеличивает текущее положение индикатора хода выполнения</param>
-            /// <param name="maximum">Наибольшее значение диапозона элемента управления <see cref="System.Windows.Forms.ProgressBar"/>
+            /// <param name="maximum">Наибольшее значение диапозона элемента управления <see cref="System.Windows.Forms.ProgressBar"/></param>
+            /// <param name="canCancel">
+            /// Проверяет ли метод свойство <see cref="Cancel"/> для отмены.
+            /// Это не защитит метод от принудительного прерывания потока.
+            /// Для защиты от прерывания потока обрабатывайте исключение <see cref="System.Threading.ThreadAbortException"/>
+            /// </param>
             public void Run(int step, int maximum, bool canCancel = false)
             {
                 CancelSupport = canCancel;

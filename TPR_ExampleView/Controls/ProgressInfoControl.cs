@@ -123,7 +123,6 @@ namespace TPR_ExampleView
         private TimeSpan _oldTimeSpent;
         private int _oldValue;
         private int _oldMax;
-        private int _oldLabelNameHeigth;
         EventWaitHandle waitHandle = new EventWaitHandle(true, EventResetMode.AutoReset);
         Status ThreadStatus
         {
@@ -138,13 +137,13 @@ namespace TPR_ExampleView
                         break;
                     case Status.Started:
                         bPause.BackgroundImage = Properties.Resources.пауза_32;
-                        ProgressBar.SetState(Extensions.ProgressBarState.Green, waitHandle);
+                        ProgressBar.SetState(Extensions.ProgressBarState.Green/*, waitHandle*/);
                         timer1.Start();
                         break;
                     case Status.Paused:
                         timer1.Stop();
                         bPause.BackgroundImage = Properties.Resources.воспроизведение_32;
-                        ProgressBar.SetState(Extensions.ProgressBarState.Yellow, waitHandle);
+                        ProgressBar.SetState(Extensions.ProgressBarState.Yellow/*, waitHandle*/);
                         break;
                     case Status.Aborted:
                         timer1.Stop();
@@ -157,7 +156,7 @@ namespace TPR_ExampleView
                         break;
                     case Status.Exception:
                         //ProgressBar.InvokeFix(()=>ForeColor = Color.Red);
-                        ProgressBar.SetState(Extensions.ProgressBarState.Red, waitHandle);
+                        ProgressBar.SetState(Extensions.ProgressBarState.Red/*, waitHandle*/);
                         break;
                     default:
                         break;
@@ -244,15 +243,7 @@ namespace TPR_ExampleView
                 //this.InvokeFix(() => TimeText());
                 ThreadFinished?.Invoke(this, EventArgs.Empty);
             })
-            { Name = "ThreadWaitHandler", Priority = ThreadPriority.BelowNormal , IsBackground = true }.Start();
-        }
-
-        private void HeigthUpdate()
-        {
-            float h = 0;
-            foreach (RowStyle item in tableLayoutPanel1.RowStyles)
-                h += item.Height;
-            if (h != tableLayoutPanel1.Height) tableLayoutPanel1.Height = (int)h;
+            { Name = "ThreadWaitHandler", Priority = ThreadPriority.AboveNormal , IsBackground = true }.Start();
         }
 
         internal ProgressInfoControl()

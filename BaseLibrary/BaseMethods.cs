@@ -70,14 +70,24 @@ namespace BaseLibrary
             settings.Add(sender.GetType().FullName + param, value);
         }
 
-        public static OpenFileDialog GetOpenFileDialog(bool multiselect = false)
+        /// <summary>
+        /// Получить объект <see cref="OpenFileDialog"/> для открытия изображения
+        /// </summary>
+        /// <param name="multiselect">Разрешить выбирать несколько файлов</param>
+        /// <param name="includeAllFiles">Показывать файлы любого типа</param>
+        /// <returns></returns>
+        public static OpenFileDialog GetOpenFileDialog(bool multiselect = false, bool includeAllFiles = false)
         {
             var ofd = new OpenFileDialog();
             ofd.Multiselect = multiselect;
-            ofd.Filter = Extensions.GetFilterOpenFileDialog(true);
+            ofd.Filter = Extensions.GetFilterOpenFileDialog(includeAllFiles);
             return ofd;
         }
 
+        /// <summary>
+        /// Получить объект <see cref="SaveFileDialog"/> для сохранения изображения
+        /// </summary>
+        /// <returns></returns>
         public static SaveFileDialog GetSaveFileDialog()
         {
             var sfd = new SaveFileDialog();
@@ -124,13 +134,20 @@ namespace BaseLibrary
         /// <summary>
         /// Загружает <see cref="OutputImage"/> объект на главную форму
         /// </summary>
-        /// <param name="outputImage"></param>
+        /// <param name="outputImage">Изображение</param>
         public static void LoadOutputImage(OutputImage outputImage)
         {
             _loadOutputImage?.Invoke(outputImage);
         }
 
+        /// <summary>
+        /// Форма, которая выделена в данный момент
+        /// </summary>
         public static ImageForm SelectedImageForm => _selectedForm.Invoke();
+
+        /// <summary>
+        /// Изображение, которое выделено в данный момент. Рекомендуется для обработки брать то изображение, которое было указано первым параметром в методе
+        /// </summary>
         public static IImage SelectedImage => 
             SelectedImageForm == null
                 ? null 
@@ -150,8 +167,9 @@ namespace BaseLibrary
         /// <summary>
         /// Показывает форму в главной форме
         /// </summary>
-        /// <param name="dockStyle">Заполнение формы</param>
+        /// <param name="imageForm">Форма</param>
         /// <param name="formBorderStyle">Границы формы</param>
+        /// <param name="dockStyle">Заполнение формы</param>
         public static void ShowForm(ImageForm imageForm,
                                     FormBorderStyle formBorderStyle = FormBorderStyle.None,
                                     DockStyle dockStyle = DockStyle.Fill)
@@ -226,6 +244,11 @@ namespace BaseLibrary
         public delegate void MesWrites(string s);
         public static event MesWrites On_Writing;
 
+        /// <summary>
+        /// Показать форму с выбором координаты
+        /// </summary>
+        /// <param name="image">Изображение</param>
+        /// <returns></returns>
         public static Point GetCoord(IImage image)
         {
             SelectCoord selectCoord = new SelectCoord(image, false);

@@ -46,24 +46,31 @@ namespace BaseLibrary
         /// ImageHandler(IImage image) { ... }
         /// </code>
         /// </summary>
-        /// <param name="Hierarchy">Иерархия вкладок в которой будет встроена кнопка вызова метода, где последний элемент - название фильтра</param>
+        /// <param name="hierarchy">Иерархия вкладок в которой будет встроена кнопка вызова метода</param>
         /// <example>
         /// <code>
         /// [ImageProcessing("Фильтр","Категория 1","Название фильтра")]
         /// public ImageOutput(IImage input) {}
         /// </code>
         /// </example>
-        public ImgMethodAttribute(params string[] Hierarchy)
+        public ImgMethodAttribute(params string[] hierarchy)
         {
-            this.Hierarchy = Hierarchy;
+            this.Hierarchy = hierarchy;
         }
         protected ImgMethodAttribute() { }
     }
 
+    /// <summary>
+    /// Задает имя методу
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     public class MethodNameAttribute : TPRAttribute
     {
         public string Name { get; }
+        /// <summary>
+        /// Задает имя методу
+        /// </summary>
+        /// <param name="name">Новое имя для метода</param>
         public MethodNameAttribute(string name) => Name = name ?? throw new ArgumentNullException(nameof(name));
     }
 
@@ -87,7 +94,8 @@ namespace BaseLibrary
 
     /// <summary>
     /// Отмечает, что для данного метода будет автоматически сконструирована простая форма выбора параметров.
-    /// Если нужно несколько параметров, то необходимо определить несколько таких атрибутов
+    /// Если нужно несколько параметров, то необходимо определить несколько таких атрибутов.
+    /// Поле для ввода параметра будет текстовым
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
     public sealed class AutoFormAttribute : TPRFormAttribute
@@ -107,12 +115,13 @@ namespace BaseLibrary
         public bool IsMultiline { get; }
         /// <summary>
         /// Отмечает, что для данного метода будет автоматически сконструирована простая форма выбора параметров.
-        /// Если нужно несколько параметров, то необходимо определить несколько таких атрибутов
+        /// Если нужно несколько параметров, то необходимо определить несколько таких атрибутов.
+        /// Поле для ввода параметра будет текстовым
         /// </summary>
-        /// <param name="index">Индекс параметра метода, начинающийся с 1</param>
-        /// <param name="type">Тип параметра. Поддерживаются <see cref="int"/>, <see cref="float"/>, <see cref="double"/>. Получить через <see langword="typeof"/></param>
+        /// <param name="index">Индекс параметра метода</param>
+        /// <param name="type">Тип параметра. Поддерживаются базовые типы, такие как <see cref="int"/>, <see cref="float"/>, <see cref="double"/>, <see cref="string"/> и другие. Получить через <see langword="typeof"/></param>
         /// <param name="labelText">Название параметра, который будет отображаться в форме.</param>
-        /// <param name="isMultiline">Многстрочное тесктовое поле/></param>
+        /// <param name="isMultiline">Является ли тесктовое поле многострочным/></param>
         /// <param name="textBoxHeigth">Высота текстового поля, если свойство <paramref name="isMultiline"/> == <see langword="true"/></param>
         public AutoFormAttribute(int index, Type type, string labelText, bool isMultiline = false, int textBoxHeigth = 26) : base(labelText, index)
         {
@@ -124,16 +133,18 @@ namespace BaseLibrary
 
     /// <summary>
     /// Отмечает, что для данного метода будет автоматически сконструирована простая форма выбора параметров.
-    /// Если нужно несколько параметров, то необходимо определить несколько таких атрибутов
+    /// Если нужно несколько параметров, то необходимо определить несколько таких атрибутов.
+    /// Тип поля для ввода указывается вручную
     /// </summary>
     [System.AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
     public sealed class ControlFormAttribute : TPRFormAttribute
     {
         /// <summary>
         /// Отмечает, что для данного метода будет автоматически сконструирована простая форма выбора параметров.
-        /// Если нужно несколько параметров, то необходимо определить несколько таких атрибутов
+        /// Если нужно несколько параметров, то необходимо определить несколько таких атрибутов.
+        /// Тип поля для ввода указывается вручную
         /// </summary>
-        /// <param name="index">Индекс параметра метода, начинающийся с 1</param>
+        /// <param name="index">Индекс параметра метода</param>
         /// <param name="controlType">Тип элемента управления, производный от <see cref="Control"/>, который будет управлять параметром</param>
         /// <param name="propertyValue">Свойство элемента управления, которое будет связано с параметром метода</param>
         /// <param name="labelText">Надпись над элементом управления. Если <see langword="null"/>, то надпись не будет показана</param>
@@ -174,7 +185,7 @@ namespace BaseLibrary
     }
 
     /// <summary>
-    ///  Отмечает, что для данного метода использоваться особая форма
+    /// Отмечает, что для данного метода использоваться особая форма
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     public sealed class CustomFormAttribute : TPRAttribute
@@ -186,11 +197,10 @@ namespace BaseLibrary
         /// <summary>
         ///  Отмечает, что для данного метода будет использоваться особая форма 
         /// </summary>
-        /// <param name="baseAttribute">Базовый атрибут с необходимыми параметрами</param>
-        /// <param name="FormType"><see cref="Type"/> формы. Получить через <see langword="typeof"/>(MyFormClass)</param>
-        public CustomFormAttribute(Type FormType)
+        /// <param name="formType"><see cref="Type"/> формы. Получить через <see langword="typeof"/>(MyFormClass)</param>
+        public CustomFormAttribute(Type formType)
         {
-            this.FormType = FormType;
+            FormType = formType;
         }
     }
 
@@ -205,7 +215,9 @@ namespace BaseLibrary
     public sealed class DontCatchExceptionAttribute : TPRAttribute { }
 
     /// <summary>
-    /// Отмечает, что данное свойство или поле будет сохраняться
+    /// Отмечает, что данное свойство или поле будет сохраняться при использовании методов 
+    /// <see cref="Extensions.SaveSetting{T}(T, string)"/> и 
+    /// <see cref="Extensions.LoadSettings{T}(T, string)"/>
     /// </summary>
     [System.AttributeUsage(AttributeTargets.Property|AttributeTargets.Field)]
     public sealed class SaveParamAttribute : TPRAttribute { }
