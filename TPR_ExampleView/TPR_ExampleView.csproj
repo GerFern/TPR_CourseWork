@@ -50,6 +50,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\TPR.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Emgu.CV.UI, Version=3.4.3.3016, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <HintPath>..\packages\EMGU.CV.3.4.3.3016\lib\net35\Emgu.CV.UI.dll</HintPath>
@@ -260,6 +263,10 @@
       <Project>{c43cbba3-3098-474d-a8e5-d58bcd0d1591}</Project>
       <Name>ImageCollection</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MURmen\MYRmen.csproj">
+      <Project>{6bbbb163-8c7f-49a3-8c7e-d0fe2561dafc}</Project>
+      <Name>MYRmen</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\закрыть-окно-32.png" />
@@ -277,6 +284,7 @@
     <None Include="Resources\сохранить-32.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\TPR.ico" />
     <None Include="Resources\воспроизведение-32.png" />
     <Content Include="Resources\восстановить-32.png" />
     <None Include="Resources\пауза-32.png" />

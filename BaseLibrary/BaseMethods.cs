@@ -8,6 +8,9 @@ using System.Linq;
 
 namespace BaseLibrary
 {
+    /// <summary>
+    /// Базовые методы для взаимодействия с ТПР оболочкой
+    /// </summary>
     public static class BaseMethods
     {
         private static bool _init = false;

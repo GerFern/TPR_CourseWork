@@ -156,7 +156,13 @@ namespace BaseLibrary
             Property = propertyValue;
         }
 
+        /// <summary>
+        /// Тип элемента управления
+        /// </summary>
         public Type ControlType { get; }
+        /// <summary>
+        /// Основное свойство
+        /// </summary>
         public string Property { get; }
     }
 
@@ -179,8 +185,18 @@ namespace BaseLibrary
             ParamIndex = paramIndex;
         }
 
+        /// <summary>
+        /// Название свойства
+        /// </summary>
         public string PropertyName { get; }
+        /// <summary>
+        /// Значение свойства
+        /// </summary>
         public string PropertyValue { get; }
+
+        /// <summary>
+        /// Индекс параметра
+        /// </summary>
         public int ParamIndex { get; }
     }
 
