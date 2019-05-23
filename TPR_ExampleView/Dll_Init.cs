@@ -19,6 +19,8 @@ namespace TPR_ExampleView
         static Type TypeDefIImage = typeof(Emgu.CV.IImage);
         public class ClassItem
         {
+            public string[] Authors => TypeClass.GetCustomAttribute<ImgClassAttribute>()?.Authors;
+            public string Name => TypeClass.Name;
             public Type TypeClass { get; }
             public List<MyMethodInfo> Methods { get; }
             public ClassItem(Type TypeClass)
@@ -172,8 +174,8 @@ namespace TPR_ExampleView
             }
             foreach (var item in assemblies)
             {
-                var menuTool = (menu.Items[1] as ToolStripMenuItem).DropDownItems.Add(item.Assembly.Modules.First().Name);
-                menuTool.Enabled = false;
+                var menuTool = (menu.Items[1] as ToolStripMenuItem).DropDownItems.Add(item.Assembly.GetName().Name);
+                menuTool.Click += new EventHandler((o, e) => new Forms.FormLib(item).ShowDialog());
             }
         }
     }

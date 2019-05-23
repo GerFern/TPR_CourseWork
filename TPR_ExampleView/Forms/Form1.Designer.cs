@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.exceptionList1 = new TPR_ExampleView.ExceptionListControl();
             this.imageList1 = new TPR_ExampleView.ImageList();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -633,6 +634,7 @@
             this.ClientSize = new System.Drawing.Size(619, 379);
             this.Controls.Add(this.splitContainer4);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";

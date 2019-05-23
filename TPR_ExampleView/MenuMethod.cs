@@ -137,7 +137,7 @@ namespace TPR_ExampleView
         private void MenuItem_Click(object sender, EventArgs e)
         {
             //if (SelectedImage == null) return;
-           
+
             ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
             if (menuItem.DropDownItems.Count > 0) return;
             MenuMethod butTag = menuItem.Tag as MenuMethod;
@@ -149,9 +149,15 @@ namespace TPR_ExampleView
             }
             if (butTag.Methods.Count > 1)
             {
-                using (Form f = new Form { Text = "Выберите метод", Size = new System.Drawing.Size(250, 100),
-                    FormBorderStyle = FormBorderStyle.FixedDialog, MaximizeBox = false, MinimizeBox = false,
-                    StartPosition = FormStartPosition.CenterParent })
+                using (Form f = new Form
+                {
+                    Text = "Выберите метод",
+                    Size = new System.Drawing.Size(250, 100),
+                    FormBorderStyle = FormBorderStyle.FixedDialog,
+                    MaximizeBox = false,
+                    MinimizeBox = false,
+                    StartPosition = FormStartPosition.CenterParent
+                })
                 {
                     TableLayoutPanel tlp = new TableLayoutPanel { RowCount = 2, ColumnCount = 1, Parent = f, Dock = DockStyle.Fill };
                     FlowLayoutPanel flp = new FlowLayoutPanel { Anchor = AnchorStyles.Left | AnchorStyles.Right };
@@ -178,7 +184,11 @@ namespace TPR_ExampleView
                 //Доделать с выбором через форму определенного метода
             }
 
+            RunMethodInfo(methodInfo);
+        }
 
+        public static void RunMethodInfo(MyMethodInfo methodInfo)
+        {
             if (methodInfo != null)
             {
                 if (!methodInfo.CanBeDisposedOrNull)
@@ -196,7 +206,7 @@ namespace TPR_ExampleView
                         MessageBox.Show("Входное изображение было удалено. Это могло произойти из-за того, " +
                             "что несколько форм ссылалось на это изображение и одна из них была закрыта или по другим причинам, " +
                             "что привело к вызову метода IImage.Dispose()", "");
-                            return;
+                        return;
                     }
                 }
                 InvokeMethodInfo(methodInfo);

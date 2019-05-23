@@ -53,14 +53,20 @@ namespace BaseLibrary
                 Directory.CreateDirectory("Params");
             else
             {
-                StreamReader sw = new StreamReader("setts.ixi");
-                string s;
-                while ((s = sw.ReadLine())!=null)
+                ///Fix setts.ixi not found
+                if (!File.Exists("setts.ixi")) File.Create("setts.ixi");
+                ///
+                else
                 {
-                    int c= s.LastIndexOf(":::");
-                    settings[s.Substring(0, c)] = s.Substring(c + 3);
+                    StreamReader sw = new StreamReader("setts.ixi");
+                    string s;
+                    while ((s = sw.ReadLine()) != null)
+                    {
+                        int c = s.LastIndexOf(":::");
+                        settings[s.Substring(0, c)] = s.Substring(c + 3);
+                    }
+                    sw.Close();
                 }
-                sw.Close();
             }
         }
 

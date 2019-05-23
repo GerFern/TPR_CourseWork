@@ -18,12 +18,12 @@ namespace TPR_ExampleView
         [STAThread]
         static void Main()
         {
-            Environment.ProcessorCount.ToString();
+            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.SaveFileNameMask)) Properties.Settings.Default.SaveFileNameMask = "%N_%f%u";
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.ThreadException +=
-            //    new System.Threading.ThreadExceptionEventHandler((object o, System.Threading.ThreadExceptionEventArgs e) =>
-            //        { MessageBox.Show(e.Exception.Message, "Необработанное исключение"); mainForm.SetExceptionError(e.Exception); Debugger.Launch(); Debugger.Break(); });
+            Application.ThreadException +=
+                new System.Threading.ThreadExceptionEventHandler((object o, System.Threading.ThreadExceptionEventArgs e) =>
+                    { MessageBox.Show(e.Exception.Message, "Необработанное исключение"); mainForm.SetExceptionError(e.Exception); Debugger.Launch(); });
 
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
             mainForm = new Form1();
