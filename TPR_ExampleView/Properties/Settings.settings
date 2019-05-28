@@ -24,7 +24,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="SaveFileNameMask" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">%N\%f%u</Value>
     </Setting>
     <Setting Name="SaveFileFormatIndex" Type="System.Byte" Scope="User">
       <Value Profile="(Default)">0</Value>

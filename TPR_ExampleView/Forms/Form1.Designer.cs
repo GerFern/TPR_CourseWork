@@ -40,7 +40,6 @@
             this.редактироватьDllloadconfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.addToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.скрытьГалереюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.отображатьПапкиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.отображатьФайлыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,8 +48,10 @@
             this.выполнятьМетодыСразуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.автоматическиДобавлятьНовыеИзображенияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.работаСИзображениямиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new TPR_ExampleView.ToolStripVerticalSeparator();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.tabControl1 = new TPR_ExampleView.MyTabControl();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -76,8 +77,6 @@
             this.imageList1 = new TPR_ExampleView.ImageList();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.exceptionList1 = new TPR_ExampleView.ExceptionListControl();
-            this.tabControl1 = new TPR_ExampleView.MyTabControl();
-            this.toolStripMenuItem1 = new TPR_ExampleView.ToolStripVerticalSeparator();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -196,7 +195,6 @@
             // addToolStripMenuItem1
             // 
             this.addToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addToolStripMenuItem,
             this.скрытьГалереюToolStripMenuItem,
             this.отображатьПапкиToolStripMenuItem,
             this.отображатьФайлыToolStripMenuItem,
@@ -208,13 +206,6 @@
             this.addToolStripMenuItem1.Name = "addToolStripMenuItem1";
             this.addToolStripMenuItem1.Size = new System.Drawing.Size(79, 19);
             this.addToolStripMenuItem1.Text = "Настройки";
-            // 
-            // addToolStripMenuItem
-            // 
-            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(385, 22);
-            this.addToolStripMenuItem.Text = "Add";
-            this.addToolStripMenuItem.Click += new System.EventHandler(this.AddToolStripMenuItem_Click);
             // 
             // скрытьГалереюToolStripMenuItem
             // 
@@ -288,6 +279,13 @@
             this.работаСИзображениямиToolStripMenuItem.Text = "Работа с изображениями...";
             this.работаСИзображениямиToolStripMenuItem.Click += new System.EventHandler(this.РаботаСИзображениямиToolStripMenuItem_Click);
             // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Enabled = false;
+            this.toolStripMenuItem1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(300, 18);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -316,6 +314,26 @@
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Окно изображений";
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.ActiveTabEndColor = System.Drawing.Color.AntiqueWhite;
+            this.tabControl1.ActiveTabStartColor = System.Drawing.Color.RoyalBlue;
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+            this.tabControl1.GradientAngle = 90;
+            this.tabControl1.Location = new System.Drawing.Point(3, 16);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.NonActiveTabEndColor = System.Drawing.Color.DimGray;
+            this.tabControl1.NonActiveTabStartColor = System.Drawing.Color.RoyalBlue;
+            this.tabControl1.Padding = new System.Drawing.Point(16, 3);
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.ShowClose = true;
+            this.tabControl1.Size = new System.Drawing.Size(252, 201);
+            this.tabControl1.TabIndex = 0;
+            this.tabControl1.TextColor = System.Drawing.Color.Navy;
+            this.tabControl1.Transparent1 = 150;
+            this.tabControl1.Transparent2 = 150;
             // 
             // splitContainer2
             // 
@@ -602,33 +620,6 @@
             this.exceptionList1.AllClear += new System.EventHandler(this.ExceptionList1_AllClear);
             this.exceptionList1.AddException += new System.EventHandler(this.ExceptionList1_AddException);
             // 
-            // tabControl1
-            // 
-            this.tabControl1.ActiveTabEndColor = System.Drawing.Color.AntiqueWhite;
-            this.tabControl1.ActiveTabStartColor = System.Drawing.Color.RoyalBlue;
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            this.tabControl1.GradientAngle = 90;
-            this.tabControl1.Location = new System.Drawing.Point(3, 16);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.NonActiveTabEndColor = System.Drawing.Color.DimGray;
-            this.tabControl1.NonActiveTabStartColor = System.Drawing.Color.RoyalBlue;
-            this.tabControl1.Padding = new System.Drawing.Point(16, 3);
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.ShowClose = true;
-            this.tabControl1.Size = new System.Drawing.Size(252, 201);
-            this.tabControl1.TabIndex = 0;
-            this.tabControl1.TextColor = System.Drawing.Color.Navy;
-            this.tabControl1.Transparent1 = 150;
-            this.tabControl1.Transparent2 = 150;
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Enabled = false;
-            this.toolStripMenuItem1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(300, 18);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -723,7 +714,6 @@
         private System.Windows.Forms.ToolStripMenuItem отображатьФайлыToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem скрыватьБоковоеМенюToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem отладкаИсключенийToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.ToolStripMenuItem выполнятьМетодыСразуToolStripMenuItem;
         internal System.Windows.Forms.TabPage tabPage1;

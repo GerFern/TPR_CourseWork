@@ -109,7 +109,7 @@ namespace TPR_ExampleView.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("%N\\%f%u")]
         public string SaveFileNameMask {
             get {
                 return ((string)(this["SaveFileNameMask"]));

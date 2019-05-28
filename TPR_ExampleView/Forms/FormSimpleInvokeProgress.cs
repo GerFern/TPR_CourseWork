@@ -22,6 +22,7 @@ namespace TPR_ExampleView.Forms
         public bool Suspended = false;
         public List<TaskItem> Tasks { get; } = new List<TaskItem>();
         public List<TaskItem> ActiveTasks { get; } = new List<TaskItem>();
+        BaseLibrary.Timer timer = new BaseLibrary.Timer();
         IEnumerator<TaskItem> Enumerator { get; set; }
         int active = 0;
         int finished = 0;
@@ -36,6 +37,7 @@ namespace TPR_ExampleView.Forms
             public DateTime StartTime { get; private set; }
             public event EventHandler ThreadStarted;
             public event EventHandler ThreadFinished;
+
 
             public void Suspend()
             {
@@ -91,6 +93,7 @@ namespace TPR_ExampleView.Forms
         //public List<>
         internal FormSimpleInvokeProgress(bool autoStart, MenuMethod.InvParam invParam, params ImgName[] imgs) : this()
         {
+            this.Text = invParam.MethodInfo.MethodName;
             AutoStart = autoStart;
             label1.Text = $"Предел потоков (максимум {Environment.ProcessorCount})";
             if (AutoStart)
@@ -121,7 +124,20 @@ namespace TPR_ExampleView.Forms
                 };
                 Tasks.Add(taskItem);
                 taskItem.ThreadStarted += new EventHandler((o, e) => this.InvokeFix(() => { ActiveTasks.Add(taskItem); active++; Next(); }));
-                taskItem.ThreadFinished += new EventHandler((o, e) => this.InvokeFix(() => { ActiveTasks.Remove(taskItem); active--; finished++; Next(); }));
+                taskItem.ThreadFinished += new EventHandler((o, e) => this.InvokeFix(() => 
+                {
+                    ActiveTasks.Remove(taskItem);
+                    active--;
+                    finished++;
+                    Next();
+                    if(finished == countTask)
+                    {
+                        timer1.Stop();
+                        timer1.Dispose();
+                        timer1 = null;
+                        Timer1_Tick(null, null);
+                    }
+                }));
             }
 
             countTask = Tasks.Count;
@@ -133,14 +149,9 @@ namespace TPR_ExampleView.Forms
                 this.HandleCreated += new EventHandler((o, e) =>
                 {
                     timer1.Start();
+                    timer.Start();
                     Next();
                 });
-                //new Thread(() =>
-                //{
-                //    Thread.Sleep(1000);
-                //    plc.InvokeFix(()=>Next());
-                //})
-                //{ Name = "Activator" }.Start();
             }
         }
 
@@ -160,6 +171,7 @@ namespace TPR_ExampleView.Forms
                 {
                     if (Enumerator.MoveNext())
                     {
+                        timer.Start(false);
                         CurTask = Enumerator.Current;
                         CurTask.ThreadStart();
                     }
@@ -175,6 +187,7 @@ namespace TPR_ExampleView.Forms
                 oldFinished = finished;
                 label3.Text = $"Выполнено {finished} из {countTask}";
                 progressBar1.Value = finished;
+                label4.Text = $"Прошло {timer.TimeSpent.TotalSeconds.ToString("F")} c.";
             }
         }
 
@@ -183,6 +196,7 @@ namespace TPR_ExampleView.Forms
             if (Suspended)
             {
                 Suspended = false;
+                timer.Resume();
                 foreach (var item in ActiveTasks)
                 {
                     item.Resume();
@@ -193,6 +207,7 @@ namespace TPR_ExampleView.Forms
             else
             {
                 Suspended = true;
+                timer.Suspend();
                 foreach (var item in ActiveTasks)
                 {
                     item.Suspend();
@@ -212,6 +227,8 @@ namespace TPR_ExampleView.Forms
                     {
                         item.Thread.Abort();
                     }
+                    timer1?.Stop();
+                    timer1?.Dispose();
                     Close();
                 }
             }

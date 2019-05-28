@@ -18,7 +18,7 @@ namespace TPR_ExampleView
         [STAThread]
         static void Main()
         {
-            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.SaveFileNameMask)) Properties.Settings.Default.SaveFileNameMask = "%N_%f%u";
+            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.SaveFileNameMask)) Properties.Settings.Default.SaveFileNameMask = "%N\\%f%u";
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.ThreadException +=

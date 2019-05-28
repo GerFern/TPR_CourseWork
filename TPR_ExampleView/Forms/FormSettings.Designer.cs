@@ -284,9 +284,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(3, 45);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(110, 13);
+            this.label2.Size = new System.Drawing.Size(125, 13);
             this.label2.TabIndex = 0;
-            this.label2.Text = "Маска имени файла";
+            this.label2.Text = "Маска имени файла (?)";
             this.toolTip1.SetToolTip(this.label2, resources.GetString("label2.ToolTip"));
             this.label2.DoubleClick += new System.EventHandler(this.Label2_DoubleClick);
             // 
