@@ -77,20 +77,24 @@ namespace TPR_ExampleView
                 {
                     foreach (var item in jDict)
                     {
-                        int index = -1;
-                        for (int i = 0; i < parameters.Length; i++)
+                        try
                         {
-                            if (parameters[i].Name == item.Key)
+                            int index = -1;
+                            for (int i = 0; i < parameters.Length; i++)
                             {
-                                index = i;
-                                break;
+                                if (parameters[i].Name == item.Key)
+                                {
+                                    index = i;
+                                    break;
+                                }
+                            }
+                            if (index >= 0)
+                            {
+                                object nVal = ((IConvertible)item.Value).ToType(propertyInfos[index].PropertyType, System.Globalization.CultureInfo.CurrentCulture);
+                                propertyInfos[index].SetValue(controls[index], nVal);
                             }
                         }
-                        if (index >= 0)
-                        {
-                            object nVal = ((IConvertible)item.Value).ToType(propertyInfos[index].PropertyType, System.Globalization.CultureInfo.CurrentCulture);
-                            propertyInfos[index].SetValue(controls[index], nVal);
-                        }
+                        catch { }
                         //if (control != null)
                         //{
                         //    control.Text = item.Value.ToObject<string>();

@@ -169,13 +169,13 @@ namespace TPR_ExampleView
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.Message, item);
                 }
             }
             foreach (var item in assemblies)
             {
                 var menuTool = (menu.Items[1] as ToolStripMenuItem).DropDownItems.Add(item.Assembly.GetName().Name);
-                menuTool.Click += new EventHandler((o, e) => new Forms.FormLib(item).ShowDialog());
+                menuTool.Click += new EventHandler((o, e) => new Forms.FormLib(item).Show());
             }
         }
     }

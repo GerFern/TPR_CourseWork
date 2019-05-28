@@ -33,6 +33,11 @@ namespace BaseLibrary
         public IImage Image { get; }
 
         /// <summary>
+        /// Входное изображение. Тоже, что и <see cref="Image"/>
+        /// </summary>
+        public dynamic DynamicImage => Image;
+
+        /// <summary>
         /// Тип изображения
         /// </summary>
         public Type ImageType { get; }
@@ -208,7 +213,7 @@ namespace BaseLibrary
                 //}
                 Started?.Invoke(this, new EventArgs());
                 IsRun = true;
-                _initProgress.DoInit();
+                _initProgress?.DoInit();
             }
 
             /// <summary>
@@ -234,8 +239,11 @@ namespace BaseLibrary
             internal ProgressInfo(InputImage inputImage, InitProgress initProgress)
             {
                 _inputImage = inputImage;
-                _initProgress = initProgress;
-                initProgress.ProgressInfo = this;
+                if (initProgress != null)
+                {
+                    _initProgress = initProgress;
+                    initProgress.ProgressInfo = this;
+                }
             }
 
            

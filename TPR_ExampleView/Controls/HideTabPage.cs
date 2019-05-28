@@ -245,26 +245,45 @@ namespace TPR_ExampleView
             base.OnMouseDown(e);
             if (ShowClose)
             {
-                for (int i = 0; i < this.TabPages.Count; i++)
+                if (e.Button == MouseButtons.Middle)
                 {
-                    Rectangle r = this.GetTabRect(i);
-                    Rectangle closeButton = new Rectangle(r.Right + 1 - 15, r.Top + 4, 12, 12);
-                    if (closeButton.Contains(e.Location))
+                    for (int i = 0; i < this.TabPages.Count; i++)
                     {
-                        if (MessageBox.Show("Закрыть вкладку?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        if (GetTabRect(i).Contains(e.Location))
                         {
-                            try
-                            {
-                                ((BaseLibrary.ImageForm)(this.TabPages[i].Controls[0])).Close();
-                            }
-                            catch
-                            {
-                                this.TabPages.RemoveAt(i);
-                            }
-                            break;
+                            CloseTab(i);
+                            return;
                         }
                     }
                 }
+                else
+                {
+                    for (int i = 0; i < this.TabPages.Count; i++)
+                    {
+                        Rectangle r = this.GetTabRect(i);
+                        Rectangle closeButton = new Rectangle(r.Right + 1 - 15, r.Top + 4, 12, 12);
+                        if (closeButton.Contains(e.Location))
+                        {
+                            if (MessageBox.Show("Закрыть вкладку?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            {
+                                CloseTab(i);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void CloseTab(int i)
+        {
+            try
+            {
+                ((BaseLibrary.ImageForm)(this.TabPages[i].Controls[0])).Close();
+            }
+            catch
+            {
+                this.TabPages.RemoveAt(i);
             }
         }
 

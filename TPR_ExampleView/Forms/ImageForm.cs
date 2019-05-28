@@ -1,5 +1,6 @@
 ﻿using BaseLibrary;
 using Emgu.CV;
+using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -122,7 +123,32 @@ namespace TPR_ExampleView
         private void ToolStripButton5_Click(object sender, EventArgs e)
         {
             imageBox.Image.Dispose();
-            imageBox.Image = (IImage)backup.Clone();
+            //SetImage((IImage)backup.Clone());
+            Image = (IImage)backup.Clone();
+            if (IsSelected)
+            {
+                IsSelected = false;
+                IsSelected = true;
+            }
+        }
+
+
+        private void ToolStripButton7_Click(object sender, EventArgs e)
+        {
+            double hDelta = (double)imageBox.Height / Image.Size.Height;
+            double wDelta = (double)imageBox.Width / Image.Size.Width;
+            if (hDelta < wDelta) imageBox.SetZoomScale(hDelta, Point.Empty);
+            else imageBox.SetZoomScale(wDelta, Point.Empty);
+        }
+
+        private void ToolStripButton8_Click(object sender, EventArgs e)
+        {
+            imageBox.SetZoomScale(1, Point.Empty);
+        }
+
+        public Image<Bgr, Byte> Method(Image<Bgr, Byte> image) 
+        {
+            return image.Dilate(10);
         }
     }
 }

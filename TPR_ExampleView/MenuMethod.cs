@@ -76,6 +76,12 @@ namespace TPR_ExampleView
                     SelectedImage = e.Image;
                     BaseLibrary.ImageForm.selected = SelectedForm;
                 }
+                else
+                {
+                    SelectedForm = null;
+                    SelectedImage = null;
+                    BaseLibrary.ImageForm.selected = null;
+                }
                 repeatResist = false;
             }
         }
@@ -191,7 +197,7 @@ namespace TPR_ExampleView
         {
             if (methodInfo != null)
             {
-                if (!methodInfo.CanBeDisposedOrNull)
+                if (!(Properties.Settings.Default.MultiImage || methodInfo.CanBeDisposedOrNull))
                 {
                     //const string err = "В ходе выполнения метода могут произойти ошибки. " +
                     //   "Чтобы не показывать такое сообщение пометьте метод атрибутом [ImgCanBeDisposedOrNull]. " +
@@ -204,7 +210,7 @@ namespace TPR_ExampleView
                     else if (SelectedImage.IsDisposedOrNull())
                     {
                         MessageBox.Show("Входное изображение было удалено. Это могло произойти из-за того, " +
-                            "что несколько форм ссылалось на это изображение и одна из них была закрыта или по другим причинам, " +
+                            "что несколько форм ссылалось на это изображение (чего не должно быть) и одна из них была закрыта или по другим причинам, " +
                             "что привело к вызову метода IImage.Dispose()", "");
                         return;
                     }
@@ -265,10 +271,19 @@ namespace TPR_ExampleView
                         ImageSetting.ProcessMask(methodInfo.MethodInfo.Name, methodInfo.Hierarchy.LastOrDefault(), methodInfo.MethodName, DateTime.Now.ToString());
                     }
                     else ImageSetting.SaveToFile = false;
+                    var imgs = MainForm.imageList1.CheckedImgNames;
                     new Thread(() =>
                     {
-                        var f = new Forms.FormInvokeProgress(MainForm.InvokeMethodImmediately, invParam, MainForm.imageList1.CheckedImgNames.ToArray());
-                        f.ShowDialog();
+                        //if (imgs.Count() > 10)
+                        //{
+                            var f = new Forms.FormSimpleInvokeProgress(MainForm.InvokeMethodImmediately, invParam, MainForm.imageList1.CheckedImgNames.ToArray());
+                            f.ShowDialog();
+                        //}
+                        //else
+                        //{
+                        //    var f = new Forms.FormInvokeProgress(MainForm.InvokeMethodImmediately, invParam, MainForm.imageList1.CheckedImgNames.ToArray());
+                        //    f.ShowDialog();
+                        //}
                     }) { Name = "ProgressForm", Priority = ThreadPriority.Highest }.Start();
                 }
                 else

@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.exceptionList1 = new TPR_ExampleView.ExceptionListControl();
-            this.imageList1 = new TPR_ExampleView.ImageList();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.открытьИзображениеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,10 +49,8 @@
             this.выполнятьМетодыСразуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.автоматическиДобавлятьНовыеИзображенияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.работаСИзображениямиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new TPR_ExampleView.Form1.ToolStripVerticalSeparator();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.tabControl1 = new TPR_ExampleView.MyTabControl();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -77,7 +73,11 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.progressListControl = new TPR_ExampleView.ProgressListControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.imageList1 = new TPR_ExampleView.ImageList();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.exceptionList1 = new TPR_ExampleView.ExceptionListControl();
+            this.tabControl1 = new TPR_ExampleView.MyTabControl();
+            this.toolStripMenuItem1 = new TPR_ExampleView.ToolStripVerticalSeparator();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -109,24 +109,6 @@
             this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
-            // exceptionList1
-            // 
-            this.exceptionList1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.exceptionList1.Location = new System.Drawing.Point(3, 3);
-            this.exceptionList1.Name = "exceptionList1";
-            this.exceptionList1.Size = new System.Drawing.Size(173, 341);
-            this.exceptionList1.TabIndex = 0;
-            this.exceptionList1.AllClear += new System.EventHandler(this.ExceptionList1_AllClear);
-            this.exceptionList1.AddException += new System.EventHandler(this.ExceptionList1_AddException);
-            // 
-            // imageList1
-            // 
-            this.imageList1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.imageList1.Location = new System.Drawing.Point(3, 3);
-            this.imageList1.Name = "imageList1";
-            this.imageList1.Size = new System.Drawing.Size(171, 339);
-            this.imageList1.TabIndex = 0;
-            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -134,9 +116,10 @@
             this.библиотекиToolStripMenuItem,
             this.addToolStripMenuItem1,
             this.toolStripMenuItem1});
+            this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(619, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(619, 23);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -148,7 +131,7 @@
             this.выбратьПапкуToolStripMenuItem,
             this.добавитьФормуДляИзображенийToolStripMenuItem});
             this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
-            this.файлToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.файлToolStripMenuItem.Size = new System.Drawing.Size(48, 19);
             this.файлToolStripMenuItem.Text = "Файл";
             // 
             // открытьИзображениеToolStripMenuItem
@@ -188,7 +171,7 @@
             this.редактироватьDllloadconfToolStripMenuItem,
             this.toolStripSeparator1});
             this.библиотекиToolStripMenuItem.Name = "библиотекиToolStripMenuItem";
-            this.библиотекиToolStripMenuItem.Size = new System.Drawing.Size(85, 20);
+            this.библиотекиToolStripMenuItem.Size = new System.Drawing.Size(85, 19);
             this.библиотекиToolStripMenuItem.Text = "Библиотеки";
             // 
             // открытьПапкуСБиблиотекамиToolStripMenuItem1
@@ -223,7 +206,7 @@
             this.автоматическиДобавлятьНовыеИзображенияToolStripMenuItem,
             this.работаСИзображениямиToolStripMenuItem});
             this.addToolStripMenuItem1.Name = "addToolStripMenuItem1";
-            this.addToolStripMenuItem1.Size = new System.Drawing.Size(79, 20);
+            this.addToolStripMenuItem1.Size = new System.Drawing.Size(79, 19);
             this.addToolStripMenuItem1.Text = "Настройки";
             // 
             // addToolStripMenuItem
@@ -303,13 +286,7 @@
             this.работаСИзображениямиToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F12)));
             this.работаСИзображениямиToolStripMenuItem.Size = new System.Drawing.Size(385, 22);
             this.работаСИзображениямиToolStripMenuItem.Text = "Работа с изображениями...";
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Enabled = false;
-            this.toolStripMenuItem1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(300, 17);
+            this.работаСИзображениямиToolStripMenuItem.Click += new System.EventHandler(this.РаботаСИзображениямиToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -325,7 +302,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(409, 219);
+            this.splitContainer1.Size = new System.Drawing.Size(409, 220);
             this.splitContainer1.SplitterDistance = 258;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -335,30 +312,10 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(258, 219);
+            this.groupBox3.Size = new System.Drawing.Size(258, 220);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Окно изображений";
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.ActiveTabEndColor = System.Drawing.Color.AntiqueWhite;
-            this.tabControl1.ActiveTabStartColor = System.Drawing.Color.RoyalBlue;
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            this.tabControl1.GradientAngle = 90;
-            this.tabControl1.Location = new System.Drawing.Point(3, 16);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.NonActiveTabEndColor = System.Drawing.Color.DimGray;
-            this.tabControl1.NonActiveTabStartColor = System.Drawing.Color.RoyalBlue;
-            this.tabControl1.Padding = new System.Drawing.Point(16, 3);
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.ShowClose = true;
-            this.tabControl1.Size = new System.Drawing.Size(252, 200);
-            this.tabControl1.TabIndex = 0;
-            this.tabControl1.TextColor = System.Drawing.Color.Navy;
-            this.tabControl1.Transparent1 = 150;
-            this.tabControl1.Transparent2 = 150;
             // 
             // splitContainer2
             // 
@@ -376,7 +333,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.groupBox2);
             this.splitContainer2.Panel2Collapsed = true;
-            this.splitContainer2.Size = new System.Drawing.Size(147, 219);
+            this.splitContainer2.Size = new System.Drawing.Size(147, 220);
             this.splitContainer2.SplitterDistance = 58;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -387,7 +344,7 @@
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.groupBox1.Size = new System.Drawing.Size(147, 219);
+            this.groupBox1.Size = new System.Drawing.Size(147, 220);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Окно вывода";
@@ -398,7 +355,7 @@
             this.textBox1.Location = new System.Drawing.Point(3, 19);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(141, 194);
+            this.textBox1.Size = new System.Drawing.Size(141, 195);
             this.textBox1.TabIndex = 0;
             // 
             // groupBox2
@@ -506,7 +463,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.splitContainer1);
-            this.splitContainer3.Size = new System.Drawing.Size(409, 355);
+            this.splitContainer3.Size = new System.Drawing.Size(409, 356);
             this.splitContainer3.SplitterDistance = 132;
             this.splitContainer3.TabIndex = 2;
             // 
@@ -536,7 +493,7 @@
             // 
             this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer4.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer4.Location = new System.Drawing.Point(0, 24);
+            this.splitContainer4.Location = new System.Drawing.Point(0, 23);
             this.splitContainer4.Name = "splitContainer4";
             // 
             // splitContainer4.Panel1
@@ -546,7 +503,7 @@
             // splitContainer4.Panel2
             // 
             this.splitContainer4.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer4.Size = new System.Drawing.Size(619, 355);
+            this.splitContainer4.Size = new System.Drawing.Size(619, 356);
             this.splitContainer4.SplitterDistance = 206;
             this.splitContainer4.TabIndex = 4;
             // 
@@ -569,7 +526,7 @@
             this.tabControl2.NonActiveTabStartColor = System.Drawing.Color.RoyalBlue;
             this.tabControl2.SelectedIndex = 0;
             this.tabControl2.ShowClose = false;
-            this.tabControl2.Size = new System.Drawing.Size(206, 355);
+            this.tabControl2.Size = new System.Drawing.Size(206, 356);
             this.tabControl2.TabIndex = 0;
             this.tabControl2.TextColor = System.Drawing.Color.Navy;
             this.tabControl2.Transparent1 = 150;
@@ -588,7 +545,7 @@
             this.tabPage1.Location = new System.Drawing.Point(23, 4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(179, 347);
+            this.tabPage1.Size = new System.Drawing.Size(179, 348);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Задачи";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -600,7 +557,7 @@
             this.progressListControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.progressListControl.Location = new System.Drawing.Point(3, 3);
             this.progressListControl.Name = "progressListControl";
-            this.progressListControl.Size = new System.Drawing.Size(171, 339);
+            this.progressListControl.Size = new System.Drawing.Size(171, 340);
             this.progressListControl.TabIndex = 0;
             // 
             // tabPage2
@@ -611,10 +568,18 @@
             this.tabPage2.Location = new System.Drawing.Point(23, 4);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(179, 347);
+            this.tabPage2.Size = new System.Drawing.Size(179, 348);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Изображения";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // imageList1
+            // 
+            this.imageList1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imageList1.Location = new System.Drawing.Point(3, 3);
+            this.imageList1.Name = "imageList1";
+            this.imageList1.Size = new System.Drawing.Size(171, 340);
+            this.imageList1.TabIndex = 0;
             // 
             // tabPage3
             // 
@@ -622,10 +587,47 @@
             this.tabPage3.Location = new System.Drawing.Point(23, 4);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(179, 347);
+            this.tabPage3.Size = new System.Drawing.Size(179, 348);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Исключения";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // exceptionList1
+            // 
+            this.exceptionList1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.exceptionList1.Location = new System.Drawing.Point(3, 3);
+            this.exceptionList1.Name = "exceptionList1";
+            this.exceptionList1.Size = new System.Drawing.Size(173, 342);
+            this.exceptionList1.TabIndex = 0;
+            this.exceptionList1.AllClear += new System.EventHandler(this.ExceptionList1_AllClear);
+            this.exceptionList1.AddException += new System.EventHandler(this.ExceptionList1_AddException);
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.ActiveTabEndColor = System.Drawing.Color.AntiqueWhite;
+            this.tabControl1.ActiveTabStartColor = System.Drawing.Color.RoyalBlue;
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+            this.tabControl1.GradientAngle = 90;
+            this.tabControl1.Location = new System.Drawing.Point(3, 16);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.NonActiveTabEndColor = System.Drawing.Color.DimGray;
+            this.tabControl1.NonActiveTabStartColor = System.Drawing.Color.RoyalBlue;
+            this.tabControl1.Padding = new System.Drawing.Point(16, 3);
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.ShowClose = true;
+            this.tabControl1.Size = new System.Drawing.Size(252, 201);
+            this.tabControl1.TabIndex = 0;
+            this.tabControl1.TextColor = System.Drawing.Color.Navy;
+            this.tabControl1.Transparent1 = 150;
+            this.tabControl1.Transparent2 = 150;
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Enabled = false;
+            this.toolStripMenuItem1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(300, 18);
             // 
             // Form1
             // 

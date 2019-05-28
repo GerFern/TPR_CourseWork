@@ -173,6 +173,26 @@ namespace TPR_ExampleView.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap размер_32 {
+            get {
+                object obj = ResourceManager.GetObject("размер_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap расширить_32 {
+            get {
+                object obj = ResourceManager.GetObject("расширить_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap свернуть_32 {
             get {
                 object obj = ResourceManager.GetObject("свернуть_32", resourceCulture);

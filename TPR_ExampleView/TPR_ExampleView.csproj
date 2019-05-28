@@ -91,6 +91,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Folderinfo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Folderinfo.Designer.cs">
+      <DependentUpon>Folderinfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LabeledProgressBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -146,6 +152,12 @@
     <Compile Include="Forms\FormSettings.Designer.cs">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormSimpleInvokeProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormSimpleInvokeProgress.Designer.cs">
+      <DependentUpon>FormSimpleInvokeProgress.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ImageForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -164,6 +176,10 @@
     <Compile Include="Controls\ImageList.Designer.cs">
       <DependentUpon>ImageList.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ToolStripVerticalSeparator.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\ImgName.cs" />
     <Compile Include="MenuMethod.cs" />
     <Compile Include="MyMethodInfo.cs" />
     <Compile Include="Program.cs" />
@@ -187,6 +203,9 @@
     <EmbeddedResource Include="Controls\ExceptionListControl.resx">
       <DependentUpon>ExceptionListControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Folderinfo.resx">
+      <DependentUpon>Folderinfo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\LabeledProgressBar.resx">
       <DependentUpon>LabeledProgressBar.cs</DependentUpon>
     </EmbeddedResource>
@@ -207,6 +226,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormSimpleInvokeProgress.resx">
+      <DependentUpon>FormSimpleInvokeProgress.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ImageForm.resx">
       <DependentUpon>ImageForm.cs</DependentUpon>
@@ -276,6 +298,14 @@
       <Project>{6bbbb163-8c7f-49a3-8c7e-d0fe2561dafc}</Project>
       <Name>MYRmen</Name>
     </ProjectReference>
+    <ProjectReference Include="..\myLab\myLab.csproj">
+      <Project>{4b9d67fd-b4c2-4bc8-bdcb-129e00c0c778}</Project>
+      <Name>myLab</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OzhPakKu\OzhPakKu.csproj">
+      <Project>{8bf22d24-cd7b-42a6-921a-1e095422cb1b}</Project>
+      <Name>OzhPakKu</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\закрыть-окно-32.png" />
@@ -300,6 +330,8 @@
     <None Include="Resources\стоп-32.png" />
     <None Include="Resources\настройки-32.png" />
     <None Include="Resources\панель-дополнительной-информаиции-32.png" />
+    <None Include="Resources\размер-32.png" />
+    <None Include="Resources\расширить-32.png" />
     <Content Include="Resources\удалить-все-32.png" />
     <None Include="Resources\открыть-папку-32.png" />
     <None Include="Resources\файл-изображения-32.png" />

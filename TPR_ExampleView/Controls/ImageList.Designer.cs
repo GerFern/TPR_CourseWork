@@ -129,7 +129,7 @@
             this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton6.Name = "toolStripButton6";
             this.toolStripButton6.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton6.Text = "Настройки (не работает)";
+            this.toolStripButton6.Text = "Настройки";
             this.toolStripButton6.Click += new System.EventHandler(this.ToolStripButton6_Click);
             // 
             // panel1

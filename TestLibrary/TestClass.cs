@@ -48,7 +48,7 @@ namespace TestLibrary
 
         [ImgCanBeDisposedOrNull]
         [ImgMethod("Test", "Debug", "for")]
-        [MethodName("KHH")]
+        [MethodName("AAAA")]
         public static OutputImage TestFor1(InputImage inputImage)
         {
             return null;
@@ -56,16 +56,22 @@ namespace TestLibrary
         [ImgMethod("Test", "Debug", "for")]
         public static OutputImage TestFor(InputImage inputImage)
         {
-            inputImage.Progress.Run(1, 100000);
+            inputImage.Progress.Run(1, 100000, true);
+            bool cancel = false;
             for (int i = 0; i < 100000; i++)
             {
+                if (inputImage.Progress.Cancel)
+                {
+                    cancel = true;
+                    break;
+                }
                 for (int j = 0; j < 100000; j++)
                 {
 
                 }
                 inputImage.Progress.PerformStep();
             }
-            inputImage.Progress.Finish();
+            inputImage.Progress.Finish(cancel);
             return null;
         }
 

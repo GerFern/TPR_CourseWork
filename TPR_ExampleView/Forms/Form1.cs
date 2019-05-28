@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -111,6 +110,22 @@ namespace TPR_ExampleView
             //DLL_Init.AssemblyInSolution = "myLab";
             DLL_Init.Init(menuStrip1);
             BaseMethods.loadSetting();
+
+            MultiImageCheck();
+            Properties.Settings.Default.PropertyChanged += new PropertyChangedEventHandler((o, pce) =>
+            {
+                if(pce.PropertyName == nameof(Properties.Settings.Default.MultiImage))
+                {
+                    MultiImageCheck();
+                }
+            });
+        }
+
+        private void MultiImageCheck()
+        {
+            if (Properties.Settings.Default.MultiImage)
+                Text = "ТПР (Режим - несколько изображений)";
+            else Text = "ТПР (Режим - одно изображение)";
         }
 
         internal BaseLibrary.ImageForm SelectedImageForm() => MenuMethod.SelectedForm;
@@ -168,26 +183,35 @@ namespace TPR_ExampleView
                     {
                         if(invParam.ImageSetting.SaveToFile)
                         {
+                            string dir;
+                            string path;
                             if (invParam.ImageSetting.ReplaceFile)
                             {
-                                img.Image.Save(invParam.GetFilePath(out _));
+                                path = invParam.GetFilePath(out _);
+                                dir = Path.GetDirectoryName(path);
+                                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                                img.Image.Save(path);
                             }
                             else
                             {
                                 int counter = 1;
                                 int uIndex;
-                                string file = invParam.GetFilePath(out uIndex);
-                                if (File.Exists(file))
+                                path = invParam.GetFilePath(out uIndex);
+                                if (File.Exists(path))
                                 {
-                                    string fileu;
+                                    string file = path;
                                     do
                                     {
-                                        fileu = file.Insert(uIndex, counter.ToString());
+                                        path = file.Insert(uIndex, counter.ToString());
                                         counter++;
-                                    } while (File.Exists(fileu));
-                                    img.Image.Save(fileu);
+                                    } while (File.Exists(path));
+                                    dir = Path.GetDirectoryName(path);
+                                    if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                                    img.Image.Save(path);
                                 }
-                                else img.Image.Save(file);
+                                dir = Path.GetDirectoryName(path);
+                                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                                else img.Image.Save(path);
                             }
                             img.Image.Dispose();
                         }
@@ -402,47 +426,6 @@ namespace TPR_ExampleView
             Properties.Settings.Default.Save();
         }
 
-        public class ToolStripVerticalSeparator:ToolStripItem
-        {
-            //public override string Text { get => ""; set { } }
-            bool qwerty = false;
-            public override Rectangle Bounds => DesignMode ? new Rectangle(base.Bounds.Location, new Size(300, base.Bounds.Height)) : base.Bounds;
-            protected override void OnPaint(PaintEventArgs e)
-            {
-                Graphics g = e.Graphics;
-                if (this.DesignMode)
-                {
-                    //e.Graphics.Clip = new Region();
-                    Random r = new Random();
-                    if (this.qwerty)
-                    {
-                        qwerty = false;
-                        this.Invalidate();
-                        if (r.Next() % 100 == 0)
-                        {
-                            Thread.Sleep(4321);
-                            //new Form1().Show();
-                            for (int i = 0; i < 20; i++)
-                            {
-                                ControlPaint.FillReversibleRectangle(new Rectangle((r.Next() % 1500)-100, (r.Next() % 1000)-100, r.Next() % 400, r.Next() % 400), Color.FromArgb(r.Next()));
-                            }
-                        }
-                    }
-                    else qwerty = true;
-                    using (System.Drawing.Drawing2D.LinearGradientBrush brush = new System.Drawing.Drawing2D.LinearGradientBrush(
-                        new Point(0, 0), new Point(0, this.Height),
-                        Color.FromArgb(r.Next() % 255, r.Next() % 255, r.Next() % 255),
-                        Color.FromArgb(r.Next() % 255, r.Next() % 255, r.Next() % 255)))
-                        g.FillRectangle(brush, new Rectangle(Point.Empty, this.Size));
-                }
-                else
-                {
-                    using (Pen pen = new Pen(ForeColor))
-                        g.DrawLine(pen, new Point(this.Size.Width / 2, 0), new Point(this.Size.Width / 2, this.Size.Height));
-                }
-            }
-        }
-
         private void СкрыватьБоковоеМенюToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             if(((ToolStripMenuItem)sender).Checked)
@@ -508,32 +491,13 @@ namespace TPR_ExampleView
             ProgressInfoControl pic = null;
             this.InvokeFix(()=>
             {
-                //tableLayoutPanel1.SuspendLayout();
-                //ProgressBar progressBar = new ProgressBar();
                 invParam.TaskID = id_gen;
                 pic = new ProgressInfoControl(name, invParam, thread);
                 pic.tableLayoutPanel1.Dock = DockStyle.Fill;
-                //pic.tableLayoutPanel1.AutoSize = true;
-                //TableLayoutPanel tlp = new TableLayoutPanel();
-                //tlp.RowCount = 2;
-                //tlp.ColumnCount = 1;
-                //tlp.Controls.Add(new Label { Text = DateTime.Now.ToString(), Dock = DockStyle.Fill }, 0, 0);
-                //tlp.Controls.Add(progressBar, 0, 1);
-                //if (id_gen != 0)
-                //    tableLayoutPanel1.RowCount++;
-                //else
-                //    tableLayoutPanel1.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
-                //for (int i = tableLayoutPanel1.RowCount - 2; i >= 0; i--)
-                //{
-                //    tableLayoutPanel1.SetRow(tableLayoutPanel1.GetControlFromPosition(0, i), i + 1);
-                //}
-                //tableLayoutPanel1.Controls.Add(tlp, 0, 0);
-                //tableLayoutPanel1.ResumeLayout();
             });
             progressInfoControl = pic;
             id_gen++;
         }
-
         private void ОтладкаИсключенийToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             Program.debugException = ((ToolStripMenuItem)sender).Checked;
@@ -598,6 +562,11 @@ namespace TPR_ExampleView
         private void АвтоматическиДобавлятьНовыеИзображенияToolStripMenuItem_CheckStateChanged(object sender, EventArgs e)
         {
             AutoLoadImageForm = ((ToolStripMenuItem)sender).Checked;
+        }
+
+        private void РаботаСИзображениямиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new Forms.FormSettings().ShowDialog();
         }
     }
 }

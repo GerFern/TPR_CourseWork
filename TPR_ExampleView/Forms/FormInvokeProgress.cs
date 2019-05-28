@@ -1,5 +1,4 @@
-﻿using Emgu.CV;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections;
 using System.ComponentModel;
@@ -57,21 +56,12 @@ namespace TPR_ExampleView.Forms
                 pic.ThreadFinished += new EventHandler((o, e) => this.InvokeFix(() => { active--; Next(); }));
                 plc.Add(pic);
 
-                //if(item.Image.IsDisposedOrNull()) 
             }
             
             Enumerator = plc.Items.GetEnumerator();
 
             if (AutoStart)
-            {
                 this.HandleCreated += new EventHandler((o, e) => Next());
-                //new Thread(() =>
-                //{
-                //    Thread.Sleep(1000);
-                //    plc.InvokeFix(()=>Next());
-                //})
-                //{ Name = "Activator" }.Start();
-            }
         }
 
         private void Next()
@@ -96,20 +86,6 @@ namespace TPR_ExampleView.Forms
                     else Enumerator = null;
                 }
             }
-        }
-
-        public struct ImgName
-        {
-            public ImgName(string imgPath, IImage image, string name)
-            {
-                ImgPath = imgPath;
-                Image = image;
-                Name = name;
-            }
-
-            public string ImgPath { get; set; }
-            public IImage Image { get; set; }
-            public string Name { get; set; }
         }
 
         private void NumericUpDown1_ValueChanged(object sender, EventArgs e)
