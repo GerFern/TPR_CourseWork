@@ -9,6 +9,8 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.UI;
 using System.Threading;
+using System.Diagnostics;
+using BaseLibrary.Exceptions;
 
 namespace TPR_ExampleView
 {
@@ -588,6 +590,42 @@ namespace TPR_ExampleView
                 if (outputImage != null)
                 {
                     MainForm.LoadOutputImage(outputImage, invParam);
+
+                    IImage image = null;
+                    if (invParam.Vs != null || invParam.Vs.Length > 0)
+                    {
+                        if (invParam.Vs[0] is InputImage inpImage)
+                            image = inpImage.Image;
+                        else image = invParam.Vs[0] as IImage;
+                    }
+                    if(image!=null)
+                    {
+                        if(ReferenceEquals(image, outputImage.Image)||image.Ptr==outputImage.Image.Ptr)
+                        {
+                            var exp = new LinkOutImageException(invParam.MethodInfo.MethodInfo);
+                            try
+                            {
+                                throw exp;
+                            }
+                            catch (LinkOutImageException ex)
+                            {
+                                if (Debugger.IsAttached) Debugger.Break();
+                                else if (!Debugger.Launch()) MessageBox.Show(ex.Message);
+                                ////////////////////////////////////////////////////////////////////////////////////
+                                /// Обратите внимание!!!                                                         ///
+                                /// Метод, который только что выполнялся, вернул ссылку на исходное изображение  ///
+                                /// Такого не должно было произойти                                              ///
+                                /// Создавайте новое изображение и работайте с ним, а исходное лучше не изменять ///
+                                /// Но если есть необходимость в изменении исходного изображения,                ///
+                                /// то нужно использовать свойство <see cref="OutputImage.UpdateSelectedImage"/> ///
+                                ///                                                                              ///
+                                /// Дальнейшее выполнение методов может привести к ошибкам                       ///
+                                ////////////////////////////////////////////////////////////////////////////////////
+                                MainForm.SetExceptionError(ex);
+                                if (Debugger.IsAttached) Debugger.Break();
+                            }
+                        }
+                    }
                     //    MainForm.Invoke(new MethodInvoker(() =>
                     //    {
                     //        BaseLibrary.BaseMethods.LoadOutputImage(outputImage);

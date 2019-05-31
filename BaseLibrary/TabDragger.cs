@@ -177,6 +177,10 @@ namespace BaseLibrary
 
         private void tabControl_DoubleClick(object sender, EventArgs e)
         {
+            if(e is MouseEventArgs me)
+            {
+                if (me.Button != MouseButtons.Left) return;
+            }
             if (this.DragBehavior == TabDragBehavior.TabDragOut)
             {
                 TabForm frm = new TabForm(dragTab);

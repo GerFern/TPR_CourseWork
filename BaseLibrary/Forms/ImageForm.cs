@@ -58,7 +58,8 @@ namespace BaseLibrary
             {
                 if (value != IsSelected)
                 {
-                    if (Image == null) throw new NullReferenceException();
+                    if (Image == null) MessageBox.Show("Изображение отсутсвует");
+                    //throw new NullReferenceException();
                     //_isSelected = value;
                     if (value)
                     {

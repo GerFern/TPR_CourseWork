@@ -7,6 +7,7 @@ using BaseLibrary;
 using System.Windows.Forms;
 using Emgu.CV;
 using Newtonsoft.Json.Linq;
+using System.Drawing;
 
 namespace TPR_ExampleView
 {
@@ -47,7 +48,7 @@ namespace TPR_ExampleView
             JObject jDict = new JObject();
             for (int i = 0; i < controls.Length; i++)
             {
-                jDict[parameters[i].Name] = Convert.ToString(propertyInfos[i].GetValue(controls[i]));
+                jDict[parameters[i].Name] = Newtonsoft.Json.JsonConvert.SerializeObject(propertyInfos[i].GetValue(controls[i]));
             }
             //foreach (Control item in controls)
             //{
@@ -90,11 +91,14 @@ namespace TPR_ExampleView
                             }
                             if (index >= 0)
                             {
-                                object nVal = ((IConvertible)item.Value).ToType(propertyInfos[index].PropertyType, System.Globalization.CultureInfo.CurrentCulture);
+                                //object nVal = ((IConvertible)item.Value).ToType(propertyInfos[index].PropertyType, System.Globalization.CultureInfo.CurrentCulture);
+                                Type retType = propertyInfos[index].PropertyType;
+                                object nVal = Newtonsoft.Json.JsonConvert.DeserializeObject(item.Value.ToString(), retType);
                                 propertyInfos[index].SetValue(controls[index], nVal);
                             }
                         }
-                        catch { }
+                        catch (Exception ex)
+                        { }
                         //if (control != null)
                         //{
                         //    control.Text = item.Value.ToObject<string>();

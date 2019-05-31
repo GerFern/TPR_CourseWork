@@ -18,6 +18,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using BaseLibrary;
+using System.Threading;
 
 namespace ExplorerImage
 {
@@ -26,6 +27,10 @@ namespace ExplorerImage
     /// </summary>
     public partial class UserControl1 : UserControl
     {
+        public EventWaitHandle waiter;
+        public Thread threadFileLoader;
+        public bool IsLoadNewNow = false;
+
         public bool showAll;
         public bool ShowAll
         {
@@ -89,7 +94,6 @@ namespace ExplorerImage
         }
 
         private int count;
-        private List<Grid> previews = new List<Grid>();
         private Dictionary<string, BitmapSource> bitmaps = new Dictionary<string, BitmapSource>();
         public int Count => count;
         public UserControl1()
@@ -111,34 +115,60 @@ namespace ExplorerImage
             PathChanged?.Invoke(this, new EventArgsWithFilePath(path, name));
         }
 
-        private string LoadPreview(string path, bool showAll, bool showDir)
+        private string LoadPreview(string path, bool showAll, bool showDir, bool saveLoad = true)
         {
+            IsLoadNewNow = false;
+            if (threadFileLoader != null && threadFileLoader.IsAlive)
+            {
+                threadFileLoader.Abort();
+                //threadFileLoader.Join();
+            }
             ShellContainer shellContainer = (ShellContainer)ShellObject.FromParsingName(path);
             //this.SuspendLayout();
             //flowLayoutPanel1.SuspendLayout();
 
-                panel.Children.Clear();
-            foreach (var item in previews)
-            {
-                //item.SuspendLayout();
-                ////item.Image.Dispose();
-                //item.Dispose();
-            }
             //flowLayoutPanel1.Controls.Clear();
-            previews.Clear();
             bitmaps.Clear();
+            panel.Children.Clear();
+
 
             if (ShowDir && shellContainer.Parent != null)
             {
-                previews.Add(CreatePictureBoxWithLabel("..", shellContainer.Parent.ParsingName, true));
+                panel.Children.Add(CreatePictureBoxWithLabel("..", shellContainer.Parent.ParsingName, true));
             }
             try
             {
-                IEnumerable<ShellObject> list; //= shellContainer.AsEnumerable().Where(a=>a is ShellFile || a is ShellFolder);
-                if (showDir) foreach (var item in shellContainer.OfType<ShellFolder>()) Add(item);
-                if (showAll) foreach (var item in shellContainer.OfType<ShellFile>()) Add(item);
-                else foreach (var item in shellContainer.OfType<ShellFile>().Where(a=>a.IsImage())) Add(item);
+                IEnumerable<ShellObject> list = new List<ShellObject>(); //= shellContainer.AsEnumerable().Where(a=>a is ShellFile || a is ShellFolder);
+                if (ShowDir) list = list.Concat(shellContainer.OfType<ShellFolder>());
+                if (showAll) list = list.Concat(shellContainer.OfType<ShellFile>());
+                else list = list.Concat(shellContainer.OfType<ShellFile>().Where(a => a.IsImage()));
 
+                //if (showDir) foreach (var item in shellContainer.OfType<ShellFolder>()) Add(item);
+                //if (showAll) foreach (var item in shellContainer.OfType<ShellFile>()) Add(item);
+                //else foreach (var item in shellContainer.OfType<ShellFile>().Where(a=>a.IsImage())) Add(item);
+
+                if(list.Count()>100&&saveLoad)
+                {
+                    Grid grid = new Grid();
+                    grid.RowDefinitions.Add(new RowDefinition
+                    {
+                        Height = new GridLength(64)
+                    });
+                    Label label = new Label();
+                    label.Content = $"Двойной клик, чтобы загрузить {list.Count()} элементов";
+                    label.MouseDoubleClick += new MouseButtonEventHandler((o, e) =>
+                    {
+                        if (e.ChangedButton == MouseButton.Left) LoadPreview(path, showAll, showDir, false);
+                    });
+                    grid.Children.Add(label);
+                    panel.Children.Add(grid);
+                    return shellContainer.Name;
+                }
+
+
+                IsLoadNewNow = true;
+                threadFileLoader = new Thread(new ParameterizedThreadStart(LoadShells)) { Name = "ShellLoader", ApartmentState = ApartmentState.STA };
+                threadFileLoader.Start(list);
                     //list = shellContainer.OfType<ShellFolder>();
                 //if (!showAll && !showDir) list = list.Where(a => a.IsImage());
                 //else
@@ -223,24 +253,103 @@ namespace ExplorerImage
                 //}
                 //else previews.
             }
-            foreach (var item in previews)
-            {
-                panel.Children.Add(item);
-            }
+            //foreach (var item in previews)
+            //{
+            //    panel.Children.Add(item);
+            //}
             //this.ResumeLayout();
             //flowLayoutPanel1.ResumeLayout();
             return shellContainer.Name;
         }
 
-        private void Add(ShellObject item)
+        public struct ShItem
+        {
+            public ShItem(BitmapSource thumbnail, string name, string parsingName, bool isFolder)
+            {
+                Thumbnail = thumbnail;
+                Name = name;
+                ParsingName = parsingName;
+                IsFolder = isFolder;
+            }
+
+            public BitmapSource Thumbnail { get; set; }
+            public string Name { get; set; }
+            public string ParsingName { get; set; }
+            public bool IsFolder { get; set; }
+        }
+
+        public void LoadShells(object obj)
+        {
+            IEnumerable<ShellObject> shellObjects = obj as IEnumerable<ShellObject>;
+            if (obj == null) return;
+            var enumerator = shellObjects.GetEnumerator();
+            int counter = 0;
+            //ShItem[] buffer = new ShItem[20];
+            int buffersize = 25;
+            ShellObject[] buffer = new ShellObject[1000];
+            while (enumerator.MoveNext())
+            {
+                if (IsLoadNewNow)
+                {
+                    ShellObject shellObject = enumerator.Current;
+                    buffer[counter] = shellObject;
+                    //buffer[counter] = new ShItem(shellObject.Thumbnail.MediumBitmapSource, shellObject.Name, shellObject.ParsingName, shellObject is ShellFolder);
+                    counter++;
+                    if (counter == buffersize)
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            for (int i = 0; i < counter; i++)
+                            {
+                                if (IsLoadNewNow)
+                                {
+                                    ShellObject shItem = buffer[i];
+                                    panel.Children.Add(CreatePictureBoxWithLabel(shItem));
+                                }
+                                else break;
+                            }
+                        });
+                        counter = 0;
+                    }
+                }
+                else break;
+            }
+            Dispatcher.Invoke(() =>
+            {
+                for (int i = 0; i < counter; i++)
+                {
+                    if (IsLoadNewNow)
+                    {
+                        ShellObject shItem = buffer[i];
+                        panel.Children.Add(CreatePictureBoxWithLabel(shItem));
+                    }
+                    else break;
+                }
+                IsLoadNewNow = false;
+            });
+            //Dispatcher.Invoke(() => IsLoadNewNow = false);
+        }
+
+        //private void Add(ShellObject item)
+        //{
+        //    BitmapSource b;
+        //    ShellThumbnail st = item.Thumbnail;
+        //    b = st.MediumBitmapSource;
+        //    bitmaps.Add(item.ParsingName, b);
+        //    Grid grid = CreatePictureBoxWithLabel(item.Name, item.ParsingName, item is ShellFolder, b);
+        //    previews.Add(grid);
+        //}
+
+        private Grid CreateGrid(ShellObject item)
         {
             BitmapSource b;
             ShellThumbnail st = item.Thumbnail;
             b = st.MediumBitmapSource;
             bitmaps.Add(item.ParsingName, b);
-            Grid grid = CreatePictureBoxWithLabel(item.Name, item.ParsingName, item is ShellFolder, b);
-            previews.Add(grid);
+            
+            return CreatePictureBoxWithLabel(item.Name, item.ParsingName, item is ShellFolder, b);
         }
+
 
         private void Panel_File_Click(string path)
         {
@@ -258,6 +367,16 @@ namespace ExplorerImage
                 //fileSystemWatcher1.Changed += FileSystemWatcher1_Changed;
             }
             catch (Exception ex){ MessageBox.Show(ex.Message); }
+        }
+
+        private Grid CreatePictureBoxWithLabel(ShItem shItem)
+        {
+            return CreatePictureBoxWithLabel(shItem.Name, shItem.ParsingName, shItem.IsFolder, shItem.Thumbnail);
+        }
+
+        private Grid CreatePictureBoxWithLabel(ShellObject shItem)
+        {
+            return CreatePictureBoxWithLabel(shItem.Name, shItem.ParsingName, shItem is ShellFolder, shItem.Thumbnail.MediumBitmapSource);
         }
 
         private Grid CreatePictureBoxWithLabel(string name, string path,  bool IsDir, BitmapSource image = null)

@@ -119,6 +119,8 @@ namespace TPR_ExampleView
             }
             foreach(var item in list)
             {
+                //Комментарий
+                if (item.StartsWith("#")) continue;
                 string dll = string.Empty;
                 string path = Directory.GetCurrentDirectory();
                 DirectoryInfo directoryInfo = new DirectoryInfo(path);

@@ -9,6 +9,11 @@
     internal sealed partial class Settings {
         
         public Settings() {
+            System.Collections.Generic.List<string> vs = new System.Collections.Generic.List<string>();
+            foreach (var item in Providers)
+            {
+                vs.Add(item.ToString());
+            }
             // // Для добавления обработчиков событий для сохранения и изменения параметров раскомментируйте приведенные ниже строки:
             //
             // this.SettingChanging += this.SettingChangingEventHandler;
