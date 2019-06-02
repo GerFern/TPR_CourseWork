@@ -308,6 +308,10 @@
       <Project>{8bf22d24-cd7b-42a6-921a-1e095422cb1b}</Project>
       <Name>OzhPakKu</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SlepovLibrary\SlepovLibrary.csproj">
+      <Project>{fa94c0d7-501d-41d1-9371-947eff716c7c}</Project>
+      <Name>SlepovLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\закрыть-окно-32.png" />

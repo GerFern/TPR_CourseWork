@@ -598,7 +598,7 @@ namespace TPR_ExampleView
                             image = inpImage.Image;
                         else image = invParam.Vs[0] as IImage;
                     }
-                    if(image!=null)
+                    if (!(image == null || outputImage.Image == null))
                     {
                         if(ReferenceEquals(image, outputImage.Image)||image.Ptr==outputImage.Image.Ptr)
                         {

@@ -185,6 +185,13 @@ namespace BaseLibrary
             ParamIndex = paramIndex;
         }
 
+        public ControlPropertyAttribute(int paramIndex, string propertyName, object propertyObject)
+        {
+            PropertyName = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
+            PropertyObject = propertyObject ?? throw new ArgumentNullException(nameof(propertyObject));
+            ParamIndex = paramIndex;
+        }
+
         /// <summary>
         /// Название свойства
         /// </summary>
@@ -193,6 +200,8 @@ namespace BaseLibrary
         /// Значение свойства
         /// </summary>
         public string PropertyValue { get; }
+
+        public object PropertyObject { get; }
 
         /// <summary>
         /// Индекс параметра
