@@ -300,10 +300,6 @@
       <Project>{6bbbb163-8c7f-49a3-8c7e-d0fe2561dafc}</Project>
       <Name>MYRmen</Name>
     </ProjectReference>
-    <ProjectReference Include="..\myLab\myLab.csproj">
-      <Project>{4b9d67fd-b4c2-4bc8-bdcb-129e00c0c778}</Project>
-      <Name>myLab</Name>
-    </ProjectReference>
     <ProjectReference Include="..\OzhPakKu\OzhPakKu.csproj">
       <Project>{8bf22d24-cd7b-42a6-921a-1e095422cb1b}</Project>
       <Name>OzhPakKu</Name>
@@ -311,6 +307,10 @@
     <ProjectReference Include="..\SlepovLibrary\SlepovLibrary.csproj">
       <Project>{fa94c0d7-501d-41d1-9371-947eff716c7c}</Project>
       <Name>SlepovLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Temp\Temp.csproj">
+      <Project>{4b9d67fd-b4c2-4bc8-bdcb-129e00c0c778}</Project>
+      <Name>Temp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace BaseLibrary
 {
-    public partial class EnumComboBox<TEnum> : ComboBox where TEnum : Enum
+    public partial class EnumComboBox<TEnum> : ComboBox
     {
         public struct EnumName
         {

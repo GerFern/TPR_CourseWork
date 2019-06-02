@@ -20,7 +20,6 @@ namespace BaseLibrary
         internal static OutputImageInvoker _createFormFromOutputImage;
         internal static GetProgressBar _getProgressBar;
         public static Dictionary<string, string> settings;
-
        
         /// <summary>
         /// Добовляйте уникальный префикс

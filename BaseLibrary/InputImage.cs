@@ -84,6 +84,14 @@ namespace BaseLibrary
             return ret;
         }
 
+        public static IImage ConverctDepth<TDepth>(IImage img)
+        {
+            Type ImgType = img.GetType();
+            ImgType = ImgType.GetGenericTypeDefinition().MakeGenericType(ImgType.GetGenericArguments()[0], typeof(TDepth));
+            dynamic ret = Activator.CreateInstance(ImgType, img.Size);
+            ret.ConvertFrom(img);
+            return ret;
+        }
         /// <summary>
         /// Изменить цвет
         /// </summary>
