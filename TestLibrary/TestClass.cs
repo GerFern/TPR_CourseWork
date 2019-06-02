@@ -40,9 +40,9 @@ namespace TestLibrary
         /// <param name="image">Оригинальное изображение</param>
         /// <returns>Обработаное изображение</returns>
         [ImgMethod("Test", "Фильтр", "Конвертация", "Оттенки серого")]//Указывается иерархия вкладок в меню программы
-        public static OutputImage TestGray(Image<Bgr, byte> image)
+        public static OutputImage TestGray(InputImage image)
         {
-            Image<Gray, byte> grayImage = image.Convert<Gray, byte>();
+            Image<Gray, byte> grayImage = image.CreateConverted<Gray, byte>();
             return new OutputImage { Image = grayImage };
         }
 
@@ -83,10 +83,10 @@ namespace TestLibrary
         /// <returns>Обработаное изображение</returns>
         [ImgMethod("Test", "Фильтр", "Медианая фильтрация")]
         [ControlForm(1, typeof(NumericUpDown), "Value", "Размер фильтрации")]//Автоматическое построение формы
-        public static OutputImage TestMedian(IImage image, int size)
+        public static OutputImage TestMedian(InputImage image, int size)
         {
-            dynamic img = image;//Простой обход проверки на тип, чтобы не определять универсальные параметры Image используя к рефлексию
-            return new OutputImage { Image = img.SmoothMedian(size), Info = $"Параметр медианной фильтрации - {size}" };
+            dynamic img = image.ConvertDepth<byte>();//Простой обход проверки на тип, чтобы не определять универсальные параметры Image используя к рефлексию
+            return new OutputImage { Image = img.SmoothMedian(size) };
         }
 
         /// <summary>

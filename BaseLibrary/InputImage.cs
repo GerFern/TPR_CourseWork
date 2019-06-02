@@ -60,10 +60,41 @@ namespace BaseLibrary
         /// <typeparam name="TDepth"></typeparam>
         /// <param name="image"></param>
         /// <returns></returns>
-        public static IImage Convert<TColor, TDepth>(IImage image) where TColor : struct, IColor where TDepth : new()
+        public static Image<TColor, TDepth> Convert<TColor, TDepth>(IImage image) where TColor : struct, IColor where TDepth : new()
         {
             dynamic t = image;
             return t.Convert<TColor, TDepth>();
+        }
+
+        public Image<TColor, TDepth> CreateConverted<TColor, TDepth>() where TColor : struct, IColor where TDepth : new()
+        {
+            return DynamicImage.Convert<TColor, TDepth>();
+        }
+
+        /// <summary>
+        /// Изменить глубину
+        /// </summary>
+        /// <typeparam name="TDepth"></typeparam>
+        public IImage ConvertDepth<TDepth>() where TDepth : new()
+        {
+            Type ImgType = Image.GetType().GetGenericTypeDefinition();
+            ImgType = ImgType.MakeGenericType(TColor, typeof(TDepth));
+            dynamic ret = Activator.CreateInstance(ImgType, Image.Size);
+            ret.ConvertFrom(Image);
+            return ret;
+        }
+
+        /// <summary>
+        /// Изменить цвет
+        /// </summary>
+        /// <typeparam name="TColor"></typeparam>
+        public IImage ConvertColor<TColor>() where TColor : struct, IColor
+        {
+            Type ImgType = Image.GetType().GetGenericTypeDefinition();
+            ImgType = ImgType.MakeGenericType(typeof(TColor), TDepth);
+            dynamic ret = Activator.CreateInstance(ImgType, Image.Size);
+            ret.ConvertFrom(Image);
+            return ret;
         }
 
         public InputImage(IImage image, int ID, string methodName)
